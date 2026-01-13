@@ -1,0 +1,11 @@
+{
+	"damage": 4,
+	"durability": 1562,
+	"enchantability": 10,
+	"attack_speed": 0.95,
+	"charge_multiplier": 1.075,
+	"repair_material": {
+      "type": "forge:ore_dict",
+      "ore": "gemDiamond"
+    }
+}

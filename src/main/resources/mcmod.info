@@ -1,7 +1,7 @@
 [
 {
   "modid": "mounts",
-  "name": "Traders Backport",
+  "name": "Mounts of Mayhem Backport",
   "description": "Backports the Mounts of Mayhem drop (1.21.11) and Camels from 1.20",
   "version": "1.0.0",
   "mcversion": "1.12.2",

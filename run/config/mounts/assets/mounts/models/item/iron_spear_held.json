@@ -1,0 +1,6 @@
+{
+  "parent": "mounts:item/spear_held",
+  "textures": {
+    "layer0": "mounts:items/iron_spear_held"
+  }
+}

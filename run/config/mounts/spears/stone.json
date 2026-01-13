@@ -1,0 +1,11 @@
+{
+	"damage": 2,
+	"durability": 131,
+	"enchantability": 5,
+	"attack_speed": 1.33,
+	"charge_multiplier": 0.82,
+	"repair_material": {
+      "type": "forge:ore_dict",
+      "ore": "cobblestone"
+    }
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "mounts:items/netherite_spear"
+  },
+  "overrides": [
+    {
+      "predicate": { "held": 1 },
+      "model": "mounts:item/netherite_spear_held"
+    }
+  ]
+}

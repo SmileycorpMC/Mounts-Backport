@@ -46,6 +46,12 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+            property 'mixin.debug.export', 'true'
+            property 'mixin.hotSwap', 'true'
+            property 'mixin.checks.interfaces', 'true'
+           // property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
+            arg '-torg.spongepowered.asm.launch.MixinTweaker'
+            arg "-mixin.config=mixins.mounts.json"
         }
 
         server {
@@ -59,8 +65,11 @@ minecraft {
     }
 }
 
+sourceSets { main { output.resourcesDir = output.classesDir } }
+
 mixin {
-    add sourceSets.main, "mixins.raids.refmap.json"
+    add sourceSets.main, "mixins.mounts.refmap.json"
+    config "mixins.mounts.json"
 }
 
 repositories {
@@ -75,8 +84,10 @@ configurations {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
     implementation "org.spongepowered:mixin:0.8"
+    annotationProcessor "org.spongepowered:mixin:0.8:processor"
     implementation "io.github.llamalad7:mixinextras-common:0.4.1"
-    implementation "curse.maven:atlas-463826:6981034"
+    annotationProcessor 'io.github.llamalad7:mixinextras-common:0.5.0'
+    implementation fg.deobf("curse.maven:atlas-463826:6981112")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

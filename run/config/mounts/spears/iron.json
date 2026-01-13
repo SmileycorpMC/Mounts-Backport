@@ -1,0 +1,11 @@
+{
+	"damage": 3,
+	"durability": 250,
+	"enchantability": 14,
+	"attack_speed": 1.18,
+	"charge_multiplier": 0.95,
+	"repair_material": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    }
+}
