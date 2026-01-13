@@ -9,12 +9,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.smileycorp.mounts.api.ItemSpear;
 import net.smileycorp.mounts.api.SpearDefinition;
 import net.smileycorp.mounts.config.SpearRegistry;
-import scala.collection.immutable.Stream;
 
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public class MountsContent {

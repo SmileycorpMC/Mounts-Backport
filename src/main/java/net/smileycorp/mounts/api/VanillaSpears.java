@@ -1,6 +1,5 @@
 package net.smileycorp.mounts.api;
 
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.smileycorp.mounts.config.SpearRegistry;
 
 import java.util.function.Supplier;
