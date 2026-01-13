@@ -83,7 +83,7 @@ public class SpearDefinition {
         if (json.has("charge_multiplier")) builder.chargeMultiplier = json.get("charge_multiplier").getAsFloat();
         if (json.has("repair_material")) builder.repairMaterial = SpearDefinition.parseRepairMaterial(json.get("repair_material"));
         if (json.has("craftable")) builder.craftable = json.get("craftable").getAsBoolean();
-        if (json.has("fireproof")) builder.craftable = json.get("fireproof").getAsBoolean();
+        if (json.has("fireproof")) builder.fireproof = json.get("fireproof").getAsBoolean();
         return builder.build();
     }
 
