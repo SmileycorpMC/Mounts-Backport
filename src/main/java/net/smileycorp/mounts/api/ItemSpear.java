@@ -1,10 +1,11 @@
 package net.smileycorp.mounts.api;
 
 import com.google.common.collect.Multimap;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,8 +32,13 @@ public class ItemSpear extends Item {
         addPropertyOverride(new ResourceLocation("held"), (stack, world, entity) -> entity != null && world != null ? 1 : 0);
     }
 
+    public SpearDefinition getDefinition() {
+        return definition;
+    }
+
     @Override
     public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+        stack.damageItem(1, attacker);
         return super.hitEntity(stack, target, attacker);
     }
 
@@ -53,12 +59,22 @@ public class ItemSpear extends Item {
         if (slot != EntityEquipmentSlot.MAINHAND) return map;
         map.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", definition.getDamage() - 1, 0));
         map.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", definition.getAttackSpeed() - 4, 0));
-        map.put(EntityPlayer.REACH_DISTANCE.getName(), new AttributeModifier(ATTACK_RANGE_MODIFIER, "Weapon modifier", 1.5, 0));
         return map;
     }
 
-    public SpearDefinition getDefinition() {
-        return definition;
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return enchantment.type == EnumEnchantmentType.WEAPON || super.canApplyAtEnchantingTable(stack, enchantment);
+    }
+
+    @Override
+    public EntityEquipmentSlot getEquipmentSlot(ItemStack stack) {
+        return EntityEquipmentSlot.MAINHAND;
+    }
+
+    @Override
+    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) {
+        return true;
     }
 
 }
