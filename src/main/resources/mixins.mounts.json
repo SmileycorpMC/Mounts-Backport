@@ -1,0 +1,12 @@
+{
+  "compatibilityLevel": "JAVA_8",
+  "package": "net.smileycorp.mounts.mixin",
+  "refmap": "mixins.raids.refmap.json",
+  "mixins": [],
+  "client": [
+    "MixinMinecraft"
+  ],
+  "server": [
+    "MixinMinecraftServer"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+	"damage": 5,
+	"durability": 2031,
+	"enchantability": 10,
+	"attack_speed": 0.87,
+	"charge_multiplier": 1.2,
+	"repair_material": {
+      "type": "forge:ore_dict",
+      "ore": "ingotNetherite"
+    },
+	"craftable": false,
+	"fireproof": true
+}

@@ -1,0 +1,11 @@
+{
+	"damage": 1,
+	"durability": 59,
+	"enchantability": 15,
+	"attack_speed": 1.54,
+	"charge_multiplier": 0.7,
+	"repair_material": {
+      "type": "forge:ore_dict",
+      "ore": "plankWood"
+    }
+}

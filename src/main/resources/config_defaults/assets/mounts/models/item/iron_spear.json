@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "mounts:items/iron_spear"
+  },
+  "overrides": [
+    {
+      "predicate": { "held": 1 },
+      "model": "mounts:item/iron_spear_held"
+    }
+  ]
+}
