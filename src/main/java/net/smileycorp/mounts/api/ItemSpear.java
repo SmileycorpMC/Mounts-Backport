@@ -3,16 +3,25 @@ package net.smileycorp.mounts.api;
 import com.google.common.collect.Multimap;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.smileycorp.mounts.common.CommonProxy;
 import net.smileycorp.mounts.common.Constants;
 
+import java.util.List;
 import java.util.UUID;
 
 public class ItemSpear extends Item {
@@ -37,9 +46,68 @@ public class ItemSpear extends Item {
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+    {
+        /* Replace w/ an override later, probably use Forge's PlayerInteract Events? A Capability will be needed, but it wouldn't be hard. */
+        preformSpearAttack(attacker);
+
         stack.damageItem(1, attacker);
         return super.hitEntity(stack, target, attacker);
+    }
+
+    public void preformSpearAttack(EntityLivingBase user)
+    {
+        Vec3d look = user.getLookVec();
+        BlockPos getUserEyes = user.getPosition().add(new BlockPos(0, user.getEyeHeight(), 0));
+        /* Controls the distance the attack box is shifted away from the user. */
+        double distanceFromUser = 4.0D;
+        double width = 0.25D;
+
+        /* Make a sized Bounding Box, and push it forward by `distanceFromUser`! */
+        AxisAlignedBB box = new AxisAlignedBB(getUserEyes).grow(width, width, width).offset(look.scale(distanceFromUser));
+
+        List<Entity> entities = user.world.getEntitiesWithinAABB(EntityLivingBase.class, box);
+        if (!user.world.isRemote)
+        {
+            /* Give the delicious damage right here???*/
+            double speedMPS = 0;
+            /* I'm pretty sure Vanilla rounds the Spear Damage up in my testing... */
+            float finalDamage = (float)Math.ceil(speedMPS * definition.getChargeMultiplier());
+
+            for (Entity entity : entities)
+            {
+                //entity.attackEntityFrom(CommonProxy.causeSpearDamage(user), finalDamage);
+                //if (!entity.world.isRemote) System.out.print("PREFORMED SPEAR ATTACK (" + definition.getChargeMultiplier() + " Damage Mult) AMD PLAYER SPEED ("+ speedMPS +"), DAMAGE WAS " + finalDamage);
+            }
+        }
+
+        /* Garbage code for showing the Spear Attack Bounding Box.*/
+        if (user.world instanceof WorldServer)
+        {
+            double x1 = box.minX;
+            double y1 = box.minY;
+            double z1 = box.minZ;
+
+            double x2 = box.maxX;
+            double y2 = box.maxY;
+            double z2 = box.maxZ;
+
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x1, y1, z1, 1, 0, 0, 0, 0.0D);
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x1, y1, z2, 1, 0, 0, 0, 0.0D);
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x1, y2, z1, 1, 0, 0, 0, 0.0D);
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x1, y2, z2, 1, 0, 0, 0, 0.0D);
+
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y1, z1, 1, 0, 0, 0, 0.0D);
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y1, z2, 1, 0, 0, 0, 0.0D);
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y2, z1, 1, 0, 0, 0, 0.0D);
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y2, z2, 1, 0, 0, 0, 0.0D);
+        }
+    }
+
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
+    {
+        preformSpearAttack(playerIn);
+        return new ActionResult(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
     }
 
     @Override
@@ -73,8 +141,5 @@ public class ItemSpear extends Item {
     }
 
     @Override
-    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) {
-        return true;
-    }
-
+    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) { return true; }
 }
