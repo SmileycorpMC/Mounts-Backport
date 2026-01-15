@@ -9,7 +9,10 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 @Mod(modid = Constants.MODID, name = Constants.NAME, version = Constants.VERSION, dependencies = Constants.DEPENDENCIES)
-public class Mounts {
+public class Mounts
+{
+	@Mod.Instance
+	public static Mounts instance;
 
 	@SidedProxy(clientSide = Constants.CLIENT, serverSide = Constants.SERVER)
 	public static CommonProxy proxy;
