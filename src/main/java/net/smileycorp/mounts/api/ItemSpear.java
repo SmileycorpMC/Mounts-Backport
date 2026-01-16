@@ -71,20 +71,20 @@ public class ItemSpear extends Item {
         /* Make a sized Bounding Box, and push it forward by `distanceFromUser`! */
         AxisAlignedBB box = new AxisAlignedBB(getUserEyes).grow(width, width, width).offset(look.scale(distanceFromUser));
 
-        float damage = definition.getDamage();
-        if (charge) {
-            /* Give the delicious damage right here???*/
-            double speedMPS = MathHelper.sqrt(user.motionX * user.motionX + user.motionY * user.motionY + user.motionZ * user.motionZ);
-            /* I'm pretty sure Vanilla rounds the Spear Damage up in my testing... */
-            damage = (float)Math.ceil(speedMPS * definition.getChargeMultiplier());
-        }
-
         for (EntityLivingBase entity : user.world.getEntitiesWithinAABB(EntityLivingBase.class, box, e -> e != user))
         {
-           if (user instanceof EntityPlayer &! ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity)) continue;
-            entity.attackEntityFrom(DamageSource.causeMobDamage(user), calculateDamageAlterations(damage, user, entity));
-            //if (!entity.world.isRemote) System.out.print("PREFORMED SPEAR ATTACK (" + definition.getChargeMultiplier() + " Damage Mult) AMD PLAYER SPEED ("+ speedMPS +"), DAMAGE WAS " + finalDamage);
-            ///yeah it does this ??????
+            if (user instanceof EntityPlayer &! ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity)) continue;
+            float damage = definition.getDamage();
+            if (charge) {
+                /* Give the delicious damage right here???*/
+                //apparently the damage done by spears is the player speed minus the target speed so this needs to be down here
+                double speedMPS = MathHelper.sqrt(user.motionX * user.motionX + user.motionY * user.motionY + user.motionZ * user.motionZ)
+                        - MathHelper.sqrt(entity.motionX * entity.motionX + entity.motionY * entity.motionY + entity.motionZ * entity.motionZ);
+                /* I'm pretty sure Vanilla rounds the Spear Damage up in my testing... */
+                damage = (float)Math.ceil(speedMPS * definition.getChargeMultiplier());
+            }
+            damage = calculateDamageAlterations(damage, user, entity);
+            entity.attackEntityFrom(DamageSource.causeMobDamage(user), damage);
             stack.damageItem(1, user);
             if (user instanceof EntityPlayer) ((EntityPlayer) user).addStat(StatList.getObjectUseStats(stack.getItem()));
         }
