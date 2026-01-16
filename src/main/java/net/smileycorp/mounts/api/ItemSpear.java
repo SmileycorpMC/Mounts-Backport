@@ -2,9 +2,11 @@ package net.smileycorp.mounts.api;
 
 import com.google.common.collect.Multimap;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,16 +14,17 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.smileycorp.mounts.common.CommonProxy;
+import net.minecraftforge.common.ForgeHooks;
 import net.smileycorp.mounts.common.Constants;
 
-import java.util.List;
 import java.util.UUID;
 
 public class ItemSpear extends Item {
@@ -45,18 +48,20 @@ public class ItemSpear extends Item {
         return definition;
     }
 
-    @Override
+    /*@Override
     public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
     {
         /* Replace w/ an override later, probably use Forge's PlayerInteract Events? A Capability will be needed, but it wouldn't be hard. */
-        preformSpearAttack(attacker);
+    /*performSpearAttack(attacker);
 
         stack.damageItem(1, attacker);
         return super.hitEntity(stack, target, attacker);
-    }
+    }*/
 
-    public void preformSpearAttack(EntityLivingBase user)
-    {
+    public static boolean performSpearAttack(EntityLivingBase user, boolean charge) {
+        ItemStack stack = user.getHeldItemMainhand();
+        if (user.world.isRemote |! (stack.getItem() instanceof ItemSpear)) return false;
+        SpearDefinition definition = ((ItemSpear) stack.getItem()).getDefinition();
         Vec3d look = user.getLookVec();
         BlockPos getUserEyes = user.getPosition().add(new BlockPos(0, user.getEyeHeight(), 0));
         /* Controls the distance the attack box is shifted away from the user. */
@@ -66,20 +71,24 @@ public class ItemSpear extends Item {
         /* Make a sized Bounding Box, and push it forward by `distanceFromUser`! */
         AxisAlignedBB box = new AxisAlignedBB(getUserEyes).grow(width, width, width).offset(look.scale(distanceFromUser));
 
-        List<Entity> entities = user.world.getEntitiesWithinAABB(EntityLivingBase.class, box);
-        if (!user.world.isRemote)
-        {
+        float damage = definition.getDamage();
+        if (charge) {
             /* Give the delicious damage right here???*/
-            double speedMPS = 0;
+            double speedMPS = MathHelper.sqrt(user.motionX * user.motionX + user.motionY * user.motionY + user.motionZ * user.motionZ);
             /* I'm pretty sure Vanilla rounds the Spear Damage up in my testing... */
-            float finalDamage = (float)Math.ceil(speedMPS * definition.getChargeMultiplier());
-
-            for (Entity entity : entities)
-            {
-                //entity.attackEntityFrom(CommonProxy.causeSpearDamage(user), finalDamage);
-                //if (!entity.world.isRemote) System.out.print("PREFORMED SPEAR ATTACK (" + definition.getChargeMultiplier() + " Damage Mult) AMD PLAYER SPEED ("+ speedMPS +"), DAMAGE WAS " + finalDamage);
-            }
+            damage = (float)Math.ceil(speedMPS * definition.getChargeMultiplier());
         }
+
+        for (EntityLivingBase entity : user.world.getEntitiesWithinAABB(EntityLivingBase.class, box, e -> e != user))
+        {
+           if (user instanceof EntityPlayer &! ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity)) continue;
+            entity.attackEntityFrom(DamageSource.causeMobDamage(user), calculateDamageAlterations(damage, user, entity));
+            //if (!entity.world.isRemote) System.out.print("PREFORMED SPEAR ATTACK (" + definition.getChargeMultiplier() + " Damage Mult) AMD PLAYER SPEED ("+ speedMPS +"), DAMAGE WAS " + finalDamage);
+            ///yeah it does this ??????
+            stack.damageItem(1, user);
+            if (user instanceof EntityPlayer) ((EntityPlayer) user).addStat(StatList.getObjectUseStats(stack.getItem()));
+        }
+        if (!charge && user instanceof EntityPlayer) ((EntityPlayer) user).resetCooldown();
 
         /* Garbage code for showing the Spear Attack Bounding Box.*/
         if (user.world instanceof WorldServer)
@@ -102,12 +111,29 @@ public class ItemSpear extends Item {
             ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y2, z1, 1, 0, 0, 0, 0.0D);
             ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y2, z2, 1, 0, 0, 0, 0.0D);
         }
+        return true;
     }
 
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
+    //I did not steal this from the deeper depths mace, nope
+    public static float calculateDamageAlterations(float damage, EntityLivingBase attacker, Entity target)
     {
-        preformSpearAttack(playerIn);
-        return new ActionResult(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
+        float f = (float)attacker.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
+        float f1;
+
+        if (target instanceof EntityLivingBase)
+        { f1 = EnchantmentHelper.getModifierForCreature(attacker.getHeldItemMainhand(), ((EntityLivingBase) target).getCreatureAttribute()); }
+        else
+        { f1 = EnchantmentHelper.getModifierForCreature(attacker.getHeldItemMainhand(), EnumCreatureAttribute.UNDEFINED); }
+
+        return damage + f + f1;
+    }
+
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
+    {
+        performSpearAttack(playerIn, true);
+        return new ActionResult(EnumActionResult.PASS, playerIn.getHeldItem(hand));
     }
 
     @Override
