@@ -1,0 +1,331 @@
+package net.smileycorp.mounts.client.models;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBox;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.smileycorp.mounts.common.entity.EntityCamel;
+
+@SideOnly(Side.CLIENT)
+public class ModelCamel extends ModelBase
+{
+    private final ModelRenderer main;
+    private final ModelRenderer upper_body;
+    private final ModelRenderer head;
+    private final ModelRenderer earR;
+    private final ModelRenderer earL;
+    private final ModelRenderer tail;
+    private final ModelRenderer legFL;
+    private final ModelRenderer legFR;
+    private final ModelRenderer legBL;
+    private final ModelRenderer legBR;
+
+    public ModelCamel()
+    {
+        textureWidth = 128;
+        textureHeight = 128;
+
+        main = new ModelRenderer(this);
+        main.setRotationPoint(0.0F, 24.0F, 0.0F);
+
+
+        upper_body = new ModelRenderer(this);
+        upper_body.setRotationPoint(0.0F, -19.0F, 0.0F);
+        main.addChild(upper_body);
+        upper_body.cubeList.add(new ModelBox(upper_body, 13, 25, -7.5F, -13.0F, -13.0F, 15, 12, 27, 0.0F, false));
+        upper_body.cubeList.add(new ModelBox(upper_body, 12, 89, -7.5F, -1.0F, -13.0F, 15, 12, 27, 0.0F, false));
+        upper_body.cubeList.add(new ModelBox(upper_body, 0, 21, -4.5F, -18.0F, -5.0F, 9, 5, 11, 0.0F, false));
+
+
+        head = new ModelRenderer(this);
+        head.setRotationPoint(0.0F, -7.0F, -11.0F);
+        upper_body.addChild(head);
+        head.cubeList.add(new ModelBox(head, 28, 0, -2.5F, -18.0F, -19.0F, 5, 5, 6, 0.0F, false));
+        head.cubeList.add(new ModelBox(head, 0, 0, -3.5F, -18.0F, -13.0F, 7, 14, 7, 0.0F, false));
+        head.cubeList.add(new ModelBox(head, 33, 0, -3.5F, -4.0F, -13.0F, 7, 8, 17, 0.0F, false));
+        head.cubeList.add(new ModelBox(head, 0, 70, -2.5F, -13.0F, -19.0F, 5, 5, 6, 0.0F, false));
+        head.cubeList.add(new ModelBox(head, 17, 64, -3.5F, 4.0F, -13.0F, 7, 8, 17, 0.0F, false));
+
+        earR = new ModelRenderer(this);
+        earR.setRotationPoint(-3.5F, -17.25F, -7.5F);
+        head.addChild(earR);
+        setRotationAngle(earR, 0.0F, 0.0F, 0.7854F);
+        earR.cubeList.add(new ModelBox(earR, 24, 0, -2.5F, -0.45F, -1.0F, 3, 1, 2, 0.0F, false));
+
+        earL = new ModelRenderer(this);
+        earL.setRotationPoint(3.5F, -17.25F, -7.5F);
+        head.addChild(earL);
+        setRotationAngle(earL, 0.0F, 0.0F, -0.7854F);
+        earL.cubeList.add(new ModelBox(earL, 24, 3, -0.5F, -0.45F, -1.0F, 3, 1, 2, 0.0F, true));
+
+        tail = new ModelRenderer(this);
+        tail.setRotationPoint(0.0F, -10.0F, 14.0F);
+        upper_body.addChild(tail);
+        setRotationAngle(tail, 0.0436F, 0.0F, 0.0F);
+        tail.cubeList.add(new ModelBox(tail, 64, 0, -3.5F, 0.0F, 0.0F, 7, 15, 0, 0.0F, false));
+
+        legFL = new ModelRenderer(this);
+        legFL.setRotationPoint(5.0F, -20.0F, -9.5F);
+        main.addChild(legFL);
+        legFL.cubeList.add(new ModelBox(legFL, 88, 0, -2.6F, -1.0F, -2.5F, 5, 21, 5, 0.0F, false));
+
+        legFR = new ModelRenderer(this);
+        legFR.setRotationPoint(-5.0F, -20.0F, -9.5F);
+        main.addChild(legFR);
+        legFR.cubeList.add(new ModelBox(legFR, 108, 0, -2.4F, -1.0F, -2.5F, 5, 21, 5, 0.0F, false));
+
+        legBL = new ModelRenderer(this);
+        legBL.setRotationPoint(5.0F, -20.0F, 10.5F);
+        main.addChild(legBL);
+        legBL.cubeList.add(new ModelBox(legBL, 88, 26, -2.6F, -1.0F, -2.5F, 5, 21, 5, 0.0F, false));
+
+        legBR = new ModelRenderer(this);
+        legBR.setRotationPoint(-5.0F, -20.0F, 10.5F);
+        main.addChild(legBR);
+        legBR.cubeList.add(new ModelBox(legBR, 108, 26, -2.4F, -1.0F, -2.5F, 5, 21, 5, 0.0F, true));
+    }
+
+    @Override
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
+    {
+        if (this.isChild)
+        {
+            //float f = 2.0F;
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0.0F, 18 * f5, 1 * f5);
+            this.head.render(f5);
+            GlStateManager.popMatrix();
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(0.5F, 0.5F, 0.5F);
+            GlStateManager.translate(0.0F, 24.0F * f5, 0.0F);
+            this.head.isHidden = true;
+            this.main.render(f5);
+            this.head.isHidden = false;
+            GlStateManager.popMatrix();
+        }
+        else
+        {
+            main.render(f5);
+        }
+
+    }
+
+    @Override
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
+    {
+        EntityCamel camel = (EntityCamel) entityIn;
+        float animationTime = camel.getClientAnimationTime(ageInTicks - (float)camel.ticksExisted);
+
+        this.head.rotateAngleX = headPitch * 0.017453292F;
+        this.head.rotateAngleY = netHeadYaw * 0.017453292F;
+
+        this.main.rotateAngleZ = 0.0F;
+
+        this.upper_body.offsetY = 0.0F;
+        this.upper_body.offsetZ = 0.0F;
+        this.upper_body.rotateAngleX = 0.0F;
+
+        this.legFR.offsetX = 0.0F;
+        this.legFL.offsetX = this.legFR.offsetX;
+        this.legFR.rotateAngleZ = 0.0F;
+        this.legFL.rotateAngleZ = 0.0F;
+        this.legBR.rotateAngleZ = 0.0F;
+        this.legBL.rotateAngleZ = 0.0F;
+        this.tail.rotateAngleX = 0.05F;
+        this.tail.rotateAngleZ = 0.0F;
+
+        this.legFR.offsetZ = 0.0F;
+        this.legFR.offsetY = 0.0F;
+        this.legFR.rotateAngleX = 0.0F;
+        this.legFR.rotateAngleY = 0.0F;
+        this.legFL.offsetZ = this.legFR.offsetZ;
+        this.legFL.offsetY = this.legFR.offsetY;
+        this.legFL.rotateAngleX = this.legFR.rotateAngleX;
+        this.legFL.rotateAngleY = -this.legFR.rotateAngleY;
+
+        this.legBR.offsetX = 0.0F;
+        this.legBR.offsetY = this.legFR.offsetY;
+        this.legBR.offsetZ = 0.0F;
+        this.legBR.rotateAngleX = this.legFR.rotateAngleX;
+        this.legBR.rotateAngleY = this.legFR.rotateAngleY;
+        this.legBL.offsetX = -this.legBR.offsetX;
+        this.legBL.offsetY = this.legFR.offsetY;
+        this.legBL.offsetZ = this.legBR.offsetZ;
+        this.legBL.rotateAngleX = this.legFR.rotateAngleX;
+        this.legBL.rotateAngleY = -this.legFR.rotateAngleY;
+
+        switch (camel.getAnimState())
+        {
+            /* Walking is handled here! */
+            case NONE:
+                if (camel.getDashing() <= 0)
+                {
+                    /* Used to better sync the motion of the Camel for the Rider and other Clients. Very stupid BAD. */
+                    boolean isRiderClient = camel.isBeingRidden()  && camel.getControllingPassenger() == Minecraft.getMinecraft().player;
+                    float limbSwingFix = isRiderClient ? 0.75F : 1.0F;
+
+                    /* Speed!! */
+                    float walkAnimSpeed = camel.isBeingRidden() ? 0.2F : 0.4F;
+                    float animLimbSwing = limbSwing * (camel.isBeingRidden() ? 1.5F : 1.0F) * limbSwingFix;
+                    float animLimbSwingAmount = limbSwingAmount * (camel.isBeingRidden() ? 0.3F : 0.7F) * limbSwingFix;
+
+                    float swingy = MathHelper.cos(animLimbSwing * walkAnimSpeed) * animLimbSwingAmount;
+
+                    float legSwingR = MathHelper.cos(animLimbSwing * walkAnimSpeed) * 2F * animLimbSwingAmount;
+                    float legSwingL = MathHelper.cos(animLimbSwing * walkAnimSpeed + (float)Math.PI + 0.1F) * 2.2F * animLimbSwingAmount;
+
+
+                    this.head.rotateAngleX += Math.abs(swingy * 0.35F);
+
+                    this.main.rotateAngleZ = swingy * -0.1F;
+                    this.tail.rotateAngleZ = swingy;
+                    this.tail.rotateAngleX += Math.abs(swingy * 0.5F);
+
+                    this.legFR.rotateAngleX = legSwingR;
+                    this.legFL.rotateAngleX = legSwingL;
+                    this.legBR.rotateAngleX = legSwingR;
+                    this.legBL.rotateAngleX = legSwingL;
+
+                    float liftStrength = 0.5F;
+                    float liftR = Math.min(0.0F, MathHelper.cos(legSwingR) * legSwingR);
+                    float liftL = Math.min(0.0F, MathHelper.cos(legSwingL) * legSwingL);
+
+                    this.legFR.offsetY = liftR * liftStrength;
+                    this.legBR.offsetY = this.legFR.offsetY;
+                    this.legFL.offsetY = liftL * liftStrength;
+                    this.legBL.offsetY = this.legFL.offsetY;
+                }
+                else
+                {
+                    /* VERY WIP DASH! */
+                    float headSwing = MathHelper.cos(limbSwing * 0.5F) * limbSwingAmount;
+                    float legSwing = MathHelper.cos(limbSwing * 1F) * limbSwingAmount;
+
+                    this.earL.rotateAngleY = -1.0F;
+                    this.earR.rotateAngleY = -this.earL.rotateAngleY;
+                    this.earL.rotateAngleZ = 0.0F;
+                    this.earR.rotateAngleZ = this.earL.rotateAngleZ;
+
+                    this.head.rotateAngleX = 0.1F + headSwing * 0.1F;
+
+                    this.legFR.rotateAngleX = legSwing;
+                    this.legFL.rotateAngleX = -this.legFR.rotateAngleX;
+                    this.legBR.rotateAngleX = -this.legFR.rotateAngleX;
+                    this.legBL.rotateAngleX = this.legFR.rotateAngleX;
+                }
+
+                break;
+            case SIT_START:
+                /* Segments intentionally overlap to create more naturalistic blending. */
+                float key1 = segmentAnimationTime(animationTime, 0.0F, 0.6F);
+                float key2 = segmentAnimationTime(animationTime, 0.05F, 1.0F);
+                float key3 = segmentAnimationTime(animationTime, 0.85F, 1.0F);
+
+                this.legFR.offsetX = -0.07F * key2 + (0.07F * key3);
+                this.legFL.offsetX = -this.legFR.offsetX;
+                this.legFR.offsetY = 0.2F * key1 + (0.2F * key2) + (0.7F * key3);
+                this.legFL.offsetY = this.legFR.offsetY;
+                this.legFR.offsetZ = 0.5F * key1;
+                this.legFL.offsetZ = this.legFR.offsetZ;
+                this.legFR.rotateAngleX = -0.3F * key1 + (-0.6F * key2) + (-0.66F * key3);
+                this.legFL.rotateAngleX = this.legFR.rotateAngleX;
+                this.legFR.rotateAngleY = 0.1F * key2 + (0.1F * key3);
+                this.legFL.rotateAngleY = -this.legFR.rotateAngleY;
+
+                this.legBR.offsetX = -0.07F * key2 + (-0.07F * key3);
+                this.legBR.offsetY = this.legFR.offsetY * key3;
+                this.legBR.offsetZ = 0.14F * key2;
+                this.legBR.rotateAngleX = -0.1F * key1 + (-0.25F * key2) + (-1.22F * key3);
+                this.legBR.rotateAngleY = this.legFR.rotateAngleY;
+                this.legBL.offsetX = -this.legBR.offsetX;
+                this.legBL.offsetZ = this.legBR.offsetZ * key3;
+                this.legBL.offsetY = this.legFR.offsetY * key3;
+                this.legBL.rotateAngleX = this.legBR.rotateAngleX;
+                this.legBL.rotateAngleY = -this.legFR.rotateAngleY * key3;
+
+                this.head.rotateAngleX = (-0.2F * key1) + (-0.2F * key2) + (0.4F * key3);
+
+                this.upper_body.offsetY = 0.2F * key1 + (0.4F * key2) + (0.64F * key3);
+                this.upper_body.offsetZ = (0.2F * key2) + (-0.2F * key3);
+                this.upper_body.rotateAngleX = 0.6F * key1 + (-0.2F * key2) + (-0.4F * key3);
+
+                this.tail.rotateAngleX = 0.05F + (0.8F * key3);
+                break;
+            /* This the static sitting pose. */
+            case SIT:
+                this.upper_body.offsetY = 1.24F;
+
+                this.legFR.offsetY = 1.1F;
+                this.legFL.offsetY = this.legFR.offsetY;
+                this.legFR.offsetZ = 0.5F;
+                this.legFL.offsetZ = this.legFR.offsetZ;
+                this.legFR.rotateAngleX = -1.56F;
+                this.legFL.rotateAngleX = this.legFR.rotateAngleX;
+                this.legFR.rotateAngleY = 0.2F;
+                this.legFL.rotateAngleY = -this.legFR.rotateAngleY;
+
+                this.legBR.offsetX = -0.14F;
+                this.legBR.offsetY = this.legFR.offsetY;
+                this.legBR.offsetZ = 0.14F;
+                this.legBR.rotateAngleX = -1.57F;
+                this.legBR.rotateAngleY = this.legFR.rotateAngleY;
+                this.legBL.offsetX = -this.legBR.offsetX;
+                this.legBL.offsetZ = this.legBR.offsetZ;
+                this.legBL.offsetY = this.legFR.offsetY;
+                this.legBL.rotateAngleX = this.legBR.rotateAngleX;
+                this.legBL.rotateAngleY = -this.legFR.rotateAngleY;
+
+                this.tail.rotateAngleX = 0.85F;
+                break;
+            case SIT_END:
+                /* Segments intentionally overlap to create more naturalistic blending. */
+                float keyA1 = segmentAnimationTime(animationTime, 0.0F, 0.4F);
+                float keyA2 = segmentAnimationTime(animationTime, 0.2F, 0.8F);
+                float keyA3 = segmentAnimationTime(animationTime, 0.7F, 1.0F);
+
+                this.upper_body.offsetY = 1.24F + (-0.24F * keyA1) + (-0.8F * keyA2) + (-0.2F * keyA3);
+                this.upper_body.rotateAngleX = 0.0F + (-0.25F * keyA1) + (0.1F * keyA2) + (0.15F * keyA3);
+
+                this.head.rotateAngleX = 0.0F + (0.8F * keyA1) + (-0.8F * keyA3);
+
+                this.legFR.offsetY = 1.1F + (-0.5F * keyA1) + (-0.5F * keyA2) + (-0.1F * keyA3);
+                this.legFL.offsetY = this.legFR.offsetY;
+                this.legFR.offsetZ = 0.5F + (-0.5F * keyA2);
+                this.legFL.offsetZ = this.legFR.offsetZ;
+                this.legFR.rotateAngleX = -1.56F + (0.5F * keyA1) + (0.66F * keyA2) + (0.4F * keyA3);
+                this.legFL.rotateAngleX = this.legFR.rotateAngleX;
+                this.legFR.rotateAngleY = 0.2F + (-0.2F * keyA3);
+                this.legFL.rotateAngleY = -this.legFR.rotateAngleY;
+
+                this.legBR.offsetX = -0.14F + (0.24F * keyA1) + (-0.1F * keyA3);
+                this.legBR.offsetY = 1.1F + (-0.95F * keyA2) + (-0.15F * keyA3);
+                this.legBR.offsetZ = 0.14F + (-0.24F * keyA1) + (0.1F * keyA3);
+                this.legBR.rotateAngleX = -1.57F + (0.1F * keyA1) + (2.0F * keyA2) + (-0.53F * keyA3);
+                this.legBR.rotateAngleY = 0.2F + (-0.2F * keyA1);
+                this.legBL.offsetX = -this.legBR.offsetX;
+                this.legBL.offsetZ = this.legBR.offsetZ;
+                this.legBL.offsetY = this.legBR.offsetY;
+                this.legBL.rotateAngleX = this.legBR.rotateAngleX;
+                this.legBL.rotateAngleY = -this.legBR.rotateAngleY;
+
+                this.tail.rotateAngleX = 0.85F + (0.15F * keyA1) + (-0.55F * keyA2) + (-0.4F * keyA3);
+                break;
+        }
+    }
+
+    /** Created a segment (0F -> 1.0F float) within the specified time of the animation. Like pseudo keyframes? */
+    private float segmentAnimationTime(float animTimeIn, float segStart, float segEnd)
+    { return MathHelper.clamp((animTimeIn - segStart) / (segEnd - segStart), 0.0F, 1.0F); }
+
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
+    {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+}

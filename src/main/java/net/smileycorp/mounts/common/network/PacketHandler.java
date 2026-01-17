@@ -12,6 +12,7 @@ public class PacketHandler {
 	public static void initPackets() {
 		int id = 0;
 		NETWORK_INSTANCE.registerMessage(SpearAttackMessage::process, SpearAttackMessage.class, id++, Side.SERVER);
+		NETWORK_INSTANCE.registerMessage(HoldingSpaceMessage::process, HoldingSpaceMessage.class, id++, Side.SERVER);
 	}
 
 }

@@ -17,19 +17,19 @@ public class CapabilitySpearMovement
     public static Capability<ICapabilityMountsPlayerInfo> MOUNTS_PLAYER_CAP;
     public static final ResourceLocation ID = new ResourceLocation(Constants.MODID, "mountsPlayerInfo");
 
-    /** Whenever a player preforms a missed left-click. */
-    private static final String PLAYER_LEFT_CLICK = "playerLeftClick";
+    /** A float representing the strength of the Dash. */
+    private static final String PLAYER_SPACE_HOLD_TIME = "playerHeldSpaceTime";
     private static final String PLAYER_SPACE_HOLD = "playerHoldingSpace";
     /** The Speed of the player (IDK if this is needed in a Capability??). */
     private static final String PLAYER_SPEED = "playerSpeed";
 
     public interface ICapabilityMountsPlayerInfo
     {
-        boolean getPlayerLeftClick();
-        void setPlayerLeftClick(boolean value);
+        float getSpaceHeldTime();
+        void setSpaceHeldTime(float value);
 
-        boolean getPlayerJump();
-        void setPlayerJump(boolean value);
+        boolean getIsSpaceHeld();
+        void setIsSpaceHeld(boolean value);
 
         float getPlayerSpeed();
         void setPlayerSpeed(float value);
@@ -37,23 +37,23 @@ public class CapabilitySpearMovement
 
     public static class MountsPlayerInfoMethods implements ICapabilityMountsPlayerInfo
     {
-        private boolean mountsPlayerLeftClick = false;
-        private boolean mountsPlayerJump = false;
+        private float mountsSpaceHeldTimeTime = 0;
+        private boolean mountsSpaceHeld = false;
         private float mountsPlayerSpeed = 0;
 
         @Override
-        public boolean getPlayerLeftClick()
-        { return mountsPlayerLeftClick; }
+        public float getSpaceHeldTime()
+        { return mountsSpaceHeldTimeTime; }
         @Override
-        public void setPlayerLeftClick(boolean value)
-        { mountsPlayerLeftClick = value; }
+        public void setSpaceHeldTime(float value)
+        { mountsSpaceHeldTimeTime = value; }
 
         @Override
-        public boolean getPlayerJump()
-        { return mountsPlayerJump; }
+        public boolean getIsSpaceHeld()
+        { return mountsSpaceHeld; }
         @Override
-        public void setPlayerJump(boolean value)
-        { mountsPlayerJump = value; }
+        public void setIsSpaceHeld(boolean value)
+        { mountsSpaceHeld = value; }
 
         @Override
         public float getPlayerSpeed()
@@ -69,9 +69,9 @@ public class CapabilitySpearMovement
         public NBTBase writeNBT(Capability<ICapabilityMountsPlayerInfo> capability, ICapabilityMountsPlayerInfo instance, EnumFacing side)
         {
             NBTTagCompound compound = new NBTTagCompound();
-            compound.setBoolean(PLAYER_LEFT_CLICK, instance.getPlayerLeftClick());
-            compound.setBoolean(PLAYER_SPACE_HOLD, instance.getPlayerJump());
+            compound.setBoolean(PLAYER_SPACE_HOLD, instance.getIsSpaceHeld());
             compound.setFloat(PLAYER_SPEED, instance.getPlayerSpeed());
+            compound.setFloat(PLAYER_SPACE_HOLD_TIME, instance.getSpaceHeldTime());
             return compound;
         }
 
@@ -79,9 +79,9 @@ public class CapabilitySpearMovement
         public void readNBT(Capability<ICapabilityMountsPlayerInfo> capability, ICapabilityMountsPlayerInfo instance, EnumFacing side, NBTBase nbt)
         {
             NBTTagCompound compound = (NBTTagCompound) nbt;
-            instance.setPlayerLeftClick(compound.getBoolean(PLAYER_LEFT_CLICK));
-            instance.setPlayerJump(compound.getBoolean(PLAYER_SPACE_HOLD));
+            instance.setIsSpaceHeld(compound.getBoolean(PLAYER_SPACE_HOLD));
             instance.setPlayerSpeed(compound.getFloat(PLAYER_SPEED));
+            instance.setSpaceHeldTime(compound.getFloat(PLAYER_SPACE_HOLD_TIME));
         }
     }
 
