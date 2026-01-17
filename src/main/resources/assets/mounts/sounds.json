@@ -1,3 +1,69 @@
 {
-    
+  "entity.camel.ambient":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.entity.camel.ambient",
+    "sounds": [ "mounts:entity/camel/ambient1", "mounts:entity/camel/ambient2", "mounts:entity/camel/ambient3",
+      "mounts:entity/camel/ambient4", "mounts:entity/camel/ambient5", "mounts:entity/camel/ambient6",
+      "mounts:entity/camel/ambient7", "mounts:entity/camel/ambient8" ]
+  },
+  "entity.camel.dash":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.entity.camel.dash",
+    "sounds": [ "mounts:entity/camel/dash1", "mounts:entity/camel/dash2", "mounts:entity/camel/dash3",
+      "mounts:entity/camel/dash4", "mounts:entity/camel/dash5", "mounts:entity/camel/dash6" ]
+  },
+  "entity.camel.dash_ready":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.entity.camel.dash_ready",
+    "sounds": [ "mounts:entity/camel/dash_ready1" ]
+  },
+  "entity.camel.death":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.entity.camel.death",
+    "sounds": [ "mounts:entity/camel/death1", "mounts:entity/camel/death2" ]
+  },
+  "entity.camel.eat":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.entity.camel.eat",
+    "sounds": [ "mounts:entity/camel/eat1", "mounts:entity/camel/eat2", "mounts:entity/camel/eat3",
+      "mounts:entity/camel/eat4", "mounts:entity/camel/eat5" ]
+  },
+  "entity.camel.hurt":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.entity.camel.hurt",
+    "sounds": [ "mounts:entity/camel/hurt1", "mounts:entity/camel/hurt2", "mounts:entity/camel/hurt3", "mounts:entity/camel/hurt4" ]
+  },
+  "entity.camel.sit":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.entity.camel.sit",
+    "sounds": [ "mounts:entity/camel/sit1", "mounts:entity/camel/sit2", "mounts:entity/camel/sit3", "mounts:entity/camel/sit4" ]
+  },
+  "entity.camel.stand":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.entity.camel.stand",
+    "sounds": [ "mounts:entity/camel/stand1", "mounts:entity/camel/stand2", "mounts:entity/camel/stand3",
+      "mounts:entity/camel/stand4", "mounts:entity/camel/stand5" ]
+  },
+  "entity.camel.step":
+  {
+    "category": "neutral",
+    "subtitle": "subtitles.block.generic.footsteps",
+    "sounds": [ "mounts:entity/camel/step1", "mounts:entity/camel/step2", "mounts:entity/camel/step3",
+      "mounts:entity/camel/step4", "mounts:entity/camel/step5", "mounts:entity/camel/step6" ]
+  },
+  "entity.camel.step_sand":
+  {
+    "category": "neutral",
+    "subtitle": "subtitles.block.generic.footsteps",
+    "sounds": [ "mounts:entity/camel/step_sand1", "mounts:entity/camel/step_sand2", "mounts:entity/camel/step_sand3",
+      "mounts:entity/camel/step_sand4", "mounts:entity/camel/step_sand5", "mounts:entity/camel/step_sand6" ]
+  }
 }

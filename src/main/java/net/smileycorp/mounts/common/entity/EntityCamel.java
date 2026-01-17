@@ -1,5 +1,10 @@
 package net.smileycorp.mounts.common.entity;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockSand;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
@@ -12,13 +17,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.smileycorp.mounts.common.MountsSoundEvents;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 
 import javax.annotation.Nullable;
@@ -36,7 +45,7 @@ public class EntityCamel extends EntityAnimal
     private float prevAnimationTime;
 
     /** USed when the Camel is preforming a sit (wraps animation logic)*/
-    public boolean sitting;
+    //public boolean sitting;
     public int dashCooldown;
 
 
@@ -74,6 +83,27 @@ public class EntityCamel extends EntityAnimal
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.20000000298023224D);
     }
 
+    protected SoundEvent getAmbientSound() { return MountsSoundEvents.CAMEL_AMBIENT; }
+
+    protected SoundEvent getHurtSound(DamageSource damageSourceIn) { return MountsSoundEvents.CAMEL_HURT; }
+
+    protected SoundEvent getDeathSound() { return MountsSoundEvents.CAMEL_DEATH; }
+
+    protected void playStepSound(BlockPos pos, Block blockIn)
+    {
+        SoundEvent sound = MountsSoundEvents.CAMEL_STEP;
+        if (blockIn instanceof BlockSand) sound = MountsSoundEvents.CAMEL_STEP_SAND;
+
+        this.playSound(sound, 0.5F, 1.0F);
+    }
+
+    public SoundEvent getDashSound() { return MountsSoundEvents.CAMEL_DASH; }
+    public SoundEvent getDashReadySound() { return MountsSoundEvents.CAMEL_DASH_READY; }
+    public SoundEvent getStandSound() { return MountsSoundEvents.CAMEL_STAND; }
+    public SoundEvent getSitSound() { return MountsSoundEvents.CAMEL_SIT; }
+    public SoundEvent getEatSound() { return MountsSoundEvents.CAMEL_EAT; }
+
+
     public void onLivingUpdate()
     {
         prevAnimationTime = animationTime;
@@ -92,7 +122,12 @@ public class EntityCamel extends EntityAnimal
 
 
         if (this.getDashing() > 0) this.setDashing(this.getDashing() - 1);
-        if (this.dashCooldown > 0) --this.dashCooldown;
+
+        if (this.dashCooldown > 0)
+        {
+            --this.dashCooldown;
+            if (this.dashCooldown == 0) this.playSound(this.getDashReadySound(), 0.25F, this.getSoundPitch());
+        }
 
         super.onLivingUpdate();
     }
@@ -152,17 +187,67 @@ public class EntityCamel extends EntityAnimal
         passenger.setPosition( this.posX + offset.x, this.posY + yOffset, this.posZ + offset.z);
     }
 
+    public void fall(float distance, float damageMultiplier)
+    {
+        int i = MathHelper.ceil((distance * 0.5F - 3.0F) * damageMultiplier);
+
+        if (i > 0)
+        {
+            this.attackEntityFrom(DamageSource.FALL, (float)i);
+
+            if (this.isBeingRidden())
+            {
+                for (Entity entity : this.getRecursivePassengers())
+                { entity.attackEntityFrom(DamageSource.FALL, (float)i); }
+            }
+
+            IBlockState iblockstate = this.world.getBlockState(new BlockPos(this.posX, this.posY - 0.2D - (double)this.prevRotationYaw, this.posZ));
+            Block block = iblockstate.getBlock();
+
+            if (iblockstate.getMaterial() != Material.AIR && !this.isSilent())
+            {
+                SoundType soundtype = block.getSoundType();
+                this.world.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, soundtype.getStepSound(), this.getSoundCategory(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
+            }
+        }
+    }
+
+    public void sitDown(boolean skipAnimation)
+    {
+        if (skipAnimation)
+        {
+            this.setAnimState(AnimState.SIT);
+            this.animationTime = 1.0F;
+            this.prevAnimationTime = 1.0F;
+        }
+        else
+        {
+            this.playSound(getSitSound(), 0.24F, this.getSoundPitch());
+            this.setAnimState(AnimState.SIT_START);
+        }
+    }
+
     public void standUp(boolean skipAnimation)
     {
-        if (skipAnimation) this.setAnimState(AnimState.NONE);
-        else this.setAnimState(AnimState.SIT_END);
-        this.sitting = false;
+        if (skipAnimation)
+        {
+            this.setAnimState(AnimState.NONE);
+            this.animationTime = 1.0F;
+            this.prevAnimationTime = 1.0F;
+        }
+        else
+        {
+            this.playSound(getStandSound(), 0.24F, this.getSoundPitch());
+            this.setAnimState(AnimState.SIT_END);
+        }
     }
 
     public void preformDash(Vec3d direction)
     {
-        //this.playSound(getDashSound(), 1.0F, 1.0F);
+        this.playSound(getDashSound(), 0.8F, this.getSoundPitch());
+
         if (!this.world.isRemote) return;
+
         if (this.canBePushed())
         {
             this.motionX = direction.x;
@@ -179,7 +264,7 @@ public class EntityCamel extends EntityAnimal
         if (this.isBeingRidden() && this.canBeSteered())
         {
             EntityLivingBase entitylivingbase = (EntityLivingBase)this.getControllingPassenger();
-            this.stepHeight = 1.0F;
+            this.stepHeight = 1.5F;
             this.rotationYaw = entitylivingbase.rotationYaw;
             this.prevRotationYaw = this.rotationYaw;
             this.rotationPitch = entitylivingbase.rotationPitch * 0.5F;
@@ -193,32 +278,10 @@ public class EntityCamel extends EntityAnimal
             {
                 if (this.getAnimState() != AnimState.NONE)
                 {
-                    //if (forward > 0 && this.getAnimState() == AnimState.SIT) standUp(false);
+                    if (forward > 0 && this.getAnimState() == AnimState.SIT) standUp(false);
                     this.setAIMoveSpeed(0);
                     super.travel(strafe, vertical, forward);
                     return;
-                }
-
-                /* This is the Dash behavior. */
-                if (entitylivingbase instanceof EntityPlayer)
-                {
-                    EntityPlayer player = (EntityPlayer)entitylivingbase;
-
-                    if (player.hasCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null))
-                    {
-                        CapabilitySpearMovement.ICapabilityMountsPlayerInfo capCharge = player.getCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null);
-
-                        if (!capCharge.getIsSpaceHeld() && capCharge.getSpaceHeldTime() > 0 && this.dashCooldown <= 0)
-                        {
-                            Vec3d moveVec = player.getLookVec().scale((capCharge.getSpaceHeldTime()) * 2);
-                            preformDash(moveVec);
-
-                            capCharge.setSpaceHeldTime(0);
-
-                            this.setDashing(120);
-                            this.dashCooldown = 20;
-                        }
-                    }
                 }
 
                 float f = (float)this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue() * 0.225F;
@@ -245,6 +308,29 @@ public class EntityCamel extends EntityAnimal
                 this.motionX = 0.0D;
                 this.motionY = 0.0D;
                 this.motionZ = 0.0D;
+            }
+
+
+            /* This is the Dash behavior. */
+            if (entitylivingbase instanceof EntityPlayer)
+            {
+                EntityPlayer player = (EntityPlayer)entitylivingbase;
+
+                if (player.hasCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null))
+                {
+                    CapabilitySpearMovement.ICapabilityMountsPlayerInfo capCharge = player.getCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null);
+
+                    if (!capCharge.getIsSpaceHeld() && capCharge.getSpaceHeldTime() > 0 && this.dashCooldown <= 0)
+                    {
+                        Vec3d moveVec = player.getLookVec().scale((capCharge.getSpaceHeldTime()) * 2);
+                        preformDash(moveVec);
+
+                        capCharge.setSpaceHeldTime(0);
+
+                        this.setDashing(15);
+                        this.dashCooldown = 20;
+                    }
+                }
             }
 
             /* This section related to LimbSwing is REQUIRED for the Client and Server to stay synced! CANNOT BE ALTERED! */
@@ -343,6 +429,13 @@ public class EntityCamel extends EntityAnimal
         }
     }
 
+    public boolean isSitting()
+    {
+        AnimState state = getAnimState();
+        return state == AnimState.SIT || state == AnimState.SIT_START;
+    }
+
+
     public boolean canBePushed() { return this.getAnimState() == AnimState.NONE; }
 
     // TODO: Move to a better spot, and make the 'shouldStand' method!
@@ -419,12 +512,8 @@ public class EntityCamel extends EntityAnimal
 
         public void startExecuting()
         {
-            if (!camel.sitting && getAnimState() == AnimState.NONE)
-            {
-                camel.sitting = true;
-                setAnimState(AnimState.SIT_START);
-            }
-            else if (camel.sitting && getAnimState() == AnimState.SIT) { setAnimState(AnimState.SIT_END); }
+            if (!isSitting() && getAnimState() == AnimState.NONE) camel.sitDown(false);
+            else if (isSitting() && getAnimState() == AnimState.SIT) camel.standUp(false);
 
             cooldown = 10;
         }

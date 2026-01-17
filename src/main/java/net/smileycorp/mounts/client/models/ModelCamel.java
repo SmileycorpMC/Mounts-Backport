@@ -124,6 +124,7 @@ public class ModelCamel extends ModelBase
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
 
+        this.main.rotateAngleX = 0.0F;
         this.main.rotateAngleZ = 0.0F;
 
         this.upper_body.offsetY = 0.0F;
@@ -202,9 +203,10 @@ public class ModelCamel extends ModelBase
                 }
                 else
                 {
-                    /* VERY WIP DASH! */
                     float headSwing = MathHelper.cos(limbSwing * 0.5F) * limbSwingAmount;
-                    float legSwing = MathHelper.cos(limbSwing * 1F) * limbSwingAmount;
+                    float legSwing = MathHelper.cos(limbSwing * 0.5F) * (limbSwingAmount * 2);
+
+                    this.main.rotateAngleX = 0.1F;
 
                     this.earL.rotateAngleY = -1.0F;
                     this.earR.rotateAngleY = -this.earL.rotateAngleY;
@@ -217,6 +219,8 @@ public class ModelCamel extends ModelBase
                     this.legFL.rotateAngleX = -this.legFR.rotateAngleX;
                     this.legBR.rotateAngleX = -this.legFR.rotateAngleX;
                     this.legBL.rotateAngleX = this.legFR.rotateAngleX;
+
+                    this.tail.rotateAngleX = 1.5F + (headSwing * 0.5F);
                 }
 
                 break;

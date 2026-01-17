@@ -9,6 +9,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.entity.EntityCamel;
+import net.smileycorp.mounts.common.network.HoldingSpaceMessage;
+import net.smileycorp.mounts.common.network.PacketHandler;
 
 @Mod.EventBusSubscriber
 public class MountsCommonEvents
@@ -36,7 +38,7 @@ public class MountsCommonEvents
 
             if (isJumping != capCharge.getIsSpaceHeld())
             {
-                //OEPacketHandler.CHANNEL.sendToServer(new OEPacketHoldingSpace(event.getEntityPlayer().getEntityId(), isJumping));
+                PacketHandler.NETWORK_INSTANCE.sendToServer(new HoldingSpaceMessage(event.getEntityPlayer().getEntityId(), isJumping));
                 capCharge.setIsSpaceHeld(isJumping);
             }
         }
@@ -54,7 +56,7 @@ public class MountsCommonEvents
             {
                 EntityCamel camel = (EntityCamel)player.getRidingEntity();
 
-                if (camel.sitting || camel.dashCooldown > 0) return;
+                if (camel.isSitting() || camel.dashCooldown > 0) return;
 
                 if (player.hasCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null))
                 {
