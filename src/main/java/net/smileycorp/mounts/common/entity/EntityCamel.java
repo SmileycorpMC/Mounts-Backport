@@ -144,7 +144,7 @@ public class EntityCamel extends EntityAnimal
             else
             {
                 /* Temporary until I can elarn how to properly sync animations with adjustments made within the riding method. */
-                this.standUp(false);
+                if (this.getAnimState() != AnimState.NONE) this.standUp(false);
                 player.startRiding(this);
                 return super.processInteract(player, hand);
             }
@@ -212,8 +212,13 @@ public class EntityCamel extends EntityAnimal
         }
     }
 
+    /* Prevents moving when sitting. */
+    protected boolean isMovementBlocked() { return this.getAnimState() != AnimState.NONE; }
+
     public void sitDown(boolean skipAnimation)
     {
+        this.getNavigator().clearPath();
+
         if (skipAnimation)
         {
             this.setAnimState(AnimState.SIT);
@@ -507,7 +512,7 @@ public class EntityCamel extends EntityAnimal
                 return false;
             }
 
-            return camel.rand.nextInt(10) == 0;
+            return camel.rand.nextInt(8000) == 0;
         }
 
         public void startExecuting()
@@ -515,7 +520,7 @@ public class EntityCamel extends EntityAnimal
             if (!isSitting() && getAnimState() == AnimState.NONE) camel.sitDown(false);
             else if (isSitting() && getAnimState() == AnimState.SIT) camel.standUp(false);
 
-            cooldown = 10;
+            cooldown = 20;
         }
     }
 }

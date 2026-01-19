@@ -121,8 +121,16 @@ public class ModelCamel extends ModelBase
         EntityCamel camel = (EntityCamel) entityIn;
         float animationTime = camel.getClientAnimationTime(ageInTicks - (float)camel.ticksExisted);
 
+        /* Used for a 'breathing' motion. */
+        float idle = MathHelper.sin((ageInTicks) * 0.05F) * 0.25F;
+
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
+
+        this.earL.rotateAngleY = 0.0F;
+        this.earR.rotateAngleY = -this.earL.rotateAngleY;
+        this.earL.rotateAngleZ = -0.7854F;
+        this.earR.rotateAngleZ = -this.earL.rotateAngleZ;
 
         this.main.rotateAngleX = 0.0F;
         this.main.rotateAngleZ = 0.0F;
@@ -160,6 +168,23 @@ public class ModelCamel extends ModelBase
         this.legBL.rotateAngleX = this.legFR.rotateAngleX;
         this.legBL.rotateAngleY = -this.legFR.rotateAngleY;
 
+        /* A clamped Sin function, First gets the rate it occurs in a Sin, then cuts it so only peaks above the wave are used, finally multiplies it to a usable range.
+         *
+         * ...Thanks Fresh Animations, lol.
+         * */
+        float pulse = MathHelper.clamp((MathHelper.sin(camel.ticksExisted * 0.05F) - 0.925F) * 10.0F, 0.0F, 1.0F);
+        /* A separate Sin Wave, with one a basic one scaled by the pulse. */
+        float earTwitch = MathHelper.sin(camel.ticksExisted * 1.5F) * pulse;
+
+        this.head.rotateAngleX += idle * 0.25F;
+        this.earL.rotateAngleZ += idle + (1.4F * pulse) + earTwitch;
+        this.earR.rotateAngleZ -= idle + (1.4F * pulse) + earTwitch;
+
+        float pulseTail = MathHelper.clamp((MathHelper.sin(camel.ticksExisted * 0.15F) - 0.1F) * 0.2F, 0.0F, 1.0F);
+        float tailTwitch = MathHelper.sin(camel.ticksExisted * 0.1F) * pulseTail;
+
+        this.tail.rotateAngleZ += tailTwitch;
+
         switch (camel.getAnimState())
         {
             /* Walking is handled here! */
@@ -171,35 +196,49 @@ public class ModelCamel extends ModelBase
                     float limbSwingFix = isRiderClient ? 0.75F : 1.0F;
 
                     /* Speed!! */
-                    float walkAnimSpeed = camel.isBeingRidden() ? 0.2F : 0.4F;
-                    float animLimbSwing = limbSwing * (camel.isBeingRidden() ? 1.5F : 1.0F) * limbSwingFix;
-                    float animLimbSwingAmount = limbSwingAmount * (camel.isBeingRidden() ? 0.3F : 0.7F) * limbSwingFix;
-
-                    float swingy = MathHelper.cos(animLimbSwing * walkAnimSpeed) * animLimbSwingAmount;
-
-                    float legSwingR = MathHelper.cos(animLimbSwing * walkAnimSpeed) * 2F * animLimbSwingAmount;
-                    float legSwingL = MathHelper.cos(animLimbSwing * walkAnimSpeed + (float)Math.PI + 0.1F) * 2.2F * animLimbSwingAmount;
+                    float walkAnimSpeed = camel.isBeingRidden() ? 0.25F : 0.5F;
+                    float animLimbSwing = limbSwing * (camel.isBeingRidden() ? 1.25F : 1.25F) * limbSwingFix;
+                    float animLimbSwingAmount = limbSwingAmount * (camel.isBeingRidden() ? 0.5F : 0.7F) * limbSwingFix;
 
 
-                    this.head.rotateAngleX += Math.abs(swingy * 0.35F);
+                    float swingPhase = animLimbSwing * walkAnimSpeed;
+                    float legSwingFR = MathHelper.cos(swingPhase) * 2F * animLimbSwingAmount;
+                    float legSwingFL = MathHelper.cos(swingPhase + (float)Math.PI) * 2F * animLimbSwingAmount;
+                    float legSwingBR = MathHelper.cos(swingPhase + 0.3F) * 2F * animLimbSwingAmount;
+                    float legSwingBL = MathHelper.cos(swingPhase + 0.3F + (float)Math.PI) * 2F * animLimbSwingAmount;
 
-                    this.main.rotateAngleZ = swingy * -0.1F;
-                    this.tail.rotateAngleZ = swingy;
-                    this.tail.rotateAngleX += Math.abs(swingy * 0.5F);
+                    this.earL.rotateAngleZ += Math.abs(legSwingFR * 1.5F);
+                    this.earR.rotateAngleZ -= Math.abs(legSwingFR * 1.5F);
 
-                    this.legFR.rotateAngleX = legSwingR;
-                    this.legFL.rotateAngleX = legSwingL;
-                    this.legBR.rotateAngleX = legSwingR;
-                    this.legBL.rotateAngleX = legSwingL;
+                    this.head.rotateAngleX += Math.abs(legSwingFR * 0.2F);
+                    this.head.rotateAngleY += legSwingFR * 0.05F;
 
+                    this.main.rotateAngleZ = legSwingFR * 0.05F;
+                    this.tail.rotateAngleZ = legSwingFR;
+                    this.tail.rotateAngleX += Math.abs(legSwingFR * 0.5F);
+
+                    this.legFR.rotateAngleX = (legSwingFR < 0) ? legSwingFR : legSwingFR * 0.75F;
+                    this.legFL.rotateAngleX = (legSwingFL < 0) ? legSwingFL : legSwingFL * 0.75F;
+                    this.legBR.rotateAngleX = (legSwingBR < 0) ? legSwingBR : legSwingBR * 0.75F;
+                    this.legBL.rotateAngleX = (legSwingBL < 0) ? legSwingBL : legSwingBL * 0.75F;
+
+
+                    float liftFR = MathHelper.clamp(MathHelper.sin(swingPhase), 0.0F, 1.0F) * animLimbSwingAmount;
+                    float liftFL = MathHelper.clamp(MathHelper.sin(swingPhase + (float)Math.PI), 0.0F, 1.0F) * animLimbSwingAmount;
+                    float liftBR = MathHelper.clamp(MathHelper.sin(swingPhase + 0.3F), 0.0F, 1.0F) * animLimbSwingAmount;
+                    float liftBL = MathHelper.clamp(MathHelper.sin(swingPhase + 0.3F + (float)Math.PI), 0.0F, 1.0F) * animLimbSwingAmount;
                     float liftStrength = 0.5F;
-                    float liftR = Math.min(0.0F, MathHelper.cos(legSwingR) * legSwingR);
-                    float liftL = Math.min(0.0F, MathHelper.cos(legSwingL) * legSwingL);
 
-                    this.legFR.offsetY = liftR * liftStrength;
-                    this.legBR.offsetY = this.legFR.offsetY;
-                    this.legFL.offsetY = liftL * liftStrength;
-                    this.legBL.offsetY = this.legFL.offsetY;
+                    this.legFR.offsetY = liftFR * -liftStrength;
+                    this.legFL.offsetY = liftFL * -liftStrength;
+                    this.legBR.offsetY = liftBR * -liftStrength;
+                    this.legBL.offsetY = liftBL * -liftStrength;
+
+                    float legZ = MathHelper.sin(swingPhase) * 0.15F * Math.min(animLimbSwingAmount * 3, 0.5F);
+                    this.legFR.offsetZ =  legZ;
+                    this.legFL.offsetZ = -legZ;
+                    this.legBR.offsetZ =  legZ;
+                    this.legBL.offsetZ = -legZ;
                 }
                 else
                 {
