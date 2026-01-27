@@ -17,7 +17,7 @@ public abstract class MixinEntityItem {
     @Shadow public abstract ItemStack getItem();
 
     @Inject(at = @At("HEAD"), method = "attackEntityFrom", cancellable = true)
-    public void magiadaemonica$attackEntityFrom(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callback) {
+    public void mounts$attackEntityFrom(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callback) {
         if (!source.isFireDamage()) return;
         Item item = getItem().getItem();
         if (item instanceof ItemSpear && ((ItemSpear) item).getDefinition().isFireproof()) callback.setReturnValue(false);

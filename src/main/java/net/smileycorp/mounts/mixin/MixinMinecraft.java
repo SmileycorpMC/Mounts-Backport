@@ -30,7 +30,7 @@ public class MixinMinecraft {
     @Shadow public RayTraceResult objectMouseOver;
 
     @Inject(at = @At("HEAD"), method = "init")
-    public void CW$getResourcePackFiles(CallbackInfo callback) {
+    public void mounts$getResourcePackFiles(CallbackInfo callback) {
         try {
             SpearRegistry.generateData();
             defaultResourcePacks.add(new FolderResourcePack(SpearRegistry.CONFIG_FOLDER));
@@ -40,10 +40,9 @@ public class MixinMinecraft {
     }
 
     @Inject(at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/client/entity/EntityPlayerSP;isRowingBoat()Z"), method = "clickMouse", cancellable = true)
-    public void CW$clickMouse(CallbackInfo callback) {
+    public void mounts$clickMouse(CallbackInfo callback) {
         ItemStack stack = player.getHeldItemMainhand();
         if (!(stack.getItem() instanceof ItemSpear)) return;
-        if (objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK) return;
         callback.cancel();
         if (player.getCooledAttackStrength(0) < 1) return;
         PacketHandler.NETWORK_INSTANCE.sendToServer(new SpearAttackMessage());
