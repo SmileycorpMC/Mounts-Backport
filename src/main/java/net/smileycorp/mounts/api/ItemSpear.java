@@ -18,7 +18,6 @@ import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -78,8 +77,9 @@ public class ItemSpear extends Item {
             if (charge) {
                 /* Give the delicious damage right here???*/
                 //apparently the damage done by spears is the player speed minus the target speed so this needs to be down here
-                double speedMPS = MathHelper.sqrt(user.motionX * user.motionX + user.motionY * user.motionY + user.motionZ * user.motionZ)
-                        - MathHelper.sqrt(entity.motionX * entity.motionX + entity.motionY * entity.motionY + entity.motionZ * entity.motionZ);
+                //vanilla does a weird damage calc here so bear with this
+                double speedMPS = getSpeed(look, user) - getSpeed(look, entity);
+                if (speedMPS * (user instanceof EntityPlayer ? 1 : 0.2) <= 4.6) continue;
                 /* I'm pretty sure Vanilla rounds the Spear Damage up in my testing... */
                 damage = (float)Math.ceil(speedMPS * definition.getChargeMultiplier());
             }
@@ -112,6 +112,11 @@ public class ItemSpear extends Item {
             ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y2, z2, 1, 0, 0, 0, 0.0D);
         }
         return true;
+    }
+
+    private static double getSpeed(Vec3d look, Entity entity) {
+        if (entity.isRiding()) entity = entity.getRidingEntity();
+        return look.dotProduct(new Vec3d(entity.motionX, entity.onGround ? 0 : entity.motionY, entity.motionZ).scale(20));
     }
 
     //I did not steal this from the deeper depths mace, nope

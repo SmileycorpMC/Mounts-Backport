@@ -2,7 +2,6 @@ package net.smileycorp.mounts.common;
 
 import com.google.common.collect.Sets;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.util.Set;
 
