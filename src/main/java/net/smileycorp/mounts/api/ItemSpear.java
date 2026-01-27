@@ -47,19 +47,9 @@ public class ItemSpear extends Item {
         return definition;
     }
 
-    /*@Override
-    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
-    {
-        /* Replace w/ an override later, probably use Forge's PlayerInteract Events? A Capability will be needed, but it wouldn't be hard. */
-    /*performSpearAttack(attacker);
-
-        stack.damageItem(1, attacker);
-        return super.hitEntity(stack, target, attacker);
-    }*/
-
     public static boolean performSpearAttack(EntityLivingBase user, boolean charge) {
         ItemStack stack = user.getHeldItemMainhand();
-        if (user.world.isRemote |! (stack.getItem() instanceof ItemSpear)) return false;
+        if (user.world.isRemote | !(stack.getItem() instanceof ItemSpear)) return false;
         SpearDefinition definition = ((ItemSpear) stack.getItem()).getDefinition();
         Vec3d look = user.getLookVec();
         BlockPos getUserEyes = user.getPosition().add(new BlockPos(0, user.getEyeHeight(), 0));
@@ -70,9 +60,8 @@ public class ItemSpear extends Item {
         /* Make a sized Bounding Box, and push it forward by `distanceFromUser`! */
         AxisAlignedBB box = new AxisAlignedBB(getUserEyes).grow(width, width, width).offset(look.scale(distanceFromUser));
 
-        for (EntityLivingBase entity : user.world.getEntitiesWithinAABB(EntityLivingBase.class, box, e -> e != user))
-        {
-            if (user instanceof EntityPlayer &! ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity)) continue;
+        for (EntityLivingBase entity : user.world.getEntitiesWithinAABB(EntityLivingBase.class, box, e -> e != user)) {
+            if (user instanceof EntityPlayer & !ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity)) continue;
             float damage = definition.getDamage();
             if (charge) {
                 /* Give the delicious damage right here???*/
@@ -81,36 +70,16 @@ public class ItemSpear extends Item {
                 double speedMPS = getSpeed(look, user) - getSpeed(look, entity);
                 if (speedMPS * (user instanceof EntityPlayer ? 1 : 0.2) <= 4.6) continue;
                 /* I'm pretty sure Vanilla rounds the Spear Damage up in my testing... */
-                damage = (float)Math.ceil(speedMPS * definition.getChargeMultiplier());
+                damage = (float) Math.ceil(speedMPS * definition.getChargeMultiplier());
             }
             damage = calculateDamageAlterations(damage, user, entity);
             entity.attackEntityFrom(DamageSource.causeMobDamage(user), damage);
             stack.damageItem(1, user);
-            if (user instanceof EntityPlayer) ((EntityPlayer) user).addStat(StatList.getObjectUseStats(stack.getItem()));
+            if (user instanceof EntityPlayer)
+                ((EntityPlayer) user).addStat(StatList.getObjectUseStats(stack.getItem()));
         }
         if (!charge && user instanceof EntityPlayer) ((EntityPlayer) user).resetCooldown();
-
-        /* Garbage code for showing the Spear Attack Bounding Box.*/
-        if (user.world instanceof WorldServer)
-        {
-            double x1 = box.minX;
-            double y1 = box.minY;
-            double z1 = box.minZ;
-
-            double x2 = box.maxX;
-            double y2 = box.maxY;
-            double z2 = box.maxZ;
-
-            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x1, y1, z1, 1, 0, 0, 0, 0.0D);
-            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x1, y1, z2, 1, 0, 0, 0, 0.0D);
-            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x1, y2, z1, 1, 0, 0, 0, 0.0D);
-            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x1, y2, z2, 1, 0, 0, 0, 0.0D);
-
-            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y1, z1, 1, 0, 0, 0, 0.0D);
-            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y1, z2, 1, 0, 0, 0, 0.0D);
-            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y2, z1, 1, 0, 0, 0, 0.0D);
-            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y2, z2, 1, 0, 0, 0, 0.0D);
-        }
+        renderHitboxParticles(user, box);
         return true;
     }
 
@@ -173,4 +142,30 @@ public class ItemSpear extends Item {
 
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) { return true; }
+
+    //### DEBUG
+
+    /* Garbage code for showing the Spear Attack Bounding Box.*/
+    private static void renderHitboxParticles(EntityLivingBase user, AxisAlignedBB box) {
+        if (user.world instanceof WorldServer) {
+            double x1 = box.minX;
+            double y1 = box.minY;
+            double z1 = box.minZ;
+
+            double x2 = box.maxX;
+            double y2 = box.maxY;
+            double z2 = box.maxZ;
+
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x1, y1, z1, 1, 0, 0, 0, 0.0D);
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x1, y1, z2, 1, 0, 0, 0, 0.0D);
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x1, y2, z1, 1, 0, 0, 0, 0.0D);
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x1, y2, z2, 1, 0, 0, 0, 0.0D);
+
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y1, z1, 1, 0, 0, 0, 0.0D);
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y1, z2, 1, 0, 0, 0, 0.0D);
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y2, z1, 1, 0, 0, 0, 0.0D);
+            ((WorldServer)user.world).spawnParticle(EnumParticleTypes.CRIT, x2, y2, z2, 1, 0, 0, 0, 0.0D);
+        }
+    }
+
 }

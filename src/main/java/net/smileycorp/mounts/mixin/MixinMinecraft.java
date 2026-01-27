@@ -5,6 +5,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.resources.FolderResourcePack;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
 import net.smileycorp.mounts.api.ItemSpear;
 import net.smileycorp.mounts.common.MountsLogger;
@@ -48,5 +49,13 @@ public class MixinMinecraft {
         PacketHandler.NETWORK_INSTANCE.sendToServer(new SpearAttackMessage());
         player.resetCooldown();
     }
+
+    @Inject(at = @At(value = "HEAD"), method = "sendClickBlockToController", cancellable = true)
+    public void mounts$sendClickBlockToController(boolean leftClick, CallbackInfo callback) {
+        if (!leftClick) return;
+        ItemStack stack = player.getHeldItemMainhand();
+        if (stack.getItem() instanceof ItemSpear) callback.cancel();
+    }
+
 
 }
