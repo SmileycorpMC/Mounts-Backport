@@ -66,7 +66,7 @@ public class ItemSpear extends Item {
 
     @Override
     public void onUsingTick(ItemStack stack, EntityLivingBase player, int count) {
-         performSpearAttack(player, true);
+        performSpearAttack(player, stack, true);
         super.onUsingTick(stack, player, count);
     }
 
@@ -103,8 +103,7 @@ public class ItemSpear extends Item {
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) { return true; }
 
-    public static boolean performSpearAttack(EntityLivingBase user, boolean charge) {
-        ItemStack stack = user.getHeldItemMainhand();
+    public static boolean performSpearAttack(EntityLivingBase user, ItemStack stack, boolean charge) {
         if (user.world.isRemote |! (stack.getItem() instanceof ItemSpear)) return false;
         SpearDefinition definition = ((ItemSpear) stack.getItem()).getDefinition();
         Vec3d look = user.getLookVec();
