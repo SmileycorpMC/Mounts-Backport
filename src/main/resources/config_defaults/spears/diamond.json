@@ -4,6 +4,9 @@
 	"enchantability": 10,
 	"attack_speed": 0.95,
 	"charge_multiplier": 1.075,
+	"charge_dismount_duration": 60,
+	"charge_knockback_duration": 130,
+	"charge_damage_duration": 200,
 	"repair_material": {
       "type": "forge:ore_dict",
       "ore": "gemDiamond"

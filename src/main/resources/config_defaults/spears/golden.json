@@ -4,6 +4,9 @@
 	"enchantability": 22,
 	"attack_speed": 1.05,
 	"charge_multiplier": 0.7,
+	"charge_dismount_duration": 70,
+	"charge_knockback_duration": 170,
+	"charge_damage_duration": 275,
 	"repair_material": {
       "type": "forge:ore_dict",
       "ore": "ingotGold"

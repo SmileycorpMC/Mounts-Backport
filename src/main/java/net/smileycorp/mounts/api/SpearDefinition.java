@@ -1,20 +1,28 @@
 package net.smileycorp.mounts.api;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.smileycorp.mounts.common.Constants;
 
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class SpearDefinition {
 
     private final String name;
     private final float damage, attackSpeed, chargeMultiplier;
-    private final int durability, enchantability;
+    private final int durability;
+    private final int enchantability;
+
+    private final int chargeDismountDuration;
+    private final int chargeKnockbackDuration;
+    private final int chargeDamageDuration;
     private final CreativeTabs creativeTab;
     private Supplier<Ingredient> repairMaterialSupplier;
     private Ingredient repairMaterial;
@@ -27,6 +35,9 @@ public class SpearDefinition {
         enchantability = builder.enchantability;
         attackSpeed = builder.attackSpeed;
         chargeMultiplier = builder.chargeMultiplier;
+        chargeDismountDuration = builder.chargeDismountDuration;
+        chargeKnockbackDuration = builder.chargeKnockbackDuration;
+        chargeDamageDuration = builder.chargeDamageDuration;
         creativeTab = builder.creativeTab;
         repairMaterialSupplier = builder.repairMaterial;
         craftable = builder.craftable;
@@ -57,6 +68,18 @@ public class SpearDefinition {
         return chargeMultiplier;
     }
 
+    public int getChargeDismountDuration() {
+        return chargeDismountDuration;
+    }
+
+    public int getChargeKnockbackDuration() {
+        return chargeKnockbackDuration;
+    }
+
+    public int getChargeDamageDuration() {
+        return chargeDamageDuration;
+    }
+
     public CreativeTabs getCreativeTab() {
         return creativeTab;
     }
@@ -81,6 +104,9 @@ public class SpearDefinition {
         if (json.has("enchantability")) builder.enchantability = json.get("enchantability").getAsInt();
         if (json.has("attack_speed")) builder.attackSpeed= json.get("attack_speed").getAsFloat();
         if (json.has("charge_multiplier")) builder.chargeMultiplier = json.get("charge_multiplier").getAsFloat();
+        if (json.has("charge_dismount_duration")) builder.chargeDismountDuration = json.get("charge_dismount_duration").getAsInt();
+        if (json.has("charge_knockback_duration")) builder.chargeKnockbackDuration = json.get("charge_knockback_duration").getAsInt();
+        if (json.has("charge_damage_duration")) builder.chargeDamageDuration = json.get("charge_damage_duration").getAsInt();
         if (json.has("repair_material")) builder.repairMaterial = SpearDefinition.parseRepairMaterial(json.get("repair_material"));
         if (json.has("craftable")) builder.craftable = json.get("craftable").getAsBoolean();
         if (json.has("fireproof")) builder.fireproof = json.get("fireproof").getAsBoolean();
@@ -101,7 +127,8 @@ public class SpearDefinition {
 
         private final String name;
         private float damage = 1, attackSpeed = 1, chargeMultiplier = 1;
-        private int durability = 1, enchantability = 1;
+        private int durability = 1, enchantability = 1,
+                chargeDismountDuration = 100, chargeKnockbackDuration = 200, chargeDamageDuration = 300;
         private CreativeTabs creativeTab = CreativeTabs.COMBAT;
         private Supplier<Ingredient> repairMaterial = null;
         private boolean craftable = true, fireproof = false;

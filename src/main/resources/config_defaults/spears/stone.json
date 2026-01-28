@@ -4,6 +4,9 @@
 	"enchantability": 5,
 	"attack_speed": 1.33,
 	"charge_multiplier": 0.82,
+	"charge_dismount_duration": 90,
+	"charge_knockback_duration": 180,
+	"charge_damage_duration": 275,
 	"repair_material": {
       "type": "forge:ore_dict",
       "ore": "cobblestone"
