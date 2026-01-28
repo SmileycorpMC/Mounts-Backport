@@ -1,4 +1,4 @@
-package net.smileycorp.mounts.client.models;
+package net.smileycorp.mounts.client.entity.models;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;

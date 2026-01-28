@@ -29,6 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.smileycorp.mounts.common.MountsSoundEvents;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
+import net.smileycorp.mounts.config.EntityConfig;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -76,11 +77,10 @@ public class EntityCamel extends EntityAnimal
         this.tasks.addTask(7, new EntityAILookIdle(this));
     }
 
-    protected void applyEntityAttributes()
-    {
+    @Override
+    protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.20000000298023224D);
+        EntityConfig.camel.applyAttributes(this);
     }
 
     protected SoundEvent getAmbientSound() { return MountsSoundEvents.CAMEL_AMBIENT; }

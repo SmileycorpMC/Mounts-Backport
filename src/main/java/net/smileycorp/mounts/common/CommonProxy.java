@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.entity.MountsEntities;
 import net.smileycorp.mounts.common.network.PacketHandler;
+import net.smileycorp.mounts.config.EntityConfig;
 
 @Mod.EventBusSubscriber
 public class CommonProxy
@@ -21,6 +22,7 @@ public class CommonProxy
 
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		EntityConfig.syncConfig(event);
 		MountsEntities.registerEntities();
 		MountsEntities.registerEntitySpawns();
 		PacketHandler.initPackets();

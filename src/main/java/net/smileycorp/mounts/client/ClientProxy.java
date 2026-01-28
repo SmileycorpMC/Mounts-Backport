@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import net.smileycorp.mounts.client.render.RenderCamel;
+import net.smileycorp.mounts.client.entity.render.RenderCamel;
 import net.smileycorp.mounts.common.CommonProxy;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.entity.EntityCamel;
