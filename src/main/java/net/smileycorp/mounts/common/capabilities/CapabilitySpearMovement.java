@@ -21,7 +21,6 @@ public class CapabilitySpearMovement
     private static final String PLAYER_SPACE_HOLD_TIME = "playerHeldSpaceTime";
     private static final String PLAYER_SPACE_HOLD = "playerHoldingSpace";
     /** The Speed of the player (IDK if this is needed in a Capability??). */
-    private static final String PLAYER_SPEED = "playerSpeed";
 
     public interface ICapabilityMountsPlayerInfo
     {
@@ -31,8 +30,11 @@ public class CapabilitySpearMovement
         boolean getIsSpaceHeld();
         void setIsSpaceHeld(boolean value);
 
-        float getPlayerSpeed();
-        void setPlayerSpeed(float value);
+        double getPrevX();
+        double getPrevY();
+        double getPrevZ();
+
+        void setPrevPos(double x, double y, double z);
     }
 
     public static class MountsPlayerInfoMethods implements ICapabilityMountsPlayerInfo
@@ -40,6 +42,7 @@ public class CapabilitySpearMovement
         private float mountsSpaceHeldTimeTime = 0;
         private boolean mountsSpaceHeld = false;
         private float mountsPlayerSpeed = 0;
+        private double prevX, prevY, prevZ;
 
         @Override
         public float getSpaceHeldTime()
@@ -56,11 +59,27 @@ public class CapabilitySpearMovement
         { mountsSpaceHeld = value; }
 
         @Override
-        public float getPlayerSpeed()
-        { return mountsPlayerSpeed; }
+        public double getPrevX() {
+            return prevX;
+        }
+
         @Override
-        public void setPlayerSpeed(float value)
-        { mountsPlayerSpeed = value; }
+        public double getPrevY() {
+            return prevY;
+        }
+
+        @Override
+        public double getPrevZ() {
+            return prevZ;
+        }
+
+        @Override
+        public void setPrevPos(double x, double y, double z) {
+            prevX = x;
+            prevY = y;
+            prevZ = z;
+        }
+
     }
 
     public static class Storage implements Capability.IStorage<ICapabilityMountsPlayerInfo>
@@ -70,7 +89,6 @@ public class CapabilitySpearMovement
         {
             NBTTagCompound compound = new NBTTagCompound();
             compound.setBoolean(PLAYER_SPACE_HOLD, instance.getIsSpaceHeld());
-            compound.setFloat(PLAYER_SPEED, instance.getPlayerSpeed());
             compound.setFloat(PLAYER_SPACE_HOLD_TIME, instance.getSpaceHeldTime());
             return compound;
         }
@@ -80,7 +98,6 @@ public class CapabilitySpearMovement
         {
             NBTTagCompound compound = (NBTTagCompound) nbt;
             instance.setIsSpaceHeld(compound.getBoolean(PLAYER_SPACE_HOLD));
-            instance.setPlayerSpeed(compound.getFloat(PLAYER_SPEED));
             instance.setSpaceHeldTime(compound.getFloat(PLAYER_SPACE_HOLD_TIME));
         }
     }

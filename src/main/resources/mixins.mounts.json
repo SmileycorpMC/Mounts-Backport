@@ -3,9 +3,11 @@
   "package": "net.smileycorp.mounts.mixin",
   "refmap": "mixins.raids.refmap.json",
   "mixins": [
-    "MixinEntityItem"
+    "MixinEntityItem",
+    "MixinNetHandlerPlayServer"
   ],
   "client": [
+    "MixinEntityPlayerSP",
     "MixinMinecraft"
   ],
   "server": [

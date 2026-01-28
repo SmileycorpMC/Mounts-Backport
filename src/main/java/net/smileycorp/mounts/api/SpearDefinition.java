@@ -1,17 +1,14 @@
 package net.smileycorp.mounts.api;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.smileycorp.mounts.common.Constants;
 
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public class SpearDefinition {
 

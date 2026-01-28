@@ -46,28 +46,20 @@ public class MountsCommonEvents
 
     /** Bonus security check */
     @SubscribeEvent
-    public static void PlayerTick(TickEvent.PlayerTickEvent event)
-    {
-        if (event.phase == TickEvent.Phase.END)
-        {
-            EntityPlayer player = event.player;
+    public static void PlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        EntityPlayer player = event.player;
+        if (!player.hasCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null)) return;
+        CapabilitySpearMovement.ICapabilityMountsPlayerInfo capCharge = player.getCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null);
+        //reset player previous position so speed doesn't get stored
+        capCharge.setPrevPos(player.posX, player.posY, player.posZ);
 
-            if (player.getRidingEntity() instanceof EntityCamel)
-            {
-                EntityCamel camel = (EntityCamel)player.getRidingEntity();
-
-                if (camel.isSitting() || camel.dashCooldown > 0) return;
-
-                if (player.hasCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null))
-                {
-                    CapabilitySpearMovement.ICapabilityMountsPlayerInfo capCharge = player.getCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null);
-
-                    if (capCharge.getIsSpaceHeld())
-                    {
-                        capCharge.setSpaceHeldTime(Math.min(1.0F, capCharge.getSpaceHeldTime() + 0.1F));
-                    }
-                }
-            }
+        //camel code
+        if (player.getRidingEntity() instanceof EntityCamel) {
+            EntityCamel camel = (EntityCamel)player.getRidingEntity();
+            if (camel.isSitting() || camel.dashCooldown > 0) return;
+            if (capCharge.getIsSpaceHeld()) capCharge.setSpaceHeldTime(Math.min(1.0F, capCharge.getSpaceHeldTime() + 0.1F));
         }
     }
+
 }

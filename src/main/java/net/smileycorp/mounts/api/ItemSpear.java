@@ -6,11 +6,11 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -23,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
 import net.smileycorp.mounts.common.Constants;
+import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 
 import java.util.UUID;
 
@@ -47,67 +48,26 @@ public class ItemSpear extends Item {
         return definition;
     }
 
-    public static boolean performSpearAttack(EntityLivingBase user, boolean charge) {
-        ItemStack stack = user.getHeldItemMainhand();
-        if (user.world.isRemote | !(stack.getItem() instanceof ItemSpear)) return false;
-        SpearDefinition definition = ((ItemSpear) stack.getItem()).getDefinition();
-        Vec3d look = user.getLookVec();
-        BlockPos getUserEyes = user.getPosition().add(new BlockPos(0, user.getEyeHeight(), 0));
-        /* Controls the distance the attack box is shifted away from the user. */
-        double distanceFromUser = 4.0D;
-        double width = 0.25D;
-
-        /* Make a sized Bounding Box, and push it forward by `distanceFromUser`! */
-        AxisAlignedBB box = new AxisAlignedBB(getUserEyes).grow(width, width, width).offset(look.scale(distanceFromUser));
-
-        for (EntityLivingBase entity : user.world.getEntitiesWithinAABB(EntityLivingBase.class, box, e -> e != user)) {
-            if (user instanceof EntityPlayer & !ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity)) continue;
-            float damage = definition.getDamage();
-            if (charge) {
-                /* Give the delicious damage right here???*/
-                //apparently the damage done by spears is the player speed minus the target speed so this needs to be down here
-                //vanilla does a weird damage calc here so bear with this
-                double speedMPS = getSpeed(look, user) - getSpeed(look, entity);
-                if (speedMPS * (user instanceof EntityPlayer ? 1 : 0.2) <= 4.6) continue;
-                /* I'm pretty sure Vanilla rounds the Spear Damage up in my testing... */
-                damage = (float) Math.ceil(speedMPS * definition.getChargeMultiplier());
-            }
-            damage = calculateDamageAlterations(damage, user, entity);
-            entity.attackEntityFrom(DamageSource.causeMobDamage(user), damage);
-            stack.damageItem(1, user);
-            if (user instanceof EntityPlayer)
-                ((EntityPlayer) user).addStat(StatList.getObjectUseStats(stack.getItem()));
-        }
-        if (!charge && user instanceof EntityPlayer) ((EntityPlayer) user).resetCooldown();
-        renderHitboxParticles(user, box);
-        return true;
+    @Override
+    public EnumAction getItemUseAction(ItemStack stack) {
+        return super.getItemUseAction(stack);
     }
-
-    private static double getSpeed(Vec3d look, Entity entity) {
-        if (entity.isRiding()) entity = entity.getRidingEntity();
-        return look.dotProduct(new Vec3d(entity.motionX, entity.onGround ? 0 : entity.motionY, entity.motionZ).scale(20));
-    }
-
-    //I did not steal this from the deeper depths mace, nope
-    public static float calculateDamageAlterations(float damage, EntityLivingBase attacker, Entity target)
-    {
-        float f = (float)attacker.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
-        float f1;
-
-        if (target instanceof EntityLivingBase)
-        { f1 = EnchantmentHelper.getModifierForCreature(attacker.getHeldItemMainhand(), ((EntityLivingBase) target).getCreatureAttribute()); }
-        else
-        { f1 = EnchantmentHelper.getModifierForCreature(attacker.getHeldItemMainhand(), EnumCreatureAttribute.UNDEFINED); }
-
-        return damage + f + f1;
-    }
-
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
-    {
-        performSpearAttack(playerIn, true);
-        return new ActionResult(EnumActionResult.PASS, playerIn.getHeldItem(hand));
+    public int getMaxItemUseDuration(ItemStack stack) {
+        return definition.getChargeDamageDuration();
+    }
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        player.setActiveHand(hand);
+        return new ActionResult<>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+    }
+
+    @Override
+    public void onUsingTick(ItemStack stack, EntityLivingBase player, int count) {
+         performSpearAttack(player, true);
+        super.onUsingTick(stack, player, count);
     }
 
     @Override
@@ -142,6 +102,61 @@ public class ItemSpear extends Item {
 
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) { return true; }
+
+    public static boolean performSpearAttack(EntityLivingBase user, boolean charge) {
+        ItemStack stack = user.getHeldItemMainhand();
+        if (user.world.isRemote |! (stack.getItem() instanceof ItemSpear)) return false;
+        SpearDefinition definition = ((ItemSpear) stack.getItem()).getDefinition();
+        Vec3d look = user.getLookVec();
+        BlockPos getUserEyes = user.getPosition().add(new BlockPos(0, user.getEyeHeight(), 0));
+        /* Controls the distance the attack box is shifted away from the user. */
+        double distanceFromUser = user instanceof EntityPlayer ? 4 : 2;
+        double width = 0.25D;
+
+        /* Make a sized Bounding Box, and push it forward by `distanceFromUser`! */
+        AxisAlignedBB box = new AxisAlignedBB(getUserEyes).grow(width, width, width).offset(look.scale(distanceFromUser));
+        boolean hit = false;
+        for (EntityLivingBase entity : user.world.getEntitiesWithinAABB(EntityLivingBase.class, box, e -> e != user)) {
+            if (user instanceof EntityPlayer & !ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity)) continue;
+            float damage;
+            if (charge) {
+                //damage is based on relative speed between the user and the target
+                double relativeSpeed = getSpeed(look, user) - getSpeed(look, entity);
+                //non player entities have a way lower speed cap
+                if (relativeSpeed <= 4.6 * (user instanceof EntityPlayer ? 1d : 0.2)) continue;
+                /* I'm pretty sure Vanilla rounds the Spear Damage up in my testing... */
+                //vanilla actually rounds down here for some reason
+                damage = (float) Math.floor(relativeSpeed * definition.getChargeMultiplier());
+                //charge attacks apparently don't take the mob attack damage attribute into account
+            } else damage = definition.getDamage() + (float) user.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
+            damage += EnchantmentHelper.getModifierForCreature(stack, entity.getCreatureAttribute());
+            if (entity.attackEntityFrom(DamageSource.causeMobDamage(user), damage)) hit = true;
+            stack.damageItem(1, user);
+            if (user instanceof EntityPlayer) ((EntityPlayer) user).addStat(StatList.getObjectUseStats(stack.getItem()));
+        }
+        if (!charge && user instanceof EntityPlayer) ((EntityPlayer) user).resetCooldown();
+        renderHitboxParticles(user, box);
+        return hit;
+    }
+
+    private static double getSpeed(Vec3d look, Entity entity) {
+        //if (entity.isRiding() & !(entity instanceof EntityPlayer)) entity = entity.getLowestRidingEntity();
+        double motionX, motionY, motionZ;
+        //use our capability for players because players don't actually move in 1.12
+        // the server just teleports them to the correct position when it receives a movement packet
+        if (entity instanceof EntityPlayer && entity.hasCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null)) {
+            CapabilitySpearMovement.ICapabilityMountsPlayerInfo capCharge = entity.getCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null);
+            motionX = entity.posX - capCharge.getPrevX();
+            motionY = entity.posY - capCharge.getPrevY();
+            motionZ = entity.posZ - capCharge.getPrevZ();
+        } else {
+            motionX = entity.posX - entity.lastTickPosX;
+            motionY = entity.posY - entity.lastTickPosY;
+            motionZ = entity.posZ - entity.lastTickPosZ;
+        }
+        //the look vec is used here to make sure that we're only using the entities speed in the exact direction they are facing
+        return look.x * motionX * 20d + look.y * motionY * 20d + look.z * motionZ * 20d;
+    }
 
     //### DEBUG
 

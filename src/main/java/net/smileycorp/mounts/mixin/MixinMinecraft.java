@@ -5,7 +5,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.resources.FolderResourcePack;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
 import net.smileycorp.mounts.api.ItemSpear;
 import net.smileycorp.mounts.common.MountsLogger;
