@@ -1,7 +1,7 @@
 {
   "compatibilityLevel": "JAVA_8",
   "package": "net.smileycorp.mounts.mixin",
-  "refmap": "mixins.raids.refmap.json",
+  "refmap": "mixins.mounts.refmap.json",
   "mixins": [
     "MixinEntityItem",
     "MixinNetHandlerPlayServer"
