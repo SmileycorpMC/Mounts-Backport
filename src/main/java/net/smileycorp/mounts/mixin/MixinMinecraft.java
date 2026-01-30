@@ -5,7 +5,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.resources.FolderResourcePack;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.RayTraceResult;
 import net.smileycorp.mounts.api.ItemSpear;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.common.network.PacketHandler;
@@ -27,10 +26,8 @@ public class MixinMinecraft {
 
     @Shadow public EntityPlayerSP player;
 
-    @Shadow public RayTraceResult objectMouseOver;
-
     @Inject(at = @At("HEAD"), method = "init")
-    public void mounts$getResourcePackFiles(CallbackInfo callback) {
+    public void mounts$init(CallbackInfo callback) {
         try {
             SpearRegistry.generateData();
             defaultResourcePacks.add(new FolderResourcePack(SpearRegistry.CONFIG_FOLDER));
