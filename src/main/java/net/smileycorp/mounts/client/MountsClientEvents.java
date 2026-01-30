@@ -8,14 +8,32 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
-import net.smileycorp.mounts.common.entities.EntityCamel;
+import net.smileycorp.mounts.common.entity.EntityCamel;
 
 @Mod.EventBusSubscriber
 public class MountsClientEvents
 {
+    private static float prevSpaceHeld = 0.0F;
+    private static float currSpaceHeld = 0.0F;
     private static final ResourceLocation TEXTURE_NAUTILUS_CHARGE_BAR = new ResourceLocation(Constants.MODID, "textures/gui/camel_charge_bar.png");
+
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event)
+    {
+        if (event.phase != TickEvent.Phase.END) return;
+
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc.player == null) return;
+
+        prevSpaceHeld = currSpaceHeld;
+
+        if (mc.player.hasCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null))
+        { currSpaceHeld = mc.player.getCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null).getSpaceHeldTime(); }
+    }
+
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRenderOverlay(RenderGameOverlayEvent.Pre event)
@@ -54,9 +72,8 @@ public class MountsClientEvents
         int barX = width / 2 - 91;
         int barY = height - 29;
 
-        float progress = 0;
-        if (mc.player.hasCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null))
-        { progress = mc.player.getCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null).getSpaceHeldTime(); }
+        float partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
+        float spaceHeldTime = prevSpaceHeld + (currSpaceHeld - prevSpaceHeld) * partialTicks;
 
         GlStateManager.enableTexture2D();
         GlStateManager.color(1F, 1F, 1F, 1F);
@@ -64,12 +81,21 @@ public class MountsClientEvents
 
         mc.ingameGUI.drawTexturedModalRect(barX, barY, 0, 0, 182, 5);
 
-        int filled = (int)(progress * 182);
+        float powerResult = spaceHeldTime / 0.9F;
+
+        if (spaceHeldTime > 0.9F)
+        {
+            float t = (spaceHeldTime - 0.9F) / 0.32F;
+            powerResult -= t;
+        }
+
+        int filled = (int)(powerResult * 182);
         if (filled > 0)
         {
+            //System.out.print("Power Result: " + powerResult);
             mc.ingameGUI.drawTexturedModalRect(barX, barY, 0, 5, filled, 5);
         }
 
-        if (ridden.dashCooldown > 0) { mc.ingameGUI.drawTexturedModalRect(barX, barY, 0, 10, 182, 5); }
+        if (ridden.getDashCooldown() > 0) { mc.ingameGUI.drawTexturedModalRect(barX, barY, 0, 10, 182, 5); }
     }
 }

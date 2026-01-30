@@ -1,4 +1,4 @@
-package net.smileycorp.mounts.common.entities;
+package net.smileycorp.mounts.common.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;

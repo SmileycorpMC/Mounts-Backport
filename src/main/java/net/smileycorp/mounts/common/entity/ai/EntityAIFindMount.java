@@ -1,7 +1,5 @@
-package net.smileycorp.mounts.common.entities.ai;
+package net.smileycorp.mounts.common.entity.ai;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
