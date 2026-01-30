@@ -23,12 +23,12 @@ public class MountsConfig {
         Configuration config = new Configuration(new File(event.getModConfigurationDirectory().getPath() + "/mounts/mounts.cfg"));
         try{
             config.load();
-            babyZombieJockeyChance = config.get("jockeys", "jockeyChance", 0.15, "Chance for a baby zombie to spawn as a jockey.").getInt();
-            babyZombieMountableEntitiesStr = config.get("jockeys", "babyZombieMountableEntities", new String[] {
-                    "minecraft:chicken", "minecraft:sheep", "minecraft:pig", "minecraft:cow", "minecraft:mushroom_cow", "minecraft:ocelot", "minecraft:wolf",
-                    "minecraft:horse", "minecraft:donkey", "minecraft:mule", "miencraft:zombie_horse", "minecraft:skeleton_horse", "minecraft:spider", "minecraft:cave_spider",
-                    "minecraft:zombie", "minecraft:husk", "minecraft:zombie_pigman", "oe:zombie_nautilius", "futuremc:panda"},
-                    "Which entities can baby zombies seek out and ride?").getStringList();
+            babyZombieJockeyChance = config.getFloat( "jockeyChance", "jockeys", 0.15f, 0, 1, "Chance for a baby zombie to spawn as a jockey.");
+            babyZombieMountableEntitiesStr = config.getStringList("mountableEntities", "jockeys",
+                    new String[] {"minecraft:chicken", "minecraft:sheep", "minecraft:pig", "minecraft:cow", "minecraft:mushroom_cow", "minecraft:ocelot", "minecraft:wolf",
+                            "minecraft:horse", "minecraft:donkey", "minecraft:mule", "miencraft:zombie_horse", "minecraft:skeleton_horse", "minecraft:spider", "minecraft:cave_spider",
+                            "minecraft:zombie", "minecraft:husk", "minecraft:zombie_pigman", "oe:zombie_nautilius", "futuremc:panda"},
+                    "Which entities can baby zombies seek out and ride?");
         } catch(Exception e) {
         } finally {
             if (config.hasChanged()) config.save();

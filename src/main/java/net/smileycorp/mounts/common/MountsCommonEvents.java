@@ -1,14 +1,19 @@
 package net.smileycorp.mounts.common;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.InputUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.entity.EntityCamel;
+import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
 import net.smileycorp.mounts.common.network.HoldingSpaceMessage;
 import net.smileycorp.mounts.common.network.PacketHandler;
 
@@ -62,4 +67,12 @@ public class MountsCommonEvents
             if (capCharge.getIsSpaceHeld()) capCharge.setSpaceHeldTime(Math.min(1.0F, capCharge.getSpaceHeldTime() + 0.1F));
         }
     }
+
+    @SubscribeEvent
+    public static void spawnMob(LivingSpawnEvent.CheckSpawn event) {
+        EntityLivingBase instance = event.getEntityLiving();
+        if (!(instance instanceof EntityZombie)) return;
+        ((EntityZombie) instance).tasks.addTask(1, new EntityAIFindMount((EntityLiving) instance));
+    }
+
 }
