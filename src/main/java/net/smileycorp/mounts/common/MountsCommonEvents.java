@@ -4,7 +4,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.InputUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
@@ -15,6 +17,20 @@ import net.smileycorp.mounts.common.network.PacketHandler;
 @Mod.EventBusSubscriber
 public class MountsCommonEvents
 {
+    /** When camels are Spawning, deny many of them. */
+    @SubscribeEvent
+    public static void onCamelSpawn(LivingSpawnEvent.CheckSpawn event)
+    {
+        if (event.isSpawner()) return;
+        if (!(event.getEntityLiving() instanceof EntityCamel)) return;
+
+        /* IDK if this exactly aligns with the `1/13` chance we want for Camels
+        (combined /w the current weight of `1/5` that is required before even reaching here)*/
+        if (event.getWorld().rand.nextInt(13) >= 5)
+        { event.setResult(Event.Result.DENY); }
+    }
+
+
     @SubscribeEvent
     public static void attachCapabilities(AttachCapabilitiesEvent<Entity> event)
     {

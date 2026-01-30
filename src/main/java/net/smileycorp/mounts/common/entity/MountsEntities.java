@@ -3,8 +3,10 @@ package net.smileycorp.mounts.common.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.init.Biomes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeDesert;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.smileycorp.mounts.common.Constants;
@@ -21,7 +23,8 @@ public class MountsEntities
 
     public static void registerEntitySpawns()
     {
-        //spawnRate(EntityCamel.class, EnumCreatureType.CREATURE, 5, 1, 1, BiomeDictionary.Type.HOT);
+        EntityRegistry.addSpawn(EntityCamel.class, 1, 1, 1, EnumCreatureType.CREATURE, Biomes.DESERT);
+        EntityRegistry.addSpawn(EntityCamel.class, 1, 1, 1, EnumCreatureType.CREATURE, Biomes.DESERT_HILLS);
     }
 
     private static void registerEntity(String name, Class<? extends Entity> entity, int id, int range, int color1, int color2)
