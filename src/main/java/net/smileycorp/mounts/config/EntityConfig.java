@@ -18,8 +18,8 @@ public class EntityConfig {
          config = new Configuration(new File(event.getModConfigurationDirectory().getPath() + "/mounts/entities.cfg"));
         try{
             config.load();
-            camel = new EntityAttributesEntry(config, "camel", 0.09, 16, 0, 31, 0, 0, 0);
-            camelHusk = new EntityAttributesEntry(config, "camel husk", 0.09, 16, 0, 31, 0, 0, 0);
+            camel = new EntityAttributesEntry(config, "camel", 0.20000000298023224D, 16, 0, 31, 0, 0, 0);
+            camelHusk = new EntityAttributesEntry(config, "camel husk", 0.20000000298023224D, 16, 0, 31, 0, 0, 0);
             parched = new EntityAttributesEntry(config, "parched", 0.25, 32, 2, 16, 0, 0, 0);
         } catch(Exception e) {
         } finally {
