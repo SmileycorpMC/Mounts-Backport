@@ -7,15 +7,13 @@ import net.smileycorp.atlas.api.config.EntityAttributesEntry;
 import java.io.File;
 
 public class EntityConfig {
-    
-    private static Configuration config;
 
     public static EntityAttributesEntry camel;
     public static EntityAttributesEntry camelHusk;
     public static EntityAttributesEntry parched;
 
     public static void syncConfig(FMLPreInitializationEvent event) {
-         config = new Configuration(new File(event.getModConfigurationDirectory().getPath() + "/mounts/entities.cfg"));
+        Configuration config = new Configuration(new File(event.getModConfigurationDirectory().getPath() + "/mounts/entities.cfg"));
         try{
             config.load();
             camel = new EntityAttributesEntry(config, "camel", 0.09, 16, 0, 31, 0, 0, 0);

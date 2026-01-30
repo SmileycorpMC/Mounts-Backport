@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
-import net.smileycorp.mounts.common.entity.EntityCamel;
+import net.smileycorp.mounts.common.entities.EntityCamel;
 import net.smileycorp.mounts.common.network.HoldingSpaceMessage;
 import net.smileycorp.mounts.common.network.PacketHandler;
 

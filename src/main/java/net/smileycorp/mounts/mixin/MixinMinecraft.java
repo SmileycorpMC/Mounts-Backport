@@ -27,10 +27,8 @@ public class MixinMinecraft {
 
     @Shadow public EntityPlayerSP player;
 
-    @Shadow public RayTraceResult objectMouseOver;
-
     @Inject(at = @At("HEAD"), method = "init")
-    public void mounts$getResourcePackFiles(CallbackInfo callback) {
+    public void mounts$init(CallbackInfo callback) {
         try {
             SpearRegistry.generateData();
             defaultResourcePacks.add(new FolderResourcePack(SpearRegistry.CONFIG_FOLDER));

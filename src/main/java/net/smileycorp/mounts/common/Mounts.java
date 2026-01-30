@@ -7,6 +7,10 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.smileycorp.mounts.config.SpearRegistry;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Mod(modid = Constants.MODID, name = Constants.NAME, version = Constants.VERSION, dependencies = Constants.DEPENDENCIES)
 public class Mounts
@@ -16,9 +20,12 @@ public class Mounts
 
 	@SidedProxy(clientSide = Constants.CLIENT, serverSide = Constants.SERVER)
 	public static CommonProxy proxy;
+
+	public static ScheduledExecutorService DELAYED_THREAD_EXECUTOR = Executors.newSingleThreadScheduledExecutor();
 	
 	public Mounts() {
 		MountsLogger.clearLog();
+		SpearRegistry.generateData();
 	}
 	
 	@EventHandler

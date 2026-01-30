@@ -7,7 +7,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.smileycorp.mounts.client.entity.models.ModelCamel;
 import net.smileycorp.mounts.common.Constants;
-import net.smileycorp.mounts.common.entity.EntityCamel;
+import net.smileycorp.mounts.common.entities.EntityCamel;
 
 @SideOnly(Side.CLIENT)
 public class RenderCamel extends RenderLiving<EntityCamel>

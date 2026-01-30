@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
-import net.smileycorp.mounts.common.entity.EntityCamel;
+import net.smileycorp.mounts.common.entities.EntityCamel;
 
 @Mod.EventBusSubscriber
 public class MountsClientEvents
