@@ -50,14 +50,15 @@ public class EntityAIFindMount extends EntityAIBase {
 
     @Override
     public void startExecuting() {
+        if (target == null) return;
         entity.getNavigator().tryMoveToEntityLiving(target, 1);
     }
 
     @Override
     public void updateTask() {
+        if (target == null) return;
         if (target.getDistanceSq(entity) > 36) return;
         entity.startRiding(target, true);
-        System.out.println(target + ", " + entity);
         removeTask();
     }
 
