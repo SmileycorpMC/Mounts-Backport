@@ -1,4 +1,4 @@
-package net.smileycorp.mounts.client.entity.models;
+package net.smileycorp.mounts.client.entity;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -14,9 +14,9 @@ import net.smileycorp.mounts.common.entity.EntityCamel;
 @SideOnly(Side.CLIENT)
 public class ModelCamel extends ModelBase
 {
-    private final ModelRenderer main;
+    public final ModelRenderer main;
     private final ModelRenderer upper_body;
-    private final ModelRenderer head;
+    public final ModelRenderer head;
     private final ModelRenderer earR;
     private final ModelRenderer earL;
     private final ModelRenderer tail;
@@ -25,10 +25,12 @@ public class ModelCamel extends ModelBase
     private final ModelRenderer legBL;
     private final ModelRenderer legBR;
 
-    public ModelCamel()
+    public ModelCamel() { this(128, 128); }
+
+    public ModelCamel(int widthIn, int heightIn)
     {
-        textureWidth = 128;
-        textureHeight = 128;
+        textureWidth = widthIn;
+        textureHeight = heightIn;
 
         main = new ModelRenderer(this);
         main.setRotationPoint(0.0F, 24.0F, 0.0F);
@@ -120,11 +122,12 @@ public class ModelCamel extends ModelBase
     {
         EntityCamel camel = (EntityCamel) entityIn;
         float animationTime = camel.getClientAnimationTime(ageInTicks - (float)camel.ticksExisted);
+        float dashCooldownTime = camel.getClientDashCooldownTime(ageInTicks - (float)camel.ticksExisted);
 
         /* Used for a 'breathing' motion. */
         float idle = MathHelper.sin((ageInTicks) * 0.05F) * 0.25F;
 
-        this.head.rotateAngleX = headPitch * 0.017453292F;
+        this.head.rotateAngleX = headPitch * 0.017453292F + (dashCooldownTime * 0.05F);
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
 
         this.earL.rotateAngleY = 0.0F;
@@ -245,14 +248,14 @@ public class ModelCamel extends ModelBase
                     float headSwing = MathHelper.cos(limbSwing * 0.5F) * limbSwingAmount;
                     float legSwing = MathHelper.cos(limbSwing * 0.5F) * (limbSwingAmount * 2);
 
-                    this.main.rotateAngleX = 0.1F;
+                    //this.main.rotateAngleX = 0.1F - (dashCooldownTime * 0.1F);
 
                     this.earL.rotateAngleY = -1.0F;
                     this.earR.rotateAngleY = -this.earL.rotateAngleY;
                     this.earL.rotateAngleZ = 0.0F;
                     this.earR.rotateAngleZ = this.earL.rotateAngleZ;
 
-                    this.head.rotateAngleX = 0.1F + headSwing * 0.1F;
+                    //this.head.rotateAngleX = 0.1F + headSwing * 0.1F;
 
                     this.legFR.rotateAngleX = legSwing;
                     this.legFL.rotateAngleX = -this.legFR.rotateAngleX;

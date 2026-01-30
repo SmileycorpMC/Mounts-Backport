@@ -55,11 +55,11 @@ public class MountsCommonEvents
         capCharge.setPrevPos(player.posX, player.posY, player.posZ);
 
         //camel code
-        if (player.getRidingEntity() instanceof EntityCamel) {
+        if (player.getRidingEntity() instanceof EntityCamel)
+        {
             EntityCamel camel = (EntityCamel)player.getRidingEntity();
-            if (camel.isSitting() || camel.dashCooldown > 0) return;
+            if (camel.isSitting() || camel.getDashCooldown() > 0) return;
             if (capCharge.getIsSpaceHeld()) capCharge.setSpaceHeldTime(Math.min(1.0F, capCharge.getSpaceHeldTime() + 0.1F));
         }
     }
-
 }

@@ -41,14 +41,11 @@ public class EntityCamel extends EntityAnimal
     private static final DataParameter<Integer> ANIMSTATE = EntityDataManager.createKey(EntityCamel.class, DataSerializers.VARINT);
     /* Primarily handles the Dashing Animation. */
     private static final DataParameter<Integer> DASHING = EntityDataManager.createKey(EntityCamel.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> DASH_COOLDOWN = EntityDataManager.createKey(EntityCamel.class, DataSerializers.VARINT);
     private float animTransSpeed = 0.4F;
     private float animationTime;
     private float prevAnimationTime;
-
-    /** USed when the Camel is preforming a sit (wraps animation logic)*/
-    //public boolean sitting;
-    public int dashCooldown;
-
+    private float prevDashCooldown;
 
     public EntityCamel(World worldIn)
     {
@@ -61,6 +58,7 @@ public class EntityCamel extends EntityAnimal
         super.entityInit();
         this.dataManager.register(ANIMSTATE, 0);
         this.dataManager.register(DASHING, 0);
+        this.dataManager.register(DASH_COOLDOWN, 0);
     }
 
     protected void initEntityAI()
@@ -107,6 +105,7 @@ public class EntityCamel extends EntityAnimal
     public void onLivingUpdate()
     {
         prevAnimationTime = animationTime;
+        prevDashCooldown = this.getDashCooldown();
 
         animationTime = Math.min(1.0F, animationTime + 0.02F);
 
@@ -123,10 +122,10 @@ public class EntityCamel extends EntityAnimal
 
         if (this.getDashing() > 0) this.setDashing(this.getDashing() - 1);
 
-        if (this.dashCooldown > 0)
+        if (this.getDashCooldown() > 0)
         {
-            --this.dashCooldown;
-            if (this.dashCooldown == 0) this.playSound(this.getDashReadySound(), 0.25F, this.getSoundPitch());
+            this.setDashCooldown(this.getDashCooldown() - 1);
+            if (this.getDashCooldown() == 0) this.playSound(this.getDashReadySound(), 0.25F, this.getSoundPitch());
         }
 
         super.onLivingUpdate();
@@ -290,20 +289,25 @@ public class EntityCamel extends EntityAnimal
                 }
 
                 float f = (float)this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue() * 0.225F;
-                float accelIncrease = 0.1F;
-                float accelDecay    = 0.1F;
-                float maxAccel      = 2.0F;
 
                 if (forward > 0)
                 {
-                    accel += accelIncrease;
-                    if (accel > maxAccel) accel = maxAccel;
+                    accel += 0.1F;
+                    if (accel > 2.0F) accel = 2.0F;
                 }
                 else
                 {
-                    accel -= accelDecay;
+                    accel -= 0.1F;
                     if (accel < 0.5F) accel = 0.5F;
                 }
+
+
+                if (entitylivingbase.isSprinting())
+                {
+                    accel *= 2;
+                    this.setSprinting(true);
+                }
+                else if (this.isSprinting()) this.setSprinting(false);
 
                 this.setAIMoveSpeed(f * accel);
                 super.travel(strafe, vertical, forward);
@@ -325,15 +329,18 @@ public class EntityCamel extends EntityAnimal
                 {
                     CapabilitySpearMovement.ICapabilityMountsPlayerInfo capCharge = player.getCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null);
 
-                    if (!capCharge.getIsSpaceHeld() && capCharge.getSpaceHeldTime() > 0 && this.dashCooldown <= 0)
+                    if (!capCharge.getIsSpaceHeld() && capCharge.getSpaceHeldTime() > 0)
                     {
-                        Vec3d moveVec = player.getLookVec().scale((capCharge.getSpaceHeldTime()) * 2);
-                        preformDash(moveVec);
+                        float powerResult = capCharge.getSpaceHeldTime() / 0.9F;
 
+                        if (capCharge.getSpaceHeldTime() > 0.9F) powerResult = 1.0F - 0.1F * ((capCharge.getSpaceHeldTime() - 0.9F) / 0.1F);
+
+                        Vec3d moveVec = player.getLookVec().scale(powerResult * 2);
+                        preformDash(moveVec);
                         capCharge.setSpaceHeldTime(0);
 
                         this.setDashing(15);
-                        this.dashCooldown = 20;
+                        this.setDashCooldown(20);
                     }
                 }
             }
@@ -454,6 +461,10 @@ public class EntityCamel extends EntityAnimal
     public float getClientAnimationTime(float partialTick)
     { return this.prevAnimationTime + (this.animationTime - this.prevAnimationTime) * partialTick;  }
 
+    @SideOnly(Side.CLIENT)
+    public float getClientDashCooldownTime(float partialTick)
+    { return this.prevDashCooldown + (this.getDashCooldown() - this.prevDashCooldown) * partialTick;  }
+
     public enum AnimState
     {
         NONE,
@@ -479,16 +490,21 @@ public class EntityCamel extends EntityAnimal
     public int getDashing() { return this.dataManager.get(DASHING); }
     public void setDashing(int state) { this.dataManager.set(DASHING, state); }
 
+    public int getDashCooldown() { return this.dataManager.get(DASH_COOLDOWN); }
+    public void setDashCooldown(int state) { this.dataManager.set(DASH_COOLDOWN, state); }
+
     public void writeEntityToNBT(NBTTagCompound compound)
     {
         super.writeEntityToNBT(compound);
         compound.setInteger("AnimationState", this.getAnimState().ordinal());
+        compound.setInteger("DashCooldown", this.getDashCooldown());
     }
 
     public void readEntityFromNBT(NBTTagCompound compound)
     {
         super.readEntityFromNBT(compound);
         this.setAnimState(EntityCamel.AnimState.values()[compound.getInteger("AnimationState")]);
+        this.setDashCooldown(compound.getInteger("DashCooldown"));
     }
 
     /**
