@@ -133,17 +133,21 @@ public class MountsClientEvents
         ItemRenderer itemRenderer = mc.getItemRenderer();
         GlStateManager.pushMatrix();
         float swing = player.getCooledAttackStrength(partialTicks);
-        if (hand == EnumHand.MAIN_HAND && swing < 1 && swingSpear) {
-            float swingStop = 0.2f;
-            float thustStart = 0.2f;
-            float thustStop = 0.25f;
-            /**maps values 0-1 to values in a triangle pattern in the same range, using sin looked too smooth and less abrupt
-            yeah I had to do math for this
-            check on a graphing calculator f=(1 - abs(2x-1))**/
-            float spearSwing = 1 - Math.abs(2 * (swing >= swingStop && swing <= 1 - swingStop ? swingStop : swing) - 1);
-            float spearThrust = 1 - Math.abs(2 * ((swing < thustStart || swing > 1 - thustStart ? 0 : swing >= thustStop && swing <= 1 - thustStop ? 0.25f : swing)) - 1f);
-            GlStateManager.rotate(170f * spearSwing, -1, 0 , 0);
-            GlStateManager.translate(0,  spearSwing + spearThrust * 1.3, 0.2 * spearSwing);
+        if (hand == EnumHand.MAIN_HAND && swing < 1 && swingSpear)
+        {
+            float swingS1End = 0.1f;
+            float swingS2End = 0.5f;
+            float spearSwing = swing < swingS1End ? swing / swingS1End : swing < swingS2End ? 1.0f : 1.0f - (swing - swingS2End) / swingS2End;
+
+            float spearThrustS1End = 0.2f;
+            float spearThrustS2End = 0.3f;
+            float spearThrustS3End = 0.5f;
+            float spearThrustDistance = 1.5f;
+            float spearThrust = swing < spearThrustS1End ? spearThrustDistance - ((swing / spearThrustS1End) / (spearThrustS2End - spearThrustS1End)) * spearThrustS3End :
+                    swing < spearThrustS3End ? spearThrustDistance / (swing / spearThrustS1End) :  spearThrustS3End - (swing - spearThrustS3End) / spearThrustS3End;
+
+            GlStateManager.rotate(80f * spearSwing, -1, 0 , 0);
+            GlStateManager.translate(0,  spearSwing + spearThrust * 0.25F, 0.2 * spearSwing);
         }
         if (swingSpear && swing == 1) swingSpear = false;
         itemRenderer.renderItemInFirstPerson(player, partialTicks, event.getInterpolatedPitch(), hand, 0, stack, swingSpear ? 0 : event.getEquipProgress());

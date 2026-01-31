@@ -20,6 +20,10 @@ public class MountsSoundEvents {
     public static final SoundEvent CAMEL_STEP = register("entity.camel.step");
     public static final SoundEvent CAMEL_STEP_SAND = register("entity.camel.step_sand");
 
+    public static final SoundEvent ITEM_SPEAR_ATTACK = register("item.spear.attack");
+    public static final SoundEvent ITEM_SPEAR_HIT = register("item.spear.hit");
+    public static final SoundEvent ITEM_SPEAR_USE = register("item.spear.use");
+
     public static SoundEvent register(String name) {
         SoundEvent sound = new SoundEvent(Constants.loc(name));
         sound.setRegistryName(name);

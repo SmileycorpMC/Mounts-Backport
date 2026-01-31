@@ -13,3 +13,6 @@ subtitle.mounts.entity.camel.eat=Camel eats
 subtitle.mounts.entity.camel.hurt=Camel hurts
 subtitle.mounts.entity.camel.sit=Camel sits down
 subtitle.mounts.entity.camel.stand=Camel stands up
+subtitle.mounts.item.spear.attack=Spear jabs
+subtitle.mounts.item.spear.hit=Spear hits
+subtitle.mounts.item.spear.use=Charges with Spear

@@ -65,5 +65,23 @@
     "subtitle": "subtitles.block.generic.footsteps",
     "sounds": [ "mounts:entity/camel/step_sand1", "mounts:entity/camel/step_sand2", "mounts:entity/camel/step_sand3",
       "mounts:entity/camel/step_sand4", "mounts:entity/camel/step_sand5", "mounts:entity/camel/step_sand6" ]
+  },
+  "item.spear.attack":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.item.spear.attack",
+    "sounds": [ "mounts:item/spear/attack1", "mounts:item/spear/attack2", "mounts:item/spear/attack3" ]
+  },
+  "item.spear.hit":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.item.spear.hit",
+    "sounds": [ "mounts:item/spear/hit1", "mounts:item/spear/hit2", "mounts:item/spear/hit3" ]
+  },
+  "item.spear.use":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.item.spear.use",
+    "sounds": [ "mounts:item/spear/use" ]
   }
 }

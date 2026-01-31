@@ -23,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
 import net.smileycorp.mounts.common.Constants;
+import net.smileycorp.mounts.common.MountsSoundEvents;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 
 import java.util.UUID;
@@ -61,6 +62,7 @@ public class ItemSpear extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         player.setActiveHand(hand);
+        player.world.playSound(player, player.posX, player.posY, player.posZ, ((ItemSpear) player.getHeldItem(hand).getItem()).getUseSound(), SoundCategory.PLAYERS, 1.0F, 1.0F);
         return new ActionResult<>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
     }
 
@@ -81,6 +83,10 @@ public class ItemSpear extends Item {
         return definition.getEnchantability();
     }
 
+    public SoundEvent getAttackSound() { return MountsSoundEvents.ITEM_SPEAR_ATTACK; }
+    public SoundEvent getHitSound() { return MountsSoundEvents.ITEM_SPEAR_HIT; }
+    public SoundEvent getUseSound() { return MountsSoundEvents.ITEM_SPEAR_USE; }
+
     @Override
     public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack) {
         Multimap<String, AttributeModifier> map = super.getItemAttributeModifiers(slot);
@@ -100,7 +106,8 @@ public class ItemSpear extends Item {
         return EntityEquipmentSlot.MAINHAND;
     }
 
-    public static boolean performSpearAttack(EntityLivingBase user, ItemStack stack, boolean charge) {
+    public static boolean performSpearAttack(EntityLivingBase user, ItemStack stack, boolean charge)
+    {
         if (user.world.isRemote |! (stack.getItem() instanceof ItemSpear)) return false;
         SpearDefinition definition = ((ItemSpear) stack.getItem()).getDefinition();
         Vec3d look = user.getLookVec();
@@ -112,10 +119,12 @@ public class ItemSpear extends Item {
         /* Make a sized Bounding Box, and push it forward by `distanceFromUser`! */
         AxisAlignedBB box = new AxisAlignedBB(getUserEyes).grow(width, width, width).offset(look.scale(distanceFromUser));
         boolean hit = false;
-        for (EntityLivingBase entity : user.world.getEntitiesWithinAABB(EntityLivingBase.class, box, e -> e != user)) {
+        for (EntityLivingBase entity : user.world.getEntitiesWithinAABB(EntityLivingBase.class, box, e -> e != user))
+        {
             if (user instanceof EntityPlayer & !ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity)) continue;
             float damage;
-            if (charge) {
+            if (charge)
+            {
                 //damage is based on relative speed between the user and the target
                 double relativeSpeed = getSpeed(look, user) - getSpeed(look, entity);
                 //non player entities have a way lower speed cap
@@ -124,7 +133,9 @@ public class ItemSpear extends Item {
                 //vanilla actually rounds down here for some reason
                 damage = (float) Math.floor(relativeSpeed * definition.getChargeMultiplier());
                 //charge attacks apparently don't take the mob attack damage attribute into account
-            } else damage = definition.getDamage() + (float) user.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
+            }
+            else damage = definition.getDamage() + (float) user.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
+
             damage += EnchantmentHelper.getModifierForCreature(stack, entity.getCreatureAttribute());
             if (entity.attackEntityFrom(DamageSource.causeMobDamage(user), damage)) hit = true;
             stack.damageItem(1, user);
@@ -132,6 +143,16 @@ public class ItemSpear extends Item {
         }
         if (!charge && user instanceof EntityPlayer) ((EntityPlayer) user).resetCooldown();
         renderHitboxParticles(user, box);
+
+        if (hit)
+        {
+            user.world.playSound(null, user.posX, user.posY, user.posZ, ((ItemSpear) stack.getItem()).getHitSound(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+        }
+        else if (!charge)
+        {
+            user.world.playSound(null, user.posX, user.posY, user.posZ, ((ItemSpear) stack.getItem()).getAttackSound(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+        }
+
         return hit;
     }
 
