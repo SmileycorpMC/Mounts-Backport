@@ -24,7 +24,7 @@ apply plugin: 'eclipse'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'java'
 
-version = "1.12.2-1.0.0-DEV1"
+version = "1.12.2-1.0.0-DEV2"
 group = "net.smileycorp.mounts"
 archivesBaseName = "Mounts Backport"
 
@@ -33,7 +33,7 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 minecraft {
     mappings channel: 'snapshot', version: '20171003-1.12'
     
-    //accessTransformer = file('src/main/resources/META-INF/mounts_at.cfg')
+    accessTransformer = file('src/main/resources/META-INF/mounts_at.cfg')
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
