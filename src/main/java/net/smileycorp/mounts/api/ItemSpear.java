@@ -100,9 +100,6 @@ public class ItemSpear extends Item {
         return EntityEquipmentSlot.MAINHAND;
     }
 
-    @Override
-    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) { return true; }
-
     public static boolean performSpearAttack(EntityLivingBase user, ItemStack stack, boolean charge) {
         if (user.world.isRemote |! (stack.getItem() instanceof ItemSpear)) return false;
         SpearDefinition definition = ((ItemSpear) stack.getItem()).getDefinition();

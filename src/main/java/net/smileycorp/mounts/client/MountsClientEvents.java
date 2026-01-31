@@ -5,6 +5,8 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -14,6 +16,7 @@ import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.smileycorp.atlas.api.util.MathUtils;
 import net.smileycorp.mounts.api.ItemSpear;
@@ -27,6 +30,7 @@ public class MountsClientEvents
     private static float prevSpaceHeld = 0.0F;
     private static float currSpaceHeld = 0.0F;
     private static final ResourceLocation TEXTURE_NAUTILUS_CHARGE_BAR = new ResourceLocation(Constants.MODID, "textures/gui/camel_charge_bar.png");
+    public static boolean swingSpear = false;
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event)
@@ -109,28 +113,40 @@ public class MountsClientEvents
 
 
     @SubscribeEvent
+    public static void logIn(PlayerEvent.PlayerLoggedInEvent event) {
+        swingSpear = false;
+    }
+
+    @SubscribeEvent
     public static void renderItem(RenderSpecificHandEvent event) {
         ItemStack stack = event.getItemStack();
-        if (!(stack.getItem() instanceof ItemSpear)) return;
+        EnumHand hand = event.getHand();
+        if (!(stack.getItem() instanceof ItemSpear)) {
+            if (swingSpear && hand == EnumHand.MAIN_HAND) swingSpear = false;
+            return;
+        }
         event.setCanceled(true);
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayerSP player = mc.player;
-        EnumHand hand = event.getHand();
         ItemSpear spear = (ItemSpear) stack.getItem();
         float partialTicks = event.getPartialTicks();
         ItemRenderer itemRenderer = mc.getItemRenderer();
         GlStateManager.pushMatrix();
         float swing = player.getCooledAttackStrength(partialTicks);
-        if (hand == EnumHand.MAIN_HAND && swing < 1 && player.isSwingInProgress) {
+        if (hand == EnumHand.MAIN_HAND && swing < 1 && swingSpear) {
+            float swingStop = 0.2f;
+            float thustStart = 0.2f;
+            float thustStop = 0.25f;
             /**maps values 0-1 to values in a triangle pattern in the same range, using sin looked too smooth and less abrupt
             yeah I had to do math for this
             check on a graphing calculator f=(1 - abs(2x-1))**/
-            float spearSwing = 1 - Math.abs(2 * (swing >= 0.2f && swing <= 0.8f ? 0.2f : swing) - 1);
-            float spearThrust = 1 - Math.abs(2 * ((swing < 0.2f || swing > 0.8f ? 0 : swing >= 0.25f && swing <= 0.75f ? 0.25f : swing)) - 1f);
+            float spearSwing = 1 - Math.abs(2 * (swing >= swingStop && swing <= 1 - swingStop ? swingStop : swing) - 1);
+            float spearThrust = 1 - Math.abs(2 * ((swing < thustStart || swing > 1 - thustStart ? 0 : swing >= thustStop && swing <= 1 - thustStop ? 0.25f : swing)) - 1f);
             GlStateManager.rotate(170f * spearSwing, -1, 0 , 0);
             GlStateManager.translate(0,  spearSwing + spearThrust * 1.3, 0.2 * spearSwing);
         }
-        itemRenderer.renderItemInFirstPerson(player, partialTicks, event.getInterpolatedPitch(), hand, 0, stack, 0);
+        if (swingSpear && swing == 1) swingSpear = false;
+        itemRenderer.renderItemInFirstPerson(player, partialTicks, event.getInterpolatedPitch(), hand, 0, stack, swingSpear ? 0 : event.getEquipProgress());
         GlStateManager.popMatrix();
     }
 
