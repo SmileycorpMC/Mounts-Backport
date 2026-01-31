@@ -3,6 +3,7 @@
   "package": "net.smileycorp.mounts.mixin",
   "refmap": "mixins.mounts.refmap.json",
   "mixins": [
+    "MixinEntity",
     "MixinEntityAIRunAroundLikeCrazy",
     "MixinEntityItem",
     "MixinNetHandlerPlayServer"
