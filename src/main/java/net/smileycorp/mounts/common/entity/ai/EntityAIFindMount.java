@@ -23,6 +23,7 @@ public class EntityAIFindMount extends EntityAIBase {
 
     @Override
     public boolean shouldExecute() {
+        if (checks == 0) return false;
         if (!validated) {
             if (!entity.isChild()) removeTask();
             if (entity.getRNG().nextFloat() > MountsConfig.babyZombieJockeyChance) removeTask();
@@ -68,7 +69,10 @@ public class EntityAIFindMount extends EntityAIBase {
     }
 
     private void removeTask() {
-        Mounts.DELAYED_THREAD_EXECUTOR.schedule(() -> entity.tasks.removeTask(this), 20, TimeUnit.MILLISECONDS);
+        checks = 0;
+        /*Mounts.DELAYED_THREAD_EXECUTOR.schedule(() -> {
+            entity.tasks.removeTask(this);
+        }, 20, TimeUnit.MILLISECONDS);*/
     }
 
 }
