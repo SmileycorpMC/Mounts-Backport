@@ -12,19 +12,23 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.smileycorp.mounts.common.MountsSoundEvents;
@@ -133,23 +137,62 @@ public class EntityCamel extends EntityAnimal
 
     public boolean processInteract(EntityPlayer player, EnumHand hand)
     {
-        if (!this.world.isRemote)
-        {
-            if (player.isSneaking())
-            {
+        ItemStack itemstack = player.getHeldItem(hand);
 
-                return true;
-            }
-            else
+        /* Skip any additional logic if the player is trying to feed the Camel. */
+        if (isBreedingItem(itemstack) && (!this.isInLove() || this.getHealth() < this.getMaxHealth()) && !player.getCooldownTracker().hasCooldown(itemstack.getItem()))
+        {
+            this.consumeItemFromStack(player, itemstack);
+            return true;
+        }
+
+        if (!player.isSneaking())
+        {
+            if (!this.world.isRemote)
             {
                 /* Temporary until I can elarn how to properly sync animations with adjustments made within the riding method. */
                 if (this.getAnimState() != AnimState.NONE) this.standUp(false);
                 player.startRiding(this);
                 return super.processInteract(player, hand);
             }
+            return true;
         }
+
         return super.processInteract(player, hand);
     }
+
+    /** Handles all eating! */
+    protected void consumeItemFromStack(EntityPlayer player, ItemStack stack)
+    {
+        playSound(getEatSound(), 1.0F, 1.0F);
+
+        if (!this.world.isRemote)
+        {
+            this.heal(2);
+            if (!this.isInLove()) this.setInLove(player);
+
+            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+
+            double yawRad = Math.toRadians(this.rotationYawHead);
+            double backX = Math.sin(yawRad);
+            double backZ = -Math.cos(yawRad);
+
+            double particleSpawnHeight = this.height + 0.15D;
+            double particleSpawnDistance = this.width;
+
+            ((WorldServer)this.world).spawnParticle(
+                    EnumParticleTypes.ITEM_CRACK,
+                    this.posX - backX * particleSpawnDistance, this.posY + particleSpawnHeight, this.posZ - backZ * particleSpawnDistance,
+                    10,
+                    0.1D, 0.1D, 0.1D,
+                    0.05D,  Item.getIdFromItem(stack.getItem()), stack.getMetadata()
+            );
+
+        }
+    }
+
+    /* Camels eat Cactus */
+    public boolean isBreedingItem(ItemStack stack) { return stack.getItem() == Item.getItemFromBlock(Blocks.CACTUS); }
 
     public float getEyeHeight() { return this.height * 0.9F; }
 
@@ -302,7 +345,7 @@ public class EntityCamel extends EntityAnimal
                 }
 
 
-                if (entitylivingbase.isSprinting())
+                if (entitylivingbase.isSprinting() && this.getDashCooldown() <= 0)
                 {
                     accel *= 2;
                     this.setSprinting(true);
