@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.client.event.InputUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,13 +19,17 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.smileycorp.atlas.api.util.MathUtils;
 import net.smileycorp.mounts.api.ItemSpear;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.entity.EntityCamel;
+import net.smileycorp.mounts.common.network.HoldingSpaceMessage;
+import net.smileycorp.mounts.common.network.PacketHandler;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(Side.CLIENT)
 public class MountsClientEvents
 {
     private static float prevSpaceHeld = 0.0F;
@@ -44,6 +49,26 @@ public class MountsClientEvents
 
         if (mc.player.hasCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null))
         { currSpaceHeld = mc.player.getCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null).getSpaceHeldTime(); }
+    }
+
+    /** This informs the server that the Player has pressed Space. */
+    @SubscribeEvent
+    public static void onUpdateJump(InputUpdateEvent event)
+    {
+        boolean isJumping = event.getMovementInput().jump;
+
+        EntityPlayer player = event.getEntityPlayer();
+
+        if (player.hasCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null))
+        {
+            CapabilitySpearMovement.ICapabilityMountsPlayerInfo capCharge = player.getCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null);
+
+            if (isJumping != capCharge.getIsSpaceHeld())
+            {
+                PacketHandler.NETWORK_INSTANCE.sendToServer(new HoldingSpaceMessage(event.getEntityPlayer().getEntityId(), isJumping));
+                capCharge.setIsSpaceHeld(isJumping);
+            }
+        }
     }
 
 
@@ -153,9 +178,4 @@ public class MountsClientEvents
         itemRenderer.renderItemInFirstPerson(player, partialTicks, event.getInterpolatedPitch(), hand, 0, stack, swingSpear ? 0 : event.getEquipProgress());
         GlStateManager.popMatrix();
     }
-
-    private static float clampFloat(float value, float start, float end) {
-        return MathHelper.clamp(MathUtils.lerp(value, start, end), 0, 1);
-    }
-
 }

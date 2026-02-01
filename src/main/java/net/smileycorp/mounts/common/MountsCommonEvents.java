@@ -44,26 +44,6 @@ public class MountsCommonEvents
         }
     }
 
-    /** This informs the server that the Player has pressed Space. */
-    @SubscribeEvent
-    public static void onUpdateJump(InputUpdateEvent event)
-    {
-        boolean isJumping = event.getMovementInput().jump;
-
-        EntityPlayer player = event.getEntityPlayer();
-
-        if (player.hasCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null))
-        {
-            CapabilitySpearMovement.ICapabilityMountsPlayerInfo capCharge = player.getCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null);
-
-            if (isJumping != capCharge.getIsSpaceHeld())
-            {
-                PacketHandler.NETWORK_INSTANCE.sendToServer(new HoldingSpaceMessage(event.getEntityPlayer().getEntityId(), isJumping));
-                capCharge.setIsSpaceHeld(isJumping);
-            }
-        }
-    }
-
     /** Bonus security check */
     @SubscribeEvent
     public static void PlayerTick(TickEvent.PlayerTickEvent event) {
