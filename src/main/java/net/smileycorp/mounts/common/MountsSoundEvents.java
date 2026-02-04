@@ -20,6 +20,8 @@ public class MountsSoundEvents {
     public static final SoundEvent CAMEL_STEP = register("entity.camel.step");
     public static final SoundEvent CAMEL_STEP_SAND = register("entity.camel.step_sand");
 
+    public static final SoundEvent ITEM_SADDLE_CAMEL_EQUIP = register("item.saddle.camel_equip");
+    public static final SoundEvent ITEM_SADDLE_CAMEL_UNEQUIP = register("item.saddle.camel_unequip");
     public static final SoundEvent ITEM_SPEAR_ATTACK = register("item.spear.attack");
     public static final SoundEvent ITEM_SPEAR_HIT = register("item.spear.hit");
     public static final SoundEvent ITEM_SPEAR_USE = register("item.spear.use");

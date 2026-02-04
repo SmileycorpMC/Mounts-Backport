@@ -66,6 +66,18 @@
     "sounds": [ "mounts:entity/camel/step_sand1", "mounts:entity/camel/step_sand2", "mounts:entity/camel/step_sand3",
       "mounts:entity/camel/step_sand4", "mounts:entity/camel/step_sand5", "mounts:entity/camel/step_sand6" ]
   },
+  "item.saddle.camel_equip":
+  {
+    "category": "neutral",
+    "subtitle": "subtitles.entity.horse.saddle",
+    "sounds": [ "mob/horse/leather" ]
+  },
+  "item.saddle.camel_unequip":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.item.saddle.unequip",
+    "sounds": [ "mounts:item/saddle_unequip1" ]
+  },
   "item.spear.attack":
   {
     "category": "neutral",

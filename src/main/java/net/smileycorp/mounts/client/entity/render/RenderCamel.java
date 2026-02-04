@@ -18,6 +18,7 @@ public class RenderCamel extends RenderLiving<EntityCamel>
     {
         super(renderManagerIn, new ModelCamel(), 1.1f);
         this.addLayer(new LayerCamelChuffingIt(this));
+        this.addLayer(new LayerCamelSaddle(this));
     }
 
     @Override

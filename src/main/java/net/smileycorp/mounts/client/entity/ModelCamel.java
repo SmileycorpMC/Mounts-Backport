@@ -15,7 +15,7 @@ import net.smileycorp.mounts.common.entity.EntityCamel;
 public class ModelCamel extends ModelBase
 {
     public final ModelRenderer main;
-    private final ModelRenderer upper_body;
+    public final ModelRenderer upper_body;
     public final ModelRenderer head;
     private final ModelRenderer earR;
     private final ModelRenderer earL;
@@ -97,17 +97,10 @@ public class ModelCamel extends ModelBase
     {
         if (this.isChild)
         {
-            //float f = 2.0F;
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0.0F, 18 * f5, 1 * f5);
-            this.head.render(f5);
-            GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.5F, 0.5F, 0.5F);
             GlStateManager.translate(0.0F, 24.0F * f5, 0.0F);
-            this.head.isHidden = true;
             this.main.render(f5);
-            this.head.isHidden = false;
             GlStateManager.popMatrix();
         }
         else
@@ -127,7 +120,7 @@ public class ModelCamel extends ModelBase
         /* Used for a 'breathing' motion. */
         float idle = MathHelper.sin((ageInTicks) * 0.05F) * 0.25F;
 
-        this.head.rotateAngleX = headPitch * 0.017453292F + (dashCooldownTime * 0.05F);
+        this.head.rotateAngleX = headPitch * 0.017453292F + (dashCooldownTime * 0.015F);
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
 
         this.earL.rotateAngleY = 0.0F;

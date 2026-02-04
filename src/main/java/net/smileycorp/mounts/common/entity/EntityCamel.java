@@ -46,6 +46,7 @@ public class EntityCamel extends EntityAnimal
     /* Primarily handles the Dashing Animation. */
     private static final DataParameter<Integer> DASHING = EntityDataManager.createKey(EntityCamel.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> DASH_COOLDOWN = EntityDataManager.createKey(EntityCamel.class, DataSerializers.VARINT);
+    private static final DataParameter<ItemStack> SADDLE_STACK = EntityDataManager.createKey(EntityCamel.class, DataSerializers.ITEM_STACK);
     private float animTransSpeed = 0.4F;
     private float animationTime;
     private float prevAnimationTime;
@@ -63,6 +64,7 @@ public class EntityCamel extends EntityAnimal
         this.dataManager.register(ANIMSTATE, 0);
         this.dataManager.register(DASHING, 0);
         this.dataManager.register(DASH_COOLDOWN, 0);
+        this.dataManager.register(SADDLE_STACK, ItemStack.EMPTY);
     }
 
     protected void initEntityAI()
@@ -146,7 +148,25 @@ public class EntityCamel extends EntityAnimal
             return true;
         }
 
-        if (!player.isSneaking())
+        if (itemstack.getItem() instanceof ItemSaddle && this.getSaddle().isEmpty() && !this.isChild())
+        {
+            this.playSound(MountsSoundEvents.ITEM_SADDLE_CAMEL_EQUIP, 0.5F, 0.8F);
+            this.setSaddle(itemstack.copy());
+            itemstack.shrink(1);
+            return true;
+        }
+        else if (itemstack.getItem() instanceof ItemShears)
+        {
+            if (!this.getSaddle().isEmpty())
+            {
+                this.playSound(MountsSoundEvents.ITEM_SADDLE_CAMEL_UNEQUIP, 1.0F, 1.0F);
+                if (!world.isRemote) this.entityDropItem(this.getSaddle(), 1.75F);
+                this.setSaddle(ItemStack.EMPTY);
+                return true;
+            }
+        }
+
+        if (!player.isSneaking() && !this.isChild())
         {
             if (!this.world.isRemote)
             {
@@ -224,7 +244,7 @@ public class EntityCamel extends EntityAnimal
         double forwardOffset = i == 1 ? -0.6D : 0.5D;
         double yOffset = this.getMountedYOffset() + passenger.getYOffset();
 
-        Vec3d offset = new Vec3d(0, 0.0D, forwardOffset).rotateYaw(-this.rotationYaw * 0.017453292F);
+        Vec3d offset = new Vec3d(0, 0.0D, forwardOffset).rotateYaw(-this.renderYawOffset * 0.017453292F);
 
         passenger.setPosition( this.posX + offset.x, this.posY + yOffset, this.posZ + offset.z);
     }
@@ -378,12 +398,14 @@ public class EntityCamel extends EntityAnimal
 
                         if (capCharge.getSpaceHeldTime() > 0.9F) powerResult = 1.0F - 0.1F * ((capCharge.getSpaceHeldTime() - 0.9F) / 0.1F);
 
-                        Vec3d moveVec = player.getLookVec().scale(powerResult * 2);
+                        float yawRad = (float)Math.toRadians(player.rotationYaw);
+                        Vec3d moveVec = new Vec3d(-Math.sin(yawRad), 0, Math.cos(yawRad)).scale(powerResult * 2.5);
+
                         preformDash(moveVec);
                         capCharge.setSpaceHeldTime(0);
 
                         this.setDashing(15);
-                        this.setDashCooldown(20);
+                        this.setDashCooldown(55);
                     }
                 }
             }
@@ -415,7 +437,7 @@ public class EntityCamel extends EntityAnimal
     }
 
     public boolean canBeSteered()
-    { return this.getControllingPassenger() instanceof EntityLivingBase; }
+    { return this.getControllingPassenger() instanceof EntityLivingBase && !this.getSaddle().isEmpty(); }
 
     protected boolean canFitPassenger(Entity passenger)
     { return this.getPassengers().size() < 2; }
@@ -536,11 +558,26 @@ public class EntityCamel extends EntityAnimal
     public int getDashCooldown() { return this.dataManager.get(DASH_COOLDOWN); }
     public void setDashCooldown(int state) { this.dataManager.set(DASH_COOLDOWN, state); }
 
+    public ItemStack getSaddle() { return this.dataManager.get(SADDLE_STACK); }
+    public void setSaddle(ItemStack stack)
+    {
+        if (!stack.isEmpty())
+        {
+            stack = stack.copy();
+            stack.setCount(1);
+        }
+
+        this.dataManager.set(SADDLE_STACK, stack);
+    }
+
     public void writeEntityToNBT(NBTTagCompound compound)
     {
         super.writeEntityToNBT(compound);
         compound.setInteger("AnimationState", this.getAnimState().ordinal());
         compound.setInteger("DashCooldown", this.getDashCooldown());
+
+        if (!this.getSaddle().isEmpty())
+        { compound.setTag("SaddleItem", this.getSaddle().writeToNBT(new NBTTagCompound())); }
     }
 
     public void readEntityFromNBT(NBTTagCompound compound)
@@ -548,6 +585,9 @@ public class EntityCamel extends EntityAnimal
         super.readEntityFromNBT(compound);
         this.setAnimState(EntityCamel.AnimState.values()[compound.getInteger("AnimationState")]);
         this.setDashCooldown(compound.getInteger("DashCooldown"));
+
+        if (!compound.getCompoundTag("SaddleItem").hasNoTags())
+        { this.setSaddle(new ItemStack(compound.getCompoundTag("SaddleItem"))); }
     }
 
     /**

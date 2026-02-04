@@ -24,6 +24,9 @@ public class LayerCamelChuffingIt implements LayerRenderer<EntityCamel>
 
     public void doRenderLayer(EntityCamel entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
+        /* Smoking isn't for kids. */
+        if (entity.isChild()) return;
+
         this.camelRenderer.bindTexture(FAT_DART_TEXTURE);
         this.fatDartModel.setModelAttributes(this.camelRenderer.getMainModel());
         GlStateManager.pushMatrix();
