@@ -109,6 +109,11 @@ public class EntityCamel extends EntityAnimal
 
     public void onLivingUpdate()
     {
+        if (!this.world.isRemote)
+        {
+            if (this.rand.nextInt(900) == 0 && this.deathTime == 0) this.heal(1.0F);
+        }
+
         prevAnimationTime = animationTime;
         prevDashCooldown = this.getDashCooldown();
 
@@ -190,8 +195,6 @@ public class EntityCamel extends EntityAnimal
             this.heal(2);
             if (!this.isInLove()) this.setInLove(player);
 
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
-
             double yawRad = Math.toRadians(this.rotationYawHead);
             double backX = Math.sin(yawRad);
             double backZ = -Math.cos(yawRad);
@@ -207,6 +210,19 @@ public class EntityCamel extends EntityAnimal
                     0.05D,  Item.getIdFromItem(stack.getItem()), stack.getMetadata()
             );
 
+            /* Stack Shrinking is last, so particles spawn correctly! */
+            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+        }
+    }
+
+    /** Always drop the Saddle and Armor on Death. */
+    public void onDeath(DamageSource cause)
+    {
+        super.onDeath(cause);
+
+        if (!this.world.isRemote)
+        {
+            if (!this.getSaddle().isEmpty()) this.entityDropItem(this.getSaddle(), 0.5F);
         }
     }
 
