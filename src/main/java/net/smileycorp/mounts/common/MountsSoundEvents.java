@@ -19,6 +19,10 @@ public class MountsSoundEvents {
     public static final SoundEvent CAMEL_STAND = register("entity.camel.stand");
     public static final SoundEvent CAMEL_STEP = register("entity.camel.step");
     public static final SoundEvent CAMEL_STEP_SAND = register("entity.camel.step_sand");
+    public static final SoundEvent PARCHED_AMBIENT = register("entity.parched.ambient");
+    public static final SoundEvent PARCHED_DEATH = register("entity.parched.death");
+    public static final SoundEvent PARCHED_HURT = register("entity.parched.hurt");
+    public static final SoundEvent PARCHED_STEP = register("entity.parched.step");
 
     public static final SoundEvent ITEM_SADDLE_CAMEL_EQUIP = register("item.saddle.camel_equip");
     public static final SoundEvent ITEM_SADDLE_CAMEL_UNEQUIP = register("item.saddle.camel_unequip");

@@ -3,10 +3,10 @@ package net.smileycorp.mounts.common.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Biomes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeDesert;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.smileycorp.mounts.common.Constants;
@@ -18,7 +18,8 @@ public class MountsEntities
 
     public static void registerEntities()
     {
-        registerEntity("camel", EntityCamel.class, ++id, 80, 9084018, 3231003);
+        registerEntity("camel", EntityCamel.class, ++id, 80, 16565097, 13341495);
+        registerEntity("parched", EntityParched.class, ++id, 80, 11376223, 6249550);
     }
 
     public static void registerEntitySpawns()

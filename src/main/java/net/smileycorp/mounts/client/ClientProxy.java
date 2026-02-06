@@ -11,9 +11,11 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.smileycorp.mounts.client.entity.render.RenderCamel;
+import net.smileycorp.mounts.client.entity.render.RenderParched;
 import net.smileycorp.mounts.common.CommonProxy;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.entity.EntityCamel;
+import net.smileycorp.mounts.common.entity.EntityParched;
 import net.smileycorp.mounts.config.SpearRegistry;
 
 @EventBusSubscriber(value = Side.CLIENT, modid= Constants.MODID)
@@ -39,7 +41,8 @@ public class ClientProxy extends CommonProxy {
 		SpearRegistry.getSpears().forEach(spear -> ModelLoader.setCustomModelResourceLocation(spear, 0,
 				new ModelResourceLocation(spear.getRegistryName(), "normal")));
 
-		RenderingRegistry.registerEntityRenderingHandler(EntityCamel.class, RenderCamel::new);;
+		RenderingRegistry.registerEntityRenderingHandler(EntityCamel.class, RenderCamel::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityParched.class, RenderParched::new);
 	}
 	
 }

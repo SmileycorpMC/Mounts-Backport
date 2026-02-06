@@ -27,6 +27,7 @@ public class CommonProxy
 		MountsConfig.syncConfig(event);
 		MountsEntities.registerEntities();
 		MountsEntities.registerEntitySpawns();
+		MountsLootTables.registerLootTables();
 		PacketHandler.initPackets();
 	}
 

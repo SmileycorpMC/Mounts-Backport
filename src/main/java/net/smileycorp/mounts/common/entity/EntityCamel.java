@@ -19,10 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -31,6 +28,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.smileycorp.mounts.common.MountsLootTables;
 import net.smileycorp.mounts.common.MountsSoundEvents;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.config.EntityConfig;
@@ -87,10 +85,11 @@ public class EntityCamel extends EntityAnimal
         EntityConfig.camel.applyAttributes(this);
     }
 
+    @Nullable
+    protected ResourceLocation getLootTable() { return MountsLootTables.CAMEL_DROPS; }
+
     protected SoundEvent getAmbientSound() { return MountsSoundEvents.CAMEL_AMBIENT; }
-
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) { return MountsSoundEvents.CAMEL_HURT; }
-
     protected SoundEvent getDeathSound() { return MountsSoundEvents.CAMEL_DEATH; }
 
     protected void playStepSound(BlockPos pos, Block blockIn)

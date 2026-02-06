@@ -66,6 +66,30 @@
     "sounds": [ "mounts:entity/camel/step_sand1", "mounts:entity/camel/step_sand2", "mounts:entity/camel/step_sand3",
       "mounts:entity/camel/step_sand4", "mounts:entity/camel/step_sand5", "mounts:entity/camel/step_sand6" ]
   },
+  "entity.parched.ambient":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.entity.parched.ambient",
+    "sounds": [ "mounts:entity/parched/ambient1", "mounts:entity/parched/ambient2", "mounts:entity/parched/ambient3", "mounts:entity/parched/ambient4" ]
+  },
+  "entity.parched.death":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.entity.parched.death",
+    "sounds": [ "mounts:entity/parched/death" ]
+  },
+  "entity.parched.hurt":
+  {
+    "category": "neutral",
+    "subtitle": "subtitle.mounts.entity.parched.hurt",
+    "sounds": [ "mounts:entity/parched/hurt1", "mounts:entity/parched/hurt2", "mounts:entity/parched/hurt3", "mounts:entity/parched/hurt4" ]
+  },
+  "entity.parched.step":
+  {
+    "category": "neutral",
+    "subtitle": "subtitles.block.generic.footsteps",
+    "sounds": [ "mounts:entity/parched/step1", "mounts:entity/parched/step2", "mounts:entity/parched/step3", "mounts:entity/parched/step4" ]
+  },
   "item.saddle.camel_equip":
   {
     "category": "neutral",

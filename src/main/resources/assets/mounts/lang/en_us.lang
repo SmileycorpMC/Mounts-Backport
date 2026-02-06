@@ -2,8 +2,8 @@ death.attack.mounts.spear=%1$s was speared by %2$s
 death.attack.mounts.spear.item=%1$s was speared by %2$s using %3$s
 
 entity.mounts.camel.name=Camel
-entity.traders.camel_husk.name=Camel Husk
-entity.traders.parched.name=Parched
+entity.mounts.camel_husk.name=Camel Husk
+entity.mounts.parched.name=Parched
 
 subtitle.mounts.entity.camel.ambient=Camel grunts
 subtitle.mounts.entity.camel.dash=Camel yeets
@@ -13,6 +13,9 @@ subtitle.mounts.entity.camel.eat=Camel eats
 subtitle.mounts.entity.camel.hurt=Camel hurts
 subtitle.mounts.entity.camel.sit=Camel sits down
 subtitle.mounts.entity.camel.stand=Camel stands up
+subtitle.mounts.entity.parched.ambient=Parched rattles
+subtitle.mounts.entity.parched.death=Parched dies
+subtitle.mounts.entity.parched.hurt=Parched hurts
 subtitle.mounts.item.saddle.unequip=Saddle snips away
 subtitle.mounts.item.spear.attack=Spear jabs
 subtitle.mounts.item.spear.hit=Spear hits
