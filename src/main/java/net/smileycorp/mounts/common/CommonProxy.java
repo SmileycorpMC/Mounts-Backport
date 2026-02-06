@@ -64,7 +64,7 @@ public class CommonProxy
 			if (skeleton == null) continue;
 			entries.remove(skeleton);
 			int weight = skeleton.itemWeight / 2;
-			MountsLogger.logInfo("Adding Parched and Skeleton spawns to " + biome.getBiomeName() + ", with weight: " + weight + ", minGroup: " + skeleton.minGroupCount + ", max group: " + skeleton.maxGroupCount);
+			MountsLogger.logInfo("Adding Parched and Skeleton spawns to " + biome.getRegistryName() + ", with weight: " + weight + ", minGroup: " + skeleton.minGroupCount + ", max group: " + skeleton.maxGroupCount);
 			entries.add(new Biome.SpawnListEntry(EntitySkeleton.class, weight, skeleton.minGroupCount, skeleton.maxGroupCount));
 			entries.add(new Biome.SpawnListEntry(EntityParched.class, weight, skeleton.minGroupCount, skeleton.maxGroupCount));
 		}
