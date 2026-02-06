@@ -4,10 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.smileycorp.mounts.common.Mounts;
 import net.smileycorp.mounts.config.MountsConfig;
-
-import java.util.concurrent.TimeUnit;
 
 public class EntityAIFindMount extends EntityAIBase {
 
