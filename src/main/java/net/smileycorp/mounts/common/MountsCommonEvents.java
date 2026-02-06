@@ -3,20 +3,26 @@ package net.smileycorp.mounts.common;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.*;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.client.event.InputUpdateEvent;
+import net.minecraft.world.World;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.entity.EntityCamel;
+import net.smileycorp.mounts.common.entity.EntityParched;
 import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
-import net.smileycorp.mounts.common.network.HoldingSpaceMessage;
-import net.smileycorp.mounts.common.network.PacketHandler;
+import net.smileycorp.mounts.config.MountsConfig;
+import net.smileycorp.mounts.integration.DeeperDepthsIntegration;
+
+import java.util.Random;
+import java.util.Set;
 
 @Mod.EventBusSubscriber
 public class MountsCommonEvents
@@ -64,10 +70,30 @@ public class MountsCommonEvents
     }
 
     @SubscribeEvent
-    public static void spawnMob(LivingSpawnEvent.CheckSpawn event) {
-        EntityLivingBase instance = event.getEntityLiving();
-        if (!(instance instanceof EntityZombie)) return;
-        ((EntityZombie) instance).tasks.addTask(1, new EntityAIFindMount((EntityLiving) instance));
+    public static void spawnMob(LivingSpawnEvent.SpecialSpawn event) {
+        EntityLivingBase entity = event.getEntityLiving();
+        if (entity instanceof EntityZombie) ((EntityZombie) entity).tasks.addTask(1, new EntityAIFindMount((EntityLiving) entity));
+        if (entity.getClass() == EntityCaveSpider.class && entity.world.rand.nextFloat() > MountsConfig.caveSpiderJockeyChance) addRider(entity);
+    }
+
+    public static AbstractSkeleton addRider(EntityLivingBase entity) {
+        if (!(entity instanceof EntitySpider)) return null;
+        World world = entity.world;
+        AbstractSkeleton skeleton = new EntitySkeleton(entity.world);
+        Random rand = entity.world.rand;
+        Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(entity.world.getBiome(entity.getPosition()));
+        if (types.contains(BiomeDictionary.Type.SNOWY) &! types.contains(BiomeDictionary.Type.FOREST)
+                && rand.nextFloat() <= MountsConfig.strayChance) skeleton = new EntityStray(world);
+        if (types.contains(BiomeDictionary.Type.SANDY) &! (types.contains(BiomeDictionary.Type.FOREST) || types.contains(BiomeDictionary.Type.BEACH))
+                && rand.nextFloat() <= MountsConfig.parchedChance) skeleton = new EntityParched(world);
+        if (Loader.isModLoaded("deeperdepths") && DeeperDepthsIntegration.canBoggedSpawn(rand, types))
+            skeleton = DeeperDepthsIntegration.getBogged(world);
+        if (skeleton == null) return null;
+        skeleton.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, 0.0F);
+        skeleton.onInitialSpawn(world.getDifficultyForLocation(entity.getPosition()), null);
+        world.spawnEntity(skeleton);
+        skeleton.startRiding(entity);
+        return skeleton;
     }
 
 }

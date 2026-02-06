@@ -15,23 +15,33 @@ import java.util.List;
 
 public class MountsConfig {
 
+    //baby zombies
     public static float babyZombieJockeyChance;
     private static String[] babyZombieMountableEntitiesStr;
     private static List<Class<? extends EntityLiving>> babyZombieMountableEntities;
 
+    //spiders
+    public static float spiderJockeyChance;
+    public static float caveSpiderJockeyChance;
+    public static float strayChance;
     public static float parchedChance;
+    public static float boggedChance;
 
     public static void syncConfig(FMLPreInitializationEvent event) {
         Configuration config = new Configuration(new File(event.getModConfigurationDirectory().getPath() + "/mounts/mounts.cfg"));
         try{
             config.load();
-            babyZombieJockeyChance = config.getFloat( "jockeyChance", "baby zombies", 0.15f, 0, 1, "Chance for a baby zombie to spawn as a jockey.");
+            babyZombieJockeyChance = config.getFloat( "jockeyChance", "baby zombies", 0.15f, 0, 1, "Chance for a baby zombie to spawn as a jockey. (Bedrock feature)");
             babyZombieMountableEntitiesStr = config.getStringList("mountableEntities", "baby zombies",
                     new String[] {"minecraft:chicken", "minecraft:sheep", "minecraft:pig", "minecraft:cow", "minecraft:mushroom_cow", "minecraft:ocelot", "minecraft:wolf",
                             "minecraft:horse", "minecraft:donkey", "minecraft:mule", "miencraft:zombie_horse", "minecraft:skeleton_horse", "minecraft:spider", "minecraft:cave_spider",
                             "minecraft:zombie", "minecraft:husk", "minecraft:zombie_pigman", "oe:zombie_nautilius", "futuremc:panda"},
                     "Which entities can baby zombies seek out and ride?");
-            parchedChance = config.getFloat( "parchedChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a parched jockey.");
+            spiderJockeyChance = config.getFloat( "spiderJockeyChance", "spiders", 0.01f, 0, 1, "Chance for a spider to spawn as a skeleton jockey.");
+            caveSpiderJockeyChance = config.getFloat( "caveSpiderJockeyChance", "spiders", 0.01f, 0, 1, "Chance for a cave spider to spawn as a skeleton jockey. (Bedrock feature)");
+            strayChance = config.getFloat( "strayChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a stray jockey in snowy biomes. (Bedrock feature)");
+            parchedChance = config.getFloat( "parchedChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a parched jockey in deserts. (Bedrock feature)");
+            boggedChance = config.getFloat( "boggedChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a bogged jockey in swamps. (Bedrock feature) (Only if deeper depths is installed)");
         } catch(Exception e) {
         } finally {
             if (config.hasChanged()) config.save();

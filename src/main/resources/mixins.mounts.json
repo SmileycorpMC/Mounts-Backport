@@ -7,8 +7,8 @@
     "MixinEntity",
     "MixinEntityAIRunAroundLikeCrazy",
     "MixinEntityItem",
-    "MixinNetHandlerPlayServer",
-    "MixinEntitySpider"
+    "MixinEntitySpider",
+    "MixinNetHandlerPlayServer"
   ],
   "client": [
     "MixinEntityPlayerSP",
