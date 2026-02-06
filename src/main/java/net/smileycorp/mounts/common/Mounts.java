@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.smileycorp.mounts.config.SpearRegistry;
+import net.smileycorp.mounts.config.DataGenerator;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -25,7 +25,7 @@ public class Mounts
 	
 	public Mounts() {
 		MountsLogger.clearLog();
-		SpearRegistry.generateData();
+		DataGenerator.generateData();
 	}
 	
 	@EventHandler

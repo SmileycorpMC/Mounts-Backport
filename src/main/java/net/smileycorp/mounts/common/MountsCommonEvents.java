@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -18,6 +19,8 @@ import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 import net.smileycorp.mounts.common.entity.EntityParched;
 import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
+import net.smileycorp.mounts.config.LootConfig;
+import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.MountsConfig;
 import net.smileycorp.mounts.integration.DeeperDepthsIntegration;
 
@@ -66,6 +69,14 @@ public class MountsCommonEvents
             EntityCamel camel = (EntityCamel)player.getRidingEntity();
             if (camel.isSitting() || camel.getDashCooldown() > 0) return;
             if (capCharge.getIsSpaceHeld()) capCharge.setSpaceHeldTime(Math.min(1.0F, capCharge.getSpaceHeldTime() + 0.1F));
+        }
+    }
+
+    @SubscribeEvent
+    public static void addLoot(LootTableLoadEvent event) {
+        for (LootTableEntry entry : LootConfig.getLootTableEntries()) if (entry.canApply(event.getName())) {
+            entry.addEntry(event.getTable());
+            MountsLogger.logInfo("Injected " + entry.getName() + " with weight " + entry.getWeight() + " to pool " + entry.getPool() + " in table " + entry.getLootTable());
         }
     }
 
