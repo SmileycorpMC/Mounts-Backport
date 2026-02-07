@@ -5,6 +5,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.resources.FolderResourcePack;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.smileycorp.mounts.api.ItemSpear;
 import net.smileycorp.mounts.client.MountsClientEvents;
 import net.smileycorp.mounts.common.MountsLogger;
@@ -45,6 +46,7 @@ public class MixinMinecraft {
         if (player.getCooledAttackStrength(0) < 1) return;
         PacketHandler.NETWORK_INSTANCE.sendToServer(new SpearAttackMessage());
         MountsClientEvents.swingSpear = true;
+        player.swingArm(EnumHand.MAIN_HAND);
         player.resetCooldown();
     }
 

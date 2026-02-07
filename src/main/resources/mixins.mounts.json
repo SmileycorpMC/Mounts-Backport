@@ -10,7 +10,8 @@
   ],
   "client": [
     "MixinEntityPlayerSP",
-    "MixinMinecraft"
+    "MixinMinecraft",
+    "MixinModelBiped"
   ],
   "server": [
     "MixinMinecraftServer"

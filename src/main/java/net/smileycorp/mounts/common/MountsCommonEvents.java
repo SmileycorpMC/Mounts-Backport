@@ -5,7 +5,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.client.event.InputUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -15,8 +14,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
-import net.smileycorp.mounts.common.network.HoldingSpaceMessage;
-import net.smileycorp.mounts.common.network.PacketHandler;
 
 @Mod.EventBusSubscriber
 public class MountsCommonEvents

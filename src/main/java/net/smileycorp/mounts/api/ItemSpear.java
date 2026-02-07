@@ -109,6 +109,7 @@ public class ItemSpear extends Item {
     public static boolean performSpearAttack(EntityLivingBase user, ItemStack stack, boolean charge)
     {
         if (user.world.isRemote |! (stack.getItem() instanceof ItemSpear)) return false;
+        if (!charge) user.swingArm(EnumHand.MAIN_HAND);
         SpearDefinition definition = ((ItemSpear) stack.getItem()).getDefinition();
         Vec3d look = user.getLookVec();
         BlockPos getUserEyes = user.getPosition().add(new BlockPos(0, user.getEyeHeight(), 0));

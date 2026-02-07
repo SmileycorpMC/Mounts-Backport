@@ -10,19 +10,13 @@ import net.smileycorp.mounts.api.ItemSpear;
 
 public class SpearAttackMessage implements IMessage {
 
-    private int entity;
-
     public SpearAttackMessage() {}
 
     @Override
-    public void fromBytes(ByteBuf buf) {
-        entity = buf.readInt();
-    }
+    public void fromBytes(ByteBuf buf) {}
 
     @Override
-    public void toBytes(ByteBuf buf) {
-        buf.writeInt(entity);
-    }
+    public void toBytes(ByteBuf buf) {}
 
     public IMessage process(MessageContext ctx) {
         if (ctx.side == Side.SERVER) FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
