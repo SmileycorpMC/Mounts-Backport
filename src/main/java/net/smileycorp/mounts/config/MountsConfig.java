@@ -27,6 +27,9 @@ public class MountsConfig {
     public static float parchedChance;
     public static float boggedChance;
 
+    //camels
+    public static float huskJockeyChance;
+
     public static void syncConfig(FMLPreInitializationEvent event) {
         Configuration config = new Configuration(new File(event.getModConfigurationDirectory().getPath() + "/mounts/mounts.cfg"));
         try{
@@ -42,6 +45,8 @@ public class MountsConfig {
             strayChance = config.getFloat( "strayChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a stray jockey in snowy biomes. (Bedrock feature)");
             parchedChance = config.getFloat( "parchedChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a parched jockey in deserts. (Bedrock feature)");
             boggedChance = config.getFloat( "boggedChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a bogged jockey in swamps. (Bedrock feature) (Only if deeper depths is installed)");
+
+            huskJockeyChance = config.getFloat( "huskJockeyChance", "zombies", 0.1f, 0, 1, "Chance for a husk to spawn as a husk jockey.");
         } catch(Exception e) {
         } finally {
             if (config.hasChanged()) config.save();

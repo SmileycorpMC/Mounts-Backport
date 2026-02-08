@@ -3,10 +3,15 @@ package net.smileycorp.mounts.common.entity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSand;
 import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.smileycorp.mounts.common.MountsLootTables;
@@ -16,6 +21,7 @@ import javax.annotation.Nullable;
 
 public class EntityCamelHusk extends EntityCamel
 {
+
     public EntityCamelHusk(World worldIn)
     {
         super(worldIn);
@@ -34,6 +40,13 @@ public class EntityCamelHusk extends EntityCamel
     public SoundEvent getSitSound() { return MountsSoundEvents.CAMEL_HUSK_SIT; }
     public SoundEvent getEatSound() { return MountsSoundEvents.CAMEL_HUSK_EAT; }
 
+    //camel husks can despawn like hostile mobs if a player doesn't ride them
+    @Override
+    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+        enablePersistence();
+        return super.processInteract(player, hand);
+    }
+
     protected void playStepSound(BlockPos pos, Block blockIn)
     {
         SoundEvent sound = MountsSoundEvents.CAMEL_HUSK_STEP;
@@ -48,5 +61,15 @@ public class EntityCamelHusk extends EntityCamel
     public boolean isBreedingItem(ItemStack stack) { return stack.getItem() == Items.RABBIT_FOOT; }
     /* Camel Husks are probably aroace, but also are freaks for eating feet. */
     public boolean canMateWith(EntityAnimal otherAnimal) { return false; }
+
+    @Override
+    protected boolean canDespawn() {
+        return true;
+    }
+
+    @Override
+    public boolean isCreatureType(EnumCreatureType type, boolean forSpawnCount) {
+        return type == (forSpawnCount ? EnumCreatureType.MONSTER : EnumCreatureType.CREATURE);
+    }
 
 }

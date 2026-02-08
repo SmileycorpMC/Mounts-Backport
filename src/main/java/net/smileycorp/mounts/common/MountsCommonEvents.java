@@ -5,6 +5,8 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -15,8 +17,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.smileycorp.mounts.api.VanillaSpears;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.entity.EntityCamel;
+import net.smileycorp.mounts.common.entity.EntityCamelHusk;
 import net.smileycorp.mounts.common.entity.EntityParched;
 import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
 import net.smileycorp.mounts.config.LootConfig;
@@ -83,8 +87,23 @@ public class MountsCommonEvents
     @SubscribeEvent
     public static void spawnMob(LivingSpawnEvent.SpecialSpawn event) {
         EntityLivingBase entity = event.getEntityLiving();
+        World world = entity.world;
         if (entity instanceof EntityZombie) ((EntityZombie) entity).tasks.addTask(1, new EntityAIFindMount((EntityLiving) entity));
-        if (entity.getClass() == EntityCaveSpider.class && entity.world.rand.nextFloat() > MountsConfig.caveSpiderJockeyChance) addRider(entity);
+        if (entity.getClass() == EntityCaveSpider.class && world.rand.nextFloat() <= MountsConfig.caveSpiderJockeyChance) addRider(entity);
+        if (entity.getClass() == EntityHusk.class && world.rand.nextFloat() <= MountsConfig.huskJockeyChance) {
+            DifficultyInstance difficulty = world.getDifficultyForLocation(entity.getPosition());
+            EntityCamelHusk camel = new EntityCamelHusk(world);
+            camel.setPosition(entity.posX, entity.posY, entity.posZ);
+            camel.onInitialSpawn(difficulty, null);
+            entity.startRiding(camel, true);
+            world.spawnEntity(camel);
+            EntityParched parched = new EntityParched(world);
+            parched.setPosition(entity.posX, entity.posY, entity.posZ);
+            parched.onInitialSpawn(difficulty, null);
+            parched.startRiding(camel, true);
+            world.spawnEntity(parched);
+            entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, VanillaSpears.IRON_SPEAR.get().getDefaultInstance());
+        }
     }
 
     public static AbstractSkeleton addRider(EntityLivingBase entity) {
