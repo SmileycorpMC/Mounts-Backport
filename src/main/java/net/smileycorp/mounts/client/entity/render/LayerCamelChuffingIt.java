@@ -24,6 +24,7 @@ public class LayerCamelChuffingIt implements LayerRenderer<EntityCamel>
 
     public void doRenderLayer(EntityCamel entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
+        if (!entity.getSmoking()) return;
         /* Smoking isn't for kids. */
         if (entity.isChild()) return;
 

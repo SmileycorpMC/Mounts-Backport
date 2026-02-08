@@ -19,6 +19,7 @@ public class MountsEntities
     public static void registerEntities()
     {
         registerEntity("camel", EntityCamel.class, ++id, 80, 16565097, 13341495);
+        registerEntity("camel_husk", EntityCamelHusk.class, ++id, 80, 16565097, 13341495);
         registerEntity("parched", EntityParched.class, ++id, 80, 11376223, 6249550);
     }
 

@@ -14,6 +14,7 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -45,6 +46,7 @@ public class EntityCamel extends EntityAnimal
     private static final DataParameter<Integer> DASHING = EntityDataManager.createKey(EntityCamel.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> DASH_COOLDOWN = EntityDataManager.createKey(EntityCamel.class, DataSerializers.VARINT);
     private static final DataParameter<ItemStack> SADDLE_STACK = EntityDataManager.createKey(EntityCamel.class, DataSerializers.ITEM_STACK);
+    private static final DataParameter<Boolean> SMOKING = EntityDataManager.createKey(EntityCamel.class, DataSerializers.BOOLEAN);
     private float animTransSpeed = 0.4F;
     private float animationTime;
     private float prevAnimationTime;
@@ -63,6 +65,7 @@ public class EntityCamel extends EntityAnimal
         this.dataManager.register(DASHING, 0);
         this.dataManager.register(DASH_COOLDOWN, 0);
         this.dataManager.register(SADDLE_STACK, ItemStack.EMPTY);
+        this.dataManager.register(SMOKING, false);
     }
 
     protected void initEntityAI()
@@ -148,14 +151,24 @@ public class EntityCamel extends EntityAnimal
         /* Skip any additional logic if the player is trying to feed the Camel. */
         if (isBreedingItem(itemstack) && (!this.isInLove() || this.getHealth() < this.getMaxHealth()) && !player.getCooldownTracker().hasCooldown(itemstack.getItem()))
         {
+            player.swingArm(hand);
             this.consumeItemFromStack(player, itemstack);
             return true;
         }
 
         if (itemstack.getItem() instanceof ItemSaddle && this.getSaddle().isEmpty() && !this.isChild())
         {
+            player.swingArm(hand);
             this.playSound(MountsSoundEvents.ITEM_SADDLE_CAMEL_EQUIP, 0.5F, 0.8F);
             this.setSaddle(itemstack.copy());
+            itemstack.shrink(1);
+            return true;
+        }
+        if (itemstack.getItem() == Items.BLAZE_ROD && !this.getSmoking() && !this.isChild())
+        {
+            player.swingArm(hand);
+            this.playSound(SoundEvents.ITEM_FLINTANDSTEEL_USE, 0.5F, 0.8F);
+            this.dataManager.set(SMOKING, true);
             itemstack.shrink(1);
             return true;
         }
@@ -163,9 +176,17 @@ public class EntityCamel extends EntityAnimal
         {
             if (!this.getSaddle().isEmpty())
             {
+                player.swingArm(hand);
                 this.playSound(MountsSoundEvents.ITEM_SADDLE_CAMEL_UNEQUIP, 1.0F, 1.0F);
                 if (!world.isRemote) this.entityDropItem(this.getSaddle(), 1.75F);
                 this.setSaddle(ItemStack.EMPTY);
+                return true;
+            }
+            else if (this.getSmoking())
+            {
+                player.swingArm(hand);
+                this.playSound(SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.25F, 1.0F);
+                this.dataManager.set(SMOKING, false);
                 return true;
             }
         }
@@ -585,6 +606,8 @@ public class EntityCamel extends EntityAnimal
         this.dataManager.set(SADDLE_STACK, stack);
     }
 
+    public boolean getSmoking() { return this.dataManager.get(SMOKING); }
+
     public void writeEntityToNBT(NBTTagCompound compound)
     {
         super.writeEntityToNBT(compound);
@@ -593,6 +616,8 @@ public class EntityCamel extends EntityAnimal
 
         if (!this.getSaddle().isEmpty())
         { compound.setTag("SaddleItem", this.getSaddle().writeToNBT(new NBTTagCompound())); }
+
+        compound.setBoolean("Smoking", this.getSmoking());
     }
 
     public void readEntityFromNBT(NBTTagCompound compound)
@@ -603,6 +628,8 @@ public class EntityCamel extends EntityAnimal
 
         if (!compound.getCompoundTag("SaddleItem").hasNoTags())
         { this.setSaddle(new ItemStack(compound.getCompoundTag("SaddleItem"))); }
+
+        this.dataManager.set(SMOKING, compound.getBoolean("Smoking"));
     }
 
     /**

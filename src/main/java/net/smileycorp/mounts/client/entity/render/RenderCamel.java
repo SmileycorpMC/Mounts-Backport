@@ -10,7 +10,7 @@ import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 
 @SideOnly(Side.CLIENT)
-public class RenderCamel extends RenderLiving<EntityCamel>
+public class RenderCamel<T extends EntityCamel> extends RenderLiving<T>
 {
     private static final ResourceLocation TEXTURE = new ResourceLocation(Constants.MODID, "textures/entities/camel/camel.png");
 
@@ -22,6 +22,6 @@ public class RenderCamel extends RenderLiving<EntityCamel>
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityCamel entity)
+    protected ResourceLocation getEntityTexture(T entity)
     { return TEXTURE; }
 }

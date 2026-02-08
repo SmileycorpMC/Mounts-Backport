@@ -19,6 +19,18 @@ public class MountsSoundEvents {
     public static final SoundEvent CAMEL_STAND = register("entity.camel.stand");
     public static final SoundEvent CAMEL_STEP = register("entity.camel.step");
     public static final SoundEvent CAMEL_STEP_SAND = register("entity.camel.step_sand");
+
+    public static final SoundEvent CAMEL_HUSK_AMBIENT = register("entity.camel_husk.ambient");
+    public static final SoundEvent CAMEL_HUSK_DASH = register("entity.camel_husk.dash");
+    public static final SoundEvent CAMEL_HUSK_DASH_READY = register("entity.camel_husk.dash_ready");
+    public static final SoundEvent CAMEL_HUSK_DEATH = register("entity.camel_husk.death");
+    public static final SoundEvent CAMEL_HUSK_EAT = register("entity.camel_husk.eat");
+    public static final SoundEvent CAMEL_HUSK_HURT = register("entity.camel_husk.hurt");
+    public static final SoundEvent CAMEL_HUSK_SIT = register("entity.camel_husk.sit");
+    public static final SoundEvent CAMEL_HUSK_STAND = register("entity.camel_husk.stand");
+    public static final SoundEvent CAMEL_HUSK_STEP = register("entity.camel_husk.step");
+    public static final SoundEvent CAMEL_HUSK_STEP_SAND = register("entity.camel_husk.step_sand");
+
     public static final SoundEvent PARCHED_AMBIENT = register("entity.parched.ambient");
     public static final SoundEvent PARCHED_DEATH = register("entity.parched.death");
     public static final SoundEvent PARCHED_HURT = register("entity.parched.hurt");
