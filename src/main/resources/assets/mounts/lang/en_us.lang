@@ -5,6 +5,12 @@ entity.mounts.camel.name=Camel
 entity.mounts.camel_husk.name=Camel Husk
 entity.mounts.parched.name=Parched
 
+jockey.mounts.spider=Spider Jockey
+jockey.mounts.cave_spider=Cave Spider Jockey
+jockey.mounts.baby_zombie=Baby Zombie Jockey
+jockey.mounts.zombie_horseman=Zombie Horseman
+jockey.mounts.husk_camel=Husk Camel Jockey
+
 subtitle.mounts.entity.camel.ambient=Camel grunts
 subtitle.mounts.entity.camel.dash=Camel yeets
 subtitle.mounts.entity.camel.dash_ready=Camel recovers

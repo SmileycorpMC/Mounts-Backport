@@ -8,11 +8,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
-import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -22,14 +20,11 @@ import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 import net.smileycorp.mounts.common.entity.EntityCamelHusk;
 import net.smileycorp.mounts.common.entity.EntityParched;
+import net.smileycorp.mounts.common.entity.Jockeys;
 import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
 import net.smileycorp.mounts.config.LootConfig;
 import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.MountsConfig;
-import net.smileycorp.mounts.integration.DeeperDepthsIntegration;
-
-import java.util.Random;
-import java.util.Set;
 
 @Mod.EventBusSubscriber
 public class MountsCommonEvents
@@ -88,42 +83,9 @@ public class MountsCommonEvents
     public static void spawnMob(LivingSpawnEvent.SpecialSpawn event) {
         EntityLivingBase entity = event.getEntityLiving();
         World world = entity.world;
-        if (entity instanceof EntityZombie) ((EntityZombie) entity).tasks.addTask(1, new EntityAIFindMount((EntityLiving) entity));
-        if (entity.getClass() == EntityCaveSpider.class && world.rand.nextFloat() <= MountsConfig.caveSpiderJockeyChance) addRider(entity);
-        if (entity.getClass() == EntityHusk.class && world.rand.nextFloat() <= MountsConfig.huskJockeyChance) {
-            DifficultyInstance difficulty = world.getDifficultyForLocation(entity.getPosition());
-            EntityCamelHusk camel = new EntityCamelHusk(world);
-            camel.setPosition(entity.posX, entity.posY, entity.posZ);
-            camel.onInitialSpawn(difficulty, null);
-            entity.startRiding(camel, true);
-            world.spawnEntity(camel);
-            EntityParched parched = new EntityParched(world);
-            parched.setPosition(entity.posX, entity.posY, entity.posZ);
-            parched.onInitialSpawn(difficulty, null);
-            parched.startRiding(camel, true);
-            world.spawnEntity(parched);
-            entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, VanillaSpears.IRON_SPEAR.get().getDefaultInstance());
-        }
-    }
-
-    public static AbstractSkeleton addRider(EntityLivingBase entity) {
-        if (!(entity instanceof EntitySpider)) return null;
-        World world = entity.world;
-        AbstractSkeleton skeleton = new EntitySkeleton(entity.world);
-        Random rand = entity.world.rand;
-        Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(entity.world.getBiome(entity.getPosition()));
-        if (types.contains(BiomeDictionary.Type.SNOWY) &! types.contains(BiomeDictionary.Type.FOREST)
-                && rand.nextFloat() <= MountsConfig.strayChance) skeleton = new EntityStray(world);
-        if (types.contains(BiomeDictionary.Type.SANDY) &! (types.contains(BiomeDictionary.Type.FOREST) || types.contains(BiomeDictionary.Type.BEACH))
-                && rand.nextFloat() <= MountsConfig.parchedChance) skeleton = new EntityParched(world);
-        if (Loader.isModLoaded("deeperdepths") && DeeperDepthsIntegration.canBoggedSpawn(rand, types))
-            skeleton = DeeperDepthsIntegration.getBogged(world);
-        if (skeleton == null) return null;
-        skeleton.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, 0.0F);
-        skeleton.onInitialSpawn(world.getDifficultyForLocation(entity.getPosition()), null);
-        world.spawnEntity(skeleton);
-        skeleton.startRiding(entity);
-        return skeleton;
+        if (entity instanceof EntityZombie) Jockeys.spawnBabyZombieJockey(entity, false);
+        if (entity.getClass() == EntityCaveSpider.class && world.rand.nextFloat() <= MountsConfig.caveSpiderJockeyChance) Jockeys.spawnSpiderJockey(entity, false);
+        if (entity.getClass() == EntityHusk.class && world.rand.nextFloat() <= MountsConfig.huskJockeyChance) Jockeys.spawnCamelHusk(entity, false);
     }
 
 }

@@ -7,27 +7,23 @@ import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.smileycorp.mounts.api.ItemSpear;
 import net.smileycorp.mounts.api.SpearDefinition;
+import net.smileycorp.mounts.common.items.ItemJockeySpawner;
 import net.smileycorp.mounts.config.SpearRegistry;
 
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public class MountsContent {
-    
-    private static int ID = 44;
+
+    public static final ItemJockeySpawner JOCKEY_SPAWNER = new ItemJockeySpawner();
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         IForgeRegistry<Item> registry = event.getRegistry();
+        registry.register(JOCKEY_SPAWNER);
         SpearRegistry.getSpears().forEach(registry::register);
-    }
-    
-    @SubscribeEvent
-    public static void registerEntities(RegistryEvent.Register<EntityEntry> event) {
-        IForgeRegistry<EntityEntry> registry = event.getRegistry();
     }
 
     @SubscribeEvent
