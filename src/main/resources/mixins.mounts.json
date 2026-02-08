@@ -3,11 +3,14 @@
   "package": "net.smileycorp.mounts.mixin",
   "refmap": "mixins.mounts.refmap.json",
   "mixins": [
+    "MixinAbstractHorse",
     "MixinAbstractSkeleton",
     "MixinEntity",
     "MixinEntityAIRunAroundLikeCrazy",
+    "MixinEntityAnimal",
     "MixinEntityItem",
     "MixinEntitySpider",
+    "MixinEntityZombieHorse",
     "MixinNetHandlerPlayServer"
   ],
   "client": [
