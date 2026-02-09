@@ -64,7 +64,7 @@ public class Jockeys {
         ((EntityZombie) entity).tasks.addTask(1, new EntityAIFindMount((EntityLiving) entity));
     }
 
-    private static void spawnZombieHorseman(EntityLivingBase entity, boolean summoned) {
+    public static void spawnZombieHorseman(EntityLivingBase entity, boolean summoned) {
         EntityZombie zombie = new EntityZombie(entity.world);
         zombie.setPosition(entity.posX, entity.posY, entity.posZ);
         zombie.onInitialSpawn(entity.world.getDifficultyForLocation(entity.getPosition()), null);

@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.*;
+import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.world.DifficultyInstance;
@@ -86,6 +87,7 @@ public class MountsCommonEvents
         if (entity instanceof EntityZombie) Jockeys.spawnBabyZombieJockey(entity, false);
         if (entity.getClass() == EntityCaveSpider.class && world.rand.nextFloat() <= MountsConfig.caveSpiderJockeyChance) Jockeys.spawnSpiderJockey(entity, false);
         if (entity.getClass() == EntityHusk.class && world.rand.nextFloat() <= MountsConfig.huskJockeyChance) Jockeys.spawnCamelHusk(entity, false);
+        if (entity.getClass() == EntityZombieHorse.class) Jockeys.spawnZombieHorseman(entity, false);
     }
 
 }

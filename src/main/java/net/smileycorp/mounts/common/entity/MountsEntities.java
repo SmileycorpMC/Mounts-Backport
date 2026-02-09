@@ -3,6 +3,7 @@ package net.smileycorp.mounts.common.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.init.Biomes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
@@ -26,6 +27,7 @@ public class MountsEntities
     {
         EntityRegistry.addSpawn(EntityCamel.class, 1, 1, 1, EnumCreatureType.CREATURE, Biomes.DESERT);
         EntityRegistry.addSpawn(EntityCamel.class, 1, 1, 1, EnumCreatureType.CREATURE, Biomes.DESERT_HILLS);
+        spawnRate(EntityZombieHorse.class, EnumCreatureType.MONSTER, 5, 1, 1, BiomeDictionary.Type.PLAINS);
     }
 
     private static void registerEntity(String name, Class<? extends Entity> entity, int id, int range, int color1, int color2)
