@@ -394,6 +394,7 @@ public class EntityCamel extends EntityAnimal
                 //non player mobs need the extra move speed
                 float f = (float)this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
                 if (entitylivingbase instanceof EntityPlayer) f *= 0.225F;
+                else f*= 2;
 
                 if (forward > 0)
                 {
