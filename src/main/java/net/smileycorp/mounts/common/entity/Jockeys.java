@@ -68,10 +68,10 @@ public class Jockeys {
         EntityZombie zombie = new EntityZombie(entity.world);
         zombie.setPosition(entity.posX, entity.posY, entity.posZ);
         zombie.onInitialSpawn(entity.world.getDifficultyForLocation(entity.getPosition()), null);
+        if (entity.isChild()) zombie.setChild(true);
         zombie.startRiding(entity);
         zombie.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, VanillaSpears.IRON_SPEAR.get().getDefaultInstance());
         zombie.world.spawnEntity(zombie);
-        entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, VanillaSpears.IRON_SPEAR.get().getDefaultInstance());
     }
 
     public static void spawnCamelHusk(EntityLivingBase entity, boolean summoned) {
