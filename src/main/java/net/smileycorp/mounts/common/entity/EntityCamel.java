@@ -247,6 +247,12 @@ public class EntityCamel extends EntityAnimal
         }
     }
 
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        Entity entity = source.getTrueSource();
+        return (!isBeingRidden() || entity == null || !isRidingOrBeingRiddenBy(entity)) && super.attackEntityFrom(source, amount);
+    }
+
     /* Camels eat Cactus */
     public boolean isBreedingItem(ItemStack stack) { return stack.getItem() == Item.getItemFromBlock(Blocks.CACTUS); }
 
