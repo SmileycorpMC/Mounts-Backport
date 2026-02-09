@@ -33,7 +33,7 @@ public abstract class MixinEntityLiving extends EntityLivingBase {
         if (entity == null) return original.call(instance);
         List<Entity> passengers = entity.getPassengers();
         if (passengers.isEmpty()) return original.call(instance);
-        return passengers.get(0) != this ? false : original.call(instance);
+        return getControllingPassenger() != this ? false : original.call(instance);
     }
 
 }
