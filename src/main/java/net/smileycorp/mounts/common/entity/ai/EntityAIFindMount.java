@@ -27,10 +27,11 @@ public class EntityAIFindMount extends EntityAIBase {
             validated = true;
             return false;
         }
-        if (checks-- <= 0) {
+        if (entity.isRiding()) {
             removeTask();
             return false;
         }
+        checks--;
         if (target != null) {
             if (MountsConfig.canBabyZombieMount(target) && (entity.getDistanceSq(entity) <= 1024)) return true;
             target = null;
