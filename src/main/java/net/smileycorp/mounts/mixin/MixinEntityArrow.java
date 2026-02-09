@@ -24,7 +24,8 @@ public class MixinEntityArrow {
     //this actually sucks
     @WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/AxisAlignedBB;calculateIntercept(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/RayTraceResult;"), method = "findEntityOnPath")
     public RayTraceResult mounts$findEntityOnPath(AxisAlignedBB instance, Vec3d vecA, Vec3d vecB, Operation<RayTraceResult> original, @Local(ordinal = 1) Entity entity1) {
-        return shootingEntity != null && entity1.getRidingEntity() == shootingEntity.getRidingEntity() ? null : original.call(instance, vecA, vecB);
+        return shootingEntity != null && (entity1.getRidingEntity() == shootingEntity.getRidingEntity() || (shootingEntity.getRidingEntity() == entity1))
+                ? null : original.call(instance, vecA, vecB);
     }
 
 }
