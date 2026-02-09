@@ -5,10 +5,7 @@ import net.minecraft.block.BlockSand;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
@@ -191,7 +188,8 @@ public class EntityCamel extends EntityAnimal
             }
         }
 
-        if (!player.isSneaking() && !this.isChild())
+        //added extra check so players can't get on camels with a mob riding it
+        if (!player.isSneaking() && !this.isChild() &! (getControllingPassenger() instanceof EntityLiving))
         {
             if (!this.world.isRemote)
             {
@@ -478,8 +476,9 @@ public class EntityCamel extends EntityAnimal
         return list.isEmpty() ? null : list.get(0);
     }
 
+    //changed to players only because this causes the ai to bug out when husk camels get saddled
     public boolean canBeSteered()
-    { return this.getControllingPassenger() instanceof EntityLivingBase && !this.getSaddle().isEmpty(); }
+    { return this.getControllingPassenger() instanceof EntityPlayer && !this.getSaddle().isEmpty(); }
 
     protected boolean canFitPassenger(Entity passenger)
     { return this.getPassengers().size() < 2; }
