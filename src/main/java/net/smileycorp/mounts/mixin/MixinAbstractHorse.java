@@ -24,6 +24,8 @@ public abstract class MixinAbstractHorse extends EntityAnimal {
 		super(worldIn);
 	}
 
+	//makes zombie horses burn in sunlight
+	//decided to make a config option for skeleton horses too (as that was a feature in 25w41a and reverted in 25w42a)
 	@Inject(at=@At("HEAD"), method = "onLivingUpdate()V")
 	public void mounts$onLivingUpdate(CallbackInfo callback) {
 		if (!((EntityAnimal)this instanceof EntityZombieHorse && EntityConfig.zombieHorsesBurnInSunlight) &!

@@ -19,7 +19,7 @@ public abstract class MixinAbstractSkeleton extends EntityMob implements IRanged
     public MixinAbstractSkeleton(World worldIn) { super(worldIn); }
 
     @Inject(at = @At("HEAD"), method = "onLivingUpdate", cancellable = true)
-    public void mounts$updatePassenger(CallbackInfo callback)
+    public void mounts$onLivingUpdate(CallbackInfo callback)
     {
         if ((((Object)this)instanceof EntityParched))
         {

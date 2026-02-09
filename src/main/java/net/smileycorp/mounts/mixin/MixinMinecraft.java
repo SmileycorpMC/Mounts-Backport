@@ -27,6 +27,8 @@ public class MixinMinecraft {
 
     @Shadow public EntityPlayerSP player;
 
+    //generate the config folder
+    //then set it as a locked resource pack
     @Inject(at = @At("HEAD"), method = "init")
     public void mounts$init(CallbackInfo callback) {
         try {
@@ -37,6 +39,8 @@ public class MixinMinecraft {
         }
     }
 
+    //stop players regularly attacking with spears and send a packet for our own logic
+    //the rowing boat check is the last line before all normal behaviour is handled
     @Inject(at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/client/entity/EntityPlayerSP;isRowingBoat()Z"), method = "clickMouse", cancellable = true)
     public void mounts$clickMouse(CallbackInfo callback) {
         ItemStack stack = player.getHeldItemMainhand();
@@ -48,6 +52,8 @@ public class MixinMinecraft {
         player.resetCooldown();
     }
 
+    //stop players mining blocks with a spear
+    //click mouse only stops the initial click for mining, we need to stop hold mining too
     @Inject(at = @At(value = "HEAD"), method = "sendClickBlockToController", cancellable = true)
     public void mounts$sendClickBlockToController(boolean leftClick, CallbackInfo callback) {
         if (!leftClick) return;

@@ -18,6 +18,7 @@ import java.net.Proxy;
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
 
+    //generate config folder
     @Inject(at = @At("TAIL"), method = "<init>")
     public void mounts$init(File anvilFileIn, Proxy proxyIn, DataFixer dataFixerIn, YggdrasilAuthenticationService authServiceIn, MinecraftSessionService sessionServiceIn, GameProfileRepository profileRepoIn, PlayerProfileCache profileCacheIn, CallbackInfo ci) {
         DataGenerator.generateData();

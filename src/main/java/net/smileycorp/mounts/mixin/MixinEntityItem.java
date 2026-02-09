@@ -16,6 +16,7 @@ public abstract class MixinEntityItem {
 
     @Shadow public abstract ItemStack getItem();
 
+    //stop fireproof spears like netherrite from burning
     @Inject(at = @At("HEAD"), method = "attackEntityFrom", cancellable = true)
     public void mounts$attackEntityFrom(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callback) {
         if (!source.isFireDamage()) return;

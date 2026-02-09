@@ -15,7 +15,8 @@ public abstract class MixinEntityZombieHorse extends AbstractHorse {
         super(worldIn);
     }
 
-    @Inject(at=@At("HEAD"), method = "processInteract", cancellable = true)
+    //stop zombie horses despawning and contributing to mob cap if a player tries to ride them
+    @Inject(at=@At("HEAD"), method = "processInteract")
     public void mounts$processInteract(CallbackInfoReturnable<Boolean> callback) {
         enablePersistence();
     }

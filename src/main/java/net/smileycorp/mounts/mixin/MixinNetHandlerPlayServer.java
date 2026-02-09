@@ -16,7 +16,10 @@ public class MixinNetHandlerPlayServer {
     @Shadow public EntityPlayerMP player;
 
     //store the players pos before movement is handled in a capability
-    //for some reason vanilla player movement is
+    //used for calculating speed in spear damage
+    //for some reason vanilla player movement doesn't store these on serverside
+    // it also doesn't use the forward move field or motion fields
+    //player movement is entirely handled by teleporting them whenever a packet is received
     @Inject(at = @At("HEAD"), method = "processPlayer")
     public void mounts$processPlayer(CPacketPlayer packet, CallbackInfo callback) {
         if (!player.hasCapability(CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null)) return;

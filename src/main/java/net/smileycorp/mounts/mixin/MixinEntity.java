@@ -34,6 +34,7 @@ public abstract class MixinEntity {
 
     @Shadow private Entity ridingEntity;
 
+    //bedrock feature, makes it so baby zombies piggyback adult zombies when riding them
     @Inject(at = @At("HEAD"), method = "updatePassenger", cancellable = true)
     public void mounts$updatePassenger(Entity passenger, CallbackInfo callback) {
         if (!isPassenger(passenger) |! (((Object)this)instanceof EntityZombie) |! (passenger instanceof EntityZombie)) return;
@@ -42,18 +43,21 @@ public abstract class MixinEntity {
         callback.cancel();
     }
 
+    //fix issue where ai is not disabled for mobs when ridden by baby zombie
     @Inject(at = @At("HEAD"), method = "getControllingPassenger", cancellable = true)
     public void mounts$getControllingPassenger(CallbackInfoReturnable<Entity> callback) {
         if (!(((Object)this) instanceof EntityAnimal)) return;
         if (!getPassengers().isEmpty()) callback.setReturnValue(getPassengers().get(0));
     }
 
+    //makes zombie horses contribute to the spawn cap
     @Inject(at = @At("HEAD"), method = "isCreatureType", cancellable = true, remap = false)
     public void mounts$isCreatureType(EnumCreatureType type, boolean forSpawnCount, CallbackInfoReturnable<Boolean> callback) {
         if (((Object) this) instanceof EntityZombieHorse) callback.setReturnValue(type ==
                 (forSpawnCount ? EnumCreatureType.MONSTER : EnumCreatureType.CREATURE));
     }
 
+    //prevents entities riding the same mount from hitting each other with projectiles
     //uhhhhhh like the other one but other projectiles than arrows use this, I think Idk, is this even needed?
     @Inject(at = @At("HEAD"), method = "isEntityEqual", cancellable = true)
     public void mounts$isEntityEqual(Entity entity, CallbackInfoReturnable<Boolean> callback) {

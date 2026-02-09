@@ -24,11 +24,15 @@ public abstract class MixinEntityAnimal extends EntityAgeable {
         super(world);
     }
 
+    //lets zombie horses despawn like hostile mobs
     @Inject(at=@At("HEAD"), method = "canDespawn", cancellable = true)
     public void mounts$canDespawn(CallbackInfoReturnable<Boolean> callback) {
         if ((Object)this instanceof EntityZombieHorse) callback.setReturnValue(true);
     }
 
+    //zombie horse spawn logic
+    //basically regular animal spawn logic frankensteined with monster spawn logic
+    //zombie horses spawn exactly like regular horses  but if it's dark instead of light
     @Inject(at=@At("HEAD"), method = "getCanSpawnHere", cancellable = true)
     public void mounts$getCanSpawnHere(CallbackInfoReturnable<Boolean> callback) {
         if (!(((EntityAgeable)this) instanceof EntityZombieHorse)) return;

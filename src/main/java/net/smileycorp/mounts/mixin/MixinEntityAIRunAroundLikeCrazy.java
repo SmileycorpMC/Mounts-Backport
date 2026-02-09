@@ -16,6 +16,7 @@ public class MixinEntityAIRunAroundLikeCrazy {
 
     @Shadow @Final private AbstractHorse horseHost;
 
+    //stops horses ejecting non player mobs when ridden
     @Inject(at = @At("RETURN"), method = "shouldExecute", cancellable = true)
     public void mounts$shouldExecute(CallbackInfoReturnable<Boolean> callback) {
         if (!callback.getReturnValue()) return;
