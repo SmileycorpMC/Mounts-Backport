@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
@@ -70,7 +71,7 @@ public class Jockeys {
         zombie.onInitialSpawn(entity.world.getDifficultyForLocation(entity.getPosition()), null);
         if (entity.isChild()) zombie.setChild(true);
         zombie.startRiding(entity);
-        zombie.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, VanillaSpears.IRON_SPEAR.get().getDefaultInstance());
+        zombie.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(VanillaSpears.IRON_SPEAR.get()));
         zombie.world.spawnEntity(zombie);
     }
 
@@ -87,7 +88,7 @@ public class Jockeys {
         parched.onInitialSpawn(difficulty, null);
         parched.startRiding(camel);
         world.spawnEntity(parched);
-        entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, VanillaSpears.IRON_SPEAR.get().getDefaultInstance());
+        entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(VanillaSpears.IRON_SPEAR.get()));
     }
 
 
