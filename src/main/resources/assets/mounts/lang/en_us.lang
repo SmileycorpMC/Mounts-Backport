@@ -9,7 +9,7 @@ jockey.mounts.spider=Spider Jockey
 jockey.mounts.cave_spider=Cave Spider Jockey
 jockey.mounts.baby_zombie=Baby Zombie Jockey
 jockey.mounts.zombie_horseman=Zombie Horseman
-jockey.mounts.husk_camel=Husk Camel Jockey
+jockey.mounts.camel_husk=Camel Husk Jockey
 
 subtitle.mounts.entity.camel.ambient=Camel grunts
 subtitle.mounts.entity.camel.dash=Camel yeets

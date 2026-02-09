@@ -68,7 +68,7 @@ public class Jockeys {
         EntityZombie zombie = new EntityZombie(entity.world);
         zombie.setPosition(entity.posX, entity.posY, entity.posZ);
         zombie.onInitialSpawn(entity.world.getDifficultyForLocation(entity.getPosition()), null);
-        zombie.startRiding(entity, true);
+        zombie.startRiding(entity);
         zombie.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, VanillaSpears.IRON_SPEAR.get().getDefaultInstance());
         zombie.world.spawnEntity(zombie);
         entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, VanillaSpears.IRON_SPEAR.get().getDefaultInstance());
@@ -80,12 +80,12 @@ public class Jockeys {
         EntityCamelHusk camel = new EntityCamelHusk(world);
         camel.setPosition(entity.posX, entity.posY, entity.posZ);
         camel.onInitialSpawn(difficulty, null);
-        entity.startRiding(camel, true);
+        entity.startRiding(camel);
         world.spawnEntity(camel);
         EntityParched parched = new EntityParched(world);
         parched.setPosition(entity.posX, entity.posY, entity.posZ);
         parched.onInitialSpawn(difficulty, null);
-        parched.startRiding(camel, true);
+        parched.startRiding(camel);
         world.spawnEntity(parched);
         entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, VanillaSpears.IRON_SPEAR.get().getDefaultInstance());
     }
@@ -96,7 +96,7 @@ public class Jockeys {
         CAVE_SPIDER(new ResourceLocation("cave_spider"), Jockeys::spawnSpiderJockey),
         BABY_ZOMBIE(new ResourceLocation("zombie"), Jockeys::spawnBabyZombieJockey),
         ZOMBIE_HORSEMAN(new ResourceLocation("zombie_horse"), Jockeys::spawnZombieHorseman),
-        HUSK_CAMEL(new ResourceLocation("husk"), Jockeys::spawnCamelHusk);
+        CAMEL_HUSK(new ResourceLocation("husk"), Jockeys::spawnCamelHusk);
 
         private final ResourceLocation entity;
         private final Spawner spawner;
