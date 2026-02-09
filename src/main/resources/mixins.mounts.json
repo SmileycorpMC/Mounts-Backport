@@ -8,6 +8,7 @@
     "MixinEntity",
     "MixinEntityAIRunAroundLikeCrazy",
     "MixinEntityAnimal",
+    "MixinEntityArrow",
     "MixinEntityItem",
     "MixinEntitySpider",
     "MixinEntityZombieHorse",

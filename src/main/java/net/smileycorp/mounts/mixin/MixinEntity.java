@@ -32,6 +32,8 @@ public abstract class MixinEntity {
 
     @Shadow public abstract List<Entity> getPassengers();
 
+    @Shadow private Entity ridingEntity;
+
     @Inject(at = @At("HEAD"), method = "updatePassenger", cancellable = true)
     public void mounts$updatePassenger(Entity passenger, CallbackInfo callback) {
         if (!isPassenger(passenger) |! (((Object)this)instanceof EntityZombie) |! (passenger instanceof EntityZombie)) return;
@@ -50,6 +52,12 @@ public abstract class MixinEntity {
     public void mounts$isCreatureType(EnumCreatureType type, boolean forSpawnCount, CallbackInfoReturnable<Boolean> callback) {
         if (((Object) this) instanceof EntityZombieHorse) callback.setReturnValue(type ==
                 (forSpawnCount ? EnumCreatureType.MONSTER : EnumCreatureType.CREATURE));
+    }
+
+    //uhhhhhh like the other one but other projectiles than arrows use this, I think Idk, is this even needed?
+    @Inject(at = @At("HEAD"), method = "isEntityEqual", cancellable = true)
+    public void mounts$isEntityEqual(Entity entity, CallbackInfoReturnable<Boolean> callback) {
+        if (ridingEntity == entity.getRidingEntity()) callback.setReturnValue(true);
     }
 
 }
