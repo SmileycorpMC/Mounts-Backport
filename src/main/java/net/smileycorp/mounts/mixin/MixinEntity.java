@@ -61,7 +61,7 @@ public abstract class MixinEntity {
     //uhhhhhh like the other one but other projectiles than arrows use this, I think Idk, is this even needed?
     @Inject(at = @At("HEAD"), method = "isEntityEqual", cancellable = true)
     public void mounts$isEntityEqual(Entity entity, CallbackInfoReturnable<Boolean> callback) {
-        if (ridingEntity == entity.getRidingEntity()) callback.setReturnValue(true);
+        if (entity != null && ridingEntity != null && ridingEntity == entity.getRidingEntity()) callback.setReturnValue(true);
     }
 
 }
