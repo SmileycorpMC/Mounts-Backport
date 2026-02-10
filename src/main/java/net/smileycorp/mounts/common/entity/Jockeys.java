@@ -9,6 +9,7 @@ import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
@@ -69,7 +70,7 @@ public class Jockeys {
         EntityZombie zombie = new EntityZombie(entity.world);
         zombie.setPosition(entity.posX, entity.posY, entity.posZ);
         zombie.onInitialSpawn(entity.world.getDifficultyForLocation(entity.getPosition()), null);
-        if (entity.isChild()) zombie.setChild(true);
+        if (zombie.isChild()) ((EntityZombieHorse)entity).setGrowingAge(Integer.MIN_VALUE);
         zombie.startRiding(entity);
         zombie.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(VanillaSpears.IRON_SPEAR.get()));
         zombie.world.spawnEntity(zombie);
