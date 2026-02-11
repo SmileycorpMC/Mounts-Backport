@@ -27,7 +27,7 @@ public class SpearAttackMessage implements IMessage {
     public IMessage process(MessageContext ctx) {
         if (ctx.side == Side.SERVER) FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
             EntityPlayerMP player = ctx.getServerHandler().player;
-            ItemSpear.performSpearAttack(player, player.getHeldItemMainhand(), false);
+            ItemSpear.performJabAttack(player, player.getHeldItemMainhand());
         });
         return null;
     }

@@ -4,9 +4,14 @@
 	"enchantability": 15,
 	"attack_speed": 1.54,
 	"charge_multiplier": 0.7,
+	"charge_delay": 15,
 	"charge_dismount_duration": 100,
+	"charge_dismount_speed": 14,
 	"charge_knockback_duration": 200,
+	"charge_knockback_speed": 5.1,
 	"charge_damage_duration": 300,
+	"charge_damage_speed": 4.6,
+	"creative_tab": "combat",
 	"repair_material": {
       "type": "forge:ore_dict",
       "ore": "plankWood"

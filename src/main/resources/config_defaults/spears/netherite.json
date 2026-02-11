@@ -4,9 +4,14 @@
 	"enchantability": 10,
 	"attack_speed": 0.87,
 	"charge_multiplier": 1.2,
+	"charge_delay": 8,
 	"charge_dismount_duration": 50,
+	"charge_dismount_speed": 7,
 	"charge_knockback_duration": 110,
+	"charge_knockback_speed": 5.1,
 	"charge_damage_duration": 175,
+	"charge_damage_speed": 4.6,
+	"creative_tab": "combat",
 	"repair_material": {
       "type": "forge:ore_dict",
       "ore": "ingotNetherite"

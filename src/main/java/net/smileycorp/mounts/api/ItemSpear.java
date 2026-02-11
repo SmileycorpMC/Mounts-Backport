@@ -18,6 +18,7 @@ import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -25,8 +26,11 @@ import net.minecraftforge.common.ForgeHooks;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.MountsSoundEvents;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
+import net.smileycorp.mounts.common.capabilities.Piercing;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public class ItemSpear extends Item {
 
@@ -56,7 +60,8 @@ public class ItemSpear extends Item {
 
     @Override
     public int getMaxItemUseDuration(ItemStack stack) {
-        return definition.getChargeDamageDuration();
+        return definition.getChargeDelay() + Math.max(definition.getChargeDismountDuration(),
+                Math.max(definition.getChargeKnockbackDuration(), definition.getChargeDamageDuration()));
     }
 
     @Override
@@ -68,8 +73,14 @@ public class ItemSpear extends Item {
 
     @Override
     public void onUsingTick(ItemStack stack, EntityLivingBase player, int count) {
-        performSpearAttack(player, stack, true);
+        performChargeAttack(player, stack);
         super.onUsingTick(stack, player, count);
+    }
+
+    @Override
+    public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase user, int timeLeft) {
+        super.onPlayerStoppedUsing(stack, world, user, timeLeft);
+        if (user.hasCapability(Piercing.CAPABILITY, null)) user.getCapability(Piercing.CAPABILITY, null).clear();
     }
 
     @Override
@@ -106,54 +117,83 @@ public class ItemSpear extends Item {
         return EntityEquipmentSlot.MAINHAND;
     }
 
-    public static boolean performSpearAttack(EntityLivingBase user, ItemStack stack, boolean charge)
-    {
+    public static boolean performJabAttack(EntityLivingBase user, ItemStack stack) {
         if (user.world.isRemote |! (stack.getItem() instanceof ItemSpear)) return false;
         SpearDefinition definition = ((ItemSpear) stack.getItem()).getDefinition();
+        boolean hit = false;
+        for (Entity entity : getHitEntities(user, e -> true)) {
+            /* I'm pretty sure Vanilla rounds the Spear Damage up in my testing... */
+            //vanilla actually rounds down here for some reason
+            float damage = definition.getDamage() + (float) user.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
+            if (damage <= 0) continue;
+            if (entity instanceof EntityLivingBase) damage += EnchantmentHelper.getModifierForCreature(stack, ((EntityLivingBase) entity).getCreatureAttribute());
+            if (entity.attackEntityFrom(DamageSource.causeMobDamage(user), damage)) hit = true;
+            else continue;
+            stack.damageItem(1, user);
+            if (user instanceof EntityPlayer) {
+                ((EntityPlayer) user).addStat(StatList.getObjectUseStats(stack.getItem()));
+                ((EntityPlayer) user).resetCooldown();
+            }
+        }
+        user.world.playSound(null, user.posX, user.posY, user.posZ, hit ? ((ItemSpear) stack.getItem()).getHitSound()
+                : ((ItemSpear) stack.getItem()).getAttackSound(), user.getSoundCategory(), 1, 1);
+        return hit;
+    }
+
+    //there are so many charged checks here I'm just gonna separate the methods
+    public static boolean performChargeAttack(EntityLivingBase user, ItemStack stack) {
+        if (user.world.isRemote |! (stack.getItem() instanceof ItemSpear)) return false;
+        SpearDefinition definition = ((ItemSpear) stack.getItem()).getDefinition();
+        int usageTicks = user.getItemInUseMaxCount() - definition.getChargeDelay();
+        if (usageTicks < 0) return false;
+        if (!user.hasCapability(Piercing.CAPABILITY, null)) return false;
+        Piercing piercing = user.getCapability(Piercing.CAPABILITY, null);
         Vec3d look = user.getLookVec();
+        double speed = getSpeed(look, user);
+        boolean hit = false;
+        for (Entity entity : getHitEntities(user, e -> piercing.canPierce(e))) {
+            boolean pierced = false;
+            //damage is based on relative speed between the user and the target
+            double relativeSpeed = speed - getSpeed(look, entity);
+            if (speed >= definition.getChargeDismountSpeed() && usageTicks <= definition.getChargeDismountDuration() && entity.isRiding()) {
+                entity.dismountRidingEntity();
+                pierced = true;
+            }
+            if (entity instanceof EntityLivingBase && speed >= definition.getChargeKnockbackSpeed() && usageTicks <= definition.getChargeKnockbackDuration()) {
+                ((EntityLivingBase) entity).knockBack(user, 0.4f + EnchantmentHelper.getKnockbackModifier(user) / 2f,
+                        MathHelper.sin(user.rotationYaw * 0.017453292f), -MathHelper.cos(user.rotationYaw * 0.017453292f));
+                pierced = true;
+            }
+            //charge attacks apparently don't take the mob attack damage attribute into account
+            //non player entities have a way lower speed cap
+            float damage = relativeSpeed <= definition.getChargeDamageSpeed() * (user instanceof EntityPlayer ? 1d : 0.2) ?
+                    0 : (float) Math.floor(relativeSpeed * definition.getChargeMultiplier());
+            if (damage > 0) {
+                if (entity instanceof EntityLivingBase) damage += EnchantmentHelper.getModifierForCreature(stack, ((EntityLivingBase) entity).getCreatureAttribute());
+                if (entity.attackEntityFrom(DamageSource.causeMobDamage(user), damage)) pierced = true;
+            }
+            if (!pierced) continue;
+            stack.damageItem(1, user);
+            if (user instanceof EntityPlayer) ((EntityPlayer) user).addStat(StatList.getObjectUseStats(stack.getItem()));
+            piercing.pierce(entity);
+            hit = true;
+        }
+        if (user instanceof EntityPlayer && piercing.getPiercedEntities().size() > 5); //advancement trigger
+        if (hit) user.world.playSound(null, user.posX, user.posY, user.posZ, ((ItemSpear) stack.getItem()).getHitSound(), user.getSoundCategory(), 1, 1);
+        return hit;
+    }
+
+    public static List<Entity> getHitEntities(EntityLivingBase user, Predicate<Entity> predicate) {
         BlockPos getUserEyes = user.getPosition().add(new BlockPos(0, user.getEyeHeight(), 0));
         /* Controls the distance the attack box is shifted away from the user. */
         double distanceFromUser = user instanceof EntityPlayer ? 4 : 2;
         double width = 0.25D;
 
         /* Make a sized Bounding Box, and push it forward by `distanceFromUser`! */
-        AxisAlignedBB box = new AxisAlignedBB(getUserEyes).grow(width, width, width).offset(look.scale(distanceFromUser));
-        boolean hit = false;
-        for (EntityLivingBase entity : user.world.getEntitiesWithinAABB(EntityLivingBase.class, box, e -> e != user))
-        {
-            if (user instanceof EntityPlayer & !ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity)) continue;
-            float damage;
-            if (charge)
-            {
-                //damage is based on relative speed between the user and the target
-                double relativeSpeed = getSpeed(look, user) - getSpeed(look, entity);
-                //non player entities have a way lower speed cap
-                if (relativeSpeed <= 4.6 * (user instanceof EntityPlayer ? 1d : 0.2)) continue;
-                /* I'm pretty sure Vanilla rounds the Spear Damage up in my testing... */
-                //vanilla actually rounds down here for some reason
-                damage = (float) Math.floor(relativeSpeed * definition.getChargeMultiplier());
-                //charge attacks apparently don't take the mob attack damage attribute into account
-            }
-            else damage = definition.getDamage() + (float) user.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
-
-            damage += EnchantmentHelper.getModifierForCreature(stack, entity.getCreatureAttribute());
-            if (entity.attackEntityFrom(DamageSource.causeMobDamage(user), damage)) hit = true;
-            stack.damageItem(1, user);
-            if (user instanceof EntityPlayer) ((EntityPlayer) user).addStat(StatList.getObjectUseStats(stack.getItem()));
-        }
-        if (!charge && user instanceof EntityPlayer) ((EntityPlayer) user).resetCooldown();
+        AxisAlignedBB box = new AxisAlignedBB(getUserEyes).grow(width, width, width).offset(user.getLookVec().scale(distanceFromUser));
         renderHitboxParticles(user, box);
-
-        if (hit)
-        {
-            user.world.playSound(null, user.posX, user.posY, user.posZ, ((ItemSpear) stack.getItem()).getHitSound(), SoundCategory.PLAYERS, 1.0F, 1.0F);
-        }
-        else if (!charge)
-        {
-            user.world.playSound(null, user.posX, user.posY, user.posZ, ((ItemSpear) stack.getItem()).getAttackSound(), SoundCategory.PLAYERS, 1.0F, 1.0F);
-        }
-
-        return hit;
+        return user.world.getEntitiesWithinAABB(EntityLivingBase.class, box, entity -> entity != user && entity.isEntityAlive() &!
+                (user instanceof EntityPlayer &! ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity)) && predicate.test(entity));
     }
 
     private static double getSpeed(Vec3d look, Entity entity) {

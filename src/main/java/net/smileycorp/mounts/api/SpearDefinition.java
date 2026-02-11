@@ -6,6 +6,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.JsonContext;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 import net.smileycorp.mounts.common.Constants;
 
 import java.util.function.Supplier;
@@ -13,13 +15,18 @@ import java.util.function.Supplier;
 public class SpearDefinition {
 
     private final String name;
-    private final float damage, attackSpeed, chargeMultiplier;
+    private final float damage;
     private final int durability;
     private final int enchantability;
-
+    private final float attackSpeed;
+    private final float chargeMultiplier;
+    private final int chargeDelay;
     private final int chargeDismountDuration;
+    private final float chargeDismountSpeed;
     private final int chargeKnockbackDuration;
+    private final float chargeKnockbackSpeed;
     private final int chargeDamageDuration;
+    private final float chargeDamageSpeed;
     private final CreativeTabs creativeTab;
     private Supplier<Ingredient> repairMaterialSupplier;
     private Ingredient repairMaterial;
@@ -32,9 +39,13 @@ public class SpearDefinition {
         enchantability = builder.enchantability;
         attackSpeed = builder.attackSpeed;
         chargeMultiplier = builder.chargeMultiplier;
+        chargeDelay = builder.chargeDelay;
         chargeDismountDuration = builder.chargeDismountDuration;
+        chargeDismountSpeed = builder.chargeDismountSpeed;
         chargeKnockbackDuration = builder.chargeKnockbackDuration;
+        chargeKnockbackSpeed = builder.chargeKnockbackSpeed;
         chargeDamageDuration = builder.chargeDamageDuration;
+        chargeDamageSpeed = builder.chargeDamageSpeed;
         creativeTab = builder.creativeTab;
         repairMaterialSupplier = builder.repairMaterial;
         craftable = builder.craftable;
@@ -65,16 +76,32 @@ public class SpearDefinition {
         return chargeMultiplier;
     }
 
+    public int getChargeDelay() {
+        return chargeDelay;
+    }
+
     public int getChargeDismountDuration() {
         return chargeDismountDuration;
+    }
+
+    public float getChargeDismountSpeed() {
+        return chargeDismountSpeed;
     }
 
     public int getChargeKnockbackDuration() {
         return chargeKnockbackDuration;
     }
 
+    public float getChargeKnockbackSpeed() {
+        return chargeKnockbackSpeed;
+    }
+
     public int getChargeDamageDuration() {
         return chargeDamageDuration;
+    }
+
+    public float getChargeDamageSpeed() {
+        return chargeDamageSpeed;
     }
 
     public CreativeTabs getCreativeTab() {
@@ -101,9 +128,21 @@ public class SpearDefinition {
         if (json.has("enchantability")) builder.enchantability = json.get("enchantability").getAsInt();
         if (json.has("attack_speed")) builder.attackSpeed= json.get("attack_speed").getAsFloat();
         if (json.has("charge_multiplier")) builder.chargeMultiplier = json.get("charge_multiplier").getAsFloat();
+        if (json.has("charge_delay")) builder.chargeDelay = json.get("charge_delay").getAsInt();
         if (json.has("charge_dismount_duration")) builder.chargeDismountDuration = json.get("charge_dismount_duration").getAsInt();
+        if (json.has("charge_dismount_speed")) builder.chargeDismountSpeed = json.get("charge_dismount_speed").getAsFloat();
         if (json.has("charge_knockback_duration")) builder.chargeKnockbackDuration = json.get("charge_knockback_duration").getAsInt();
+        if (json.has("charge_knockback_speed")) builder.chargeKnockbackSpeed = json.get("charge_knockback_speed").getAsFloat();
         if (json.has("charge_damage_duration")) builder.chargeDamageDuration = json.get("charge_damage_duration").getAsInt();
+        if (json.has("charge_damage_speed")) builder.chargeDamageSpeed = json.get("charge_damage_speed").getAsFloat();
+        if (FMLCommonHandler.instance().getSide() == Side.CLIENT && json.has("creative_tab")) {
+            String tabName = json.get("creative_tab").getAsString();
+            for (CreativeTabs tab : CreativeTabs.CREATIVE_TAB_ARRAY) {
+                if (!tabName.equals(tab.getTabLabel())) continue;
+                builder.setCreativeTab(tab);
+                break;
+            }
+        }
         if (json.has("repair_material")) builder.repairMaterial = SpearDefinition.parseRepairMaterial(json.get("repair_material"));
         if (json.has("craftable")) builder.craftable = json.get("craftable").getAsBoolean();
         if (json.has("fireproof")) builder.fireproof = json.get("fireproof").getAsBoolean();
@@ -123,12 +162,22 @@ public class SpearDefinition {
     public static class Builder {
 
         private final String name;
-        private float damage = 1, attackSpeed = 1, chargeMultiplier = 1;
-        private int durability = 1, enchantability = 1,
-                chargeDismountDuration = 100, chargeKnockbackDuration = 200, chargeDamageDuration = 300;
+        private float damage = 1;
+        private int durability = 1;
+        private int enchantability = 1;
+        private float attackSpeed = 1.54f;
+        private float chargeMultiplier = 0.7f;
+        private int chargeDelay = 15;
+        private int chargeDismountDuration = 100;
+        private float chargeDismountSpeed = 14;
+        private int chargeKnockbackDuration = 200;
+        private float chargeKnockbackSpeed = 5.1f;
+        private int chargeDamageDuration = 300;
+        private float chargeDamageSpeed = 4.6f;
         private CreativeTabs creativeTab = CreativeTabs.COMBAT;
-        private Supplier<Ingredient> repairMaterial = null;
-        private boolean craftable = true, fireproof = false;
+        private Supplier<Ingredient> repairMaterial;
+        private boolean craftable = true;
+        private boolean fireproof = false;
 
         public Builder(String name) {
             this.name = name;
@@ -156,6 +205,41 @@ public class SpearDefinition {
 
         public Builder setChargeMultiplier(float chargeMultiplier) {
             this.chargeMultiplier = chargeMultiplier;
+            return this;
+        }
+
+        public Builder setChargeDelay(int chargeDelay) {
+            this.chargeDelay = chargeDelay;
+            return this;
+        }
+
+        public Builder setChargeDismountDuration(int chargeDismountDuration) {
+            this.chargeDismountDuration = chargeDismountDuration;
+            return this;
+        }
+
+        public Builder setChargeDismountSpeed(float chargeDismountSpeed) {
+            this.chargeDismountSpeed = chargeDismountSpeed;
+            return this;
+        }
+
+        public Builder setChargeKnockbackDuration(int chargeKnockbackDuration) {
+            this.chargeKnockbackDuration = chargeKnockbackDuration;
+            return this;
+        }
+
+        public Builder setChargeKnockbackSpeed(float chargeKnockbackSpeed) {
+            this.chargeKnockbackSpeed = chargeKnockbackSpeed;
+            return this;
+        }
+
+        public Builder setChargeDamageDuration(int chargeDamageDuration) {
+            this.chargeDamageDuration = chargeDamageDuration;
+            return this;
+        }
+
+        public Builder setChargeDamageSpeed(float chargeDamageSpeed) {
+            this.chargeDamageSpeed = chargeDamageSpeed;
             return this;
         }
 

@@ -1,13 +1,12 @@
 package net.smileycorp.mounts.common;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.*;
+import net.minecraft.entity.monster.EntityCaveSpider;
+import net.minecraft.entity.monster.EntityHusk;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
@@ -16,13 +15,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.smileycorp.mounts.api.VanillaSpears;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
+import net.smileycorp.mounts.common.capabilities.Piercing;
 import net.smileycorp.mounts.common.entity.EntityCamel;
-import net.smileycorp.mounts.common.entity.EntityCamelHusk;
-import net.smileycorp.mounts.common.entity.EntityParched;
 import net.smileycorp.mounts.common.entity.Jockeys;
-import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
 import net.smileycorp.mounts.config.LootConfig;
 import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.MountsConfig;
@@ -51,6 +47,7 @@ public class MountsCommonEvents
         {
             event.addCapability(CapabilitySpearMovement.ID, new CapabilitySpearMovement.Provider(new CapabilitySpearMovement.MountsPlayerInfoMethods(), CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null));
         }
+        if (event.getObject() instanceof EntityLivingBase) event.addCapability(Constants.loc("piercing"), new Piercing.Impl());
     }
 
     /** Bonus security check */

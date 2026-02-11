@@ -4,9 +4,14 @@
 	"enchantability": 13,
 	"attack_speed": 1.18,
 	"charge_multiplier": 0.82,
+	"charge_delay": 13,
 	"charge_dismount_duration": 80,
+	"charge_dismount_speed": 9,
 	"charge_knockback_duration": 165,
+	"charge_knockback_speed": 5.1,
 	"charge_damage_duration": 250,
+	"charge_damage_speed": 4.6,
+	"creative_tab": "combat",
 	"repair_material": {
       "type": "forge:ore_dict",
       "ore": "ingotCopper"
