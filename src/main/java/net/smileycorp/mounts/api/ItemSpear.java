@@ -154,18 +154,19 @@ public class ItemSpear extends Item {
             boolean pierced = false;
             //damage is based on relative speed between the user and the target
             double relativeSpeed = speed - getSpeed(look, entity);
-            if (speed >= definition.getChargeDismountSpeed() && usageTicks <= definition.getChargeDismountDuration() && entity.isRiding()) {
+            if (speed > definition.getChargeDismountSpeed() * (user instanceof EntityPlayer ? 1d : 0.2)  && usageTicks < definition.getChargeDismountDuration() && entity.isRiding()) {
                 entity.dismountRidingEntity();
                 pierced = true;
             }
-            if (entity instanceof EntityLivingBase && speed >= definition.getChargeKnockbackSpeed() && usageTicks <= definition.getChargeKnockbackDuration()) {
+            if (entity instanceof EntityLivingBase && speed > definition.getChargeKnockbackSpeed() * (user instanceof EntityPlayer ? 1d : 0.2)  && usageTicks < definition.getChargeKnockbackDuration()) {
                 ((EntityLivingBase) entity).knockBack(user, 0.4f + EnchantmentHelper.getKnockbackModifier(user) / 2f,
                         MathHelper.sin(user.rotationYaw * 0.017453292f), -MathHelper.cos(user.rotationYaw * 0.017453292f));
                 pierced = true;
             }
             //charge attacks apparently don't take the mob attack damage attribute into account
             //non player entities have a way lower speed cap
-            float damage = relativeSpeed <= definition.getChargeDamageSpeed() * (user instanceof EntityPlayer ? 1d : 0.2) ?
+            float damage = usageTicks > definition.getChargeDamageDuration() ||
+                    relativeSpeed <= definition.getChargeDamageSpeed() * (user instanceof EntityPlayer ? 1d : 0.2) ?
                     0 : (float) Math.floor(relativeSpeed * definition.getChargeMultiplier());
             if (damage > 0) {
                 if (entity instanceof EntityLivingBase) damage += EnchantmentHelper.getModifierForCreature(stack, ((EntityLivingBase) entity).getCreatureAttribute());
