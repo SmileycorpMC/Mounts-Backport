@@ -11,6 +11,9 @@ jockey.mounts.baby_zombie=Baby Zombie Jockey
 jockey.mounts.zombie_horseman=Zombie Horseman
 jockey.mounts.camel_husk=Camel Husk Jockey
 
+enchantment.mounts.lunge=Lunge
+enchantment.mounts.lunge.desc=Launches the user forwards on a jab attack, consuming hunger and saturation
+
 subtitle.mounts.entity.camel.ambient=Camel grunts
 subtitle.mounts.entity.camel.dash=Camel yeets
 subtitle.mounts.entity.camel.dash_ready=Camel recovers

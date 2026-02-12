@@ -1,5 +1,6 @@
 package net.smileycorp.mounts.common;
 
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityCaveSpider;
@@ -7,6 +8,8 @@ import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
@@ -15,8 +18,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.smileycorp.mounts.api.SpearJabEvent;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.capabilities.Piercing;
+import net.smileycorp.mounts.common.enchantments.MountsEnchantments;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 import net.smileycorp.mounts.common.entity.Jockeys;
 import net.smileycorp.mounts.config.LootConfig;
@@ -85,6 +90,24 @@ public class MountsCommonEvents
         if (entity.getClass() == EntityCaveSpider.class && world.rand.nextFloat() <= MountsConfig.caveSpiderJockeyChance) Jockeys.spawnSpiderJockey(entity, false);
         if (entity.getClass() == EntityHusk.class && world.rand.nextFloat() <= MountsConfig.huskJockeyChance) Jockeys.spawnCamelHusk(entity, false);
         if (entity.getClass() == EntityZombieHorse.class) Jockeys.spawnZombieHorseman(entity, false);
+    }
+
+    @SubscribeEvent
+    public static void spearJab(SpearJabEvent event) {
+        ItemStack stack = event.getStack();
+        int lunge = EnchantmentHelper.getEnchantmentLevel(MountsEnchantments.LUNGE, stack);
+        if (lunge == 0) return;
+        EntityLivingBase entity = event.getEntityLiving();
+        if (entity instanceof EntityPlayer &! ((EntityPlayer) entity).capabilities.isCreativeMode
+                && ((EntityPlayer) entity).getFoodStats().getFoodLevel() < 7) return;
+        Vec3d look = entity.getLookVec();
+        float velocity = 0.458f * lunge;
+        entity.motionX = look.x * velocity;
+        entity.motionZ = look.z * velocity;
+        entity.velocityChanged = true;
+        stack.damageItem(1, entity);
+        if (entity instanceof EntityPlayer &! ((EntityPlayer) entity).capabilities.isCreativeMode)
+            ((EntityPlayer) entity).getFoodStats().addExhaustion(4 * lunge);
     }
 
 }

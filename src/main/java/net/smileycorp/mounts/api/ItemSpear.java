@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
@@ -17,11 +18,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
-import net.smileycorp.atlas.api.util.DirectionUtils;
+import net.minecraftforge.common.MinecraftForge;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.MountsSoundEvents;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
@@ -108,7 +112,8 @@ public class ItemSpear extends Item {
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment.type == EnumEnchantmentType.WEAPON || super.canApplyAtEnchantingTable(stack, enchantment);
+        return (enchantment.type == EnumEnchantmentType.WEAPON && enchantment != Enchantments.SWEEPING)
+                || super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
     @Override
@@ -119,6 +124,7 @@ public class ItemSpear extends Item {
     public static boolean performJabAttack(EntityLivingBase user, ItemStack stack) {
         if (user.world.isRemote |! (stack.getItem() instanceof ItemSpear)) return false;
         SpearDefinition definition = ((ItemSpear) stack.getItem()).getDefinition();
+        if (MinecraftForge.EVENT_BUS.post(new SpearJabEvent(user, stack, definition))) return false;
         boolean hit = false;
         for (Entity entity : getHitEntities(user, e -> true)) {
             /* I'm pretty sure Vanilla rounds the Spear Damage up in my testing... */
