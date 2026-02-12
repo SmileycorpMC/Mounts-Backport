@@ -1,5 +1,6 @@
 package net.smileycorp.mounts.api;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -16,13 +17,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
+import net.smileycorp.atlas.api.util.DirectionUtils;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.MountsSoundEvents;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
@@ -184,16 +183,35 @@ public class ItemSpear extends Item {
     }
 
     public static List<Entity> getHitEntities(EntityLivingBase user, Predicate<Entity> predicate) {
-        BlockPos getUserEyes = user.getPosition().add(new BlockPos(0, user.getEyeHeight(), 0));
+        Vec3d eyes = new Vec3d(user.posX, user.posY + user.getEyeHeight(), user.posZ);
+        Vec3d look = user.getLookVec();
         /* Controls the distance the attack box is shifted away from the user. */
-        double distanceFromUser = user instanceof EntityPlayer ? 4 : 2;
-        double width = 0.25D;
-
-        /* Make a sized Bounding Box, and push it forward by `distanceFromUser`! */
-        AxisAlignedBB box = new AxisAlignedBB(getUserEyes).grow(width, width, width).offset(user.getLookVec().scale(distanceFromUser));
+        Vec3d min = eyes.add(look.scale(2));
+        Vec3d max = eyes.add(look.scale(4.5));
+        RayTraceResult result = user.world.rayTraceBlocks(min, max, false, true, false);
+        if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) max = result.hitVec;
+        Vec3d distance = min.subtract(max);
+        //System.out.println(min + ", " + max + ", " + distance);
+        if (distance.lengthVector() == 0) return Lists.newArrayList();
+        double width = 0.25;
+        AxisAlignedBB box = new AxisAlignedBB(min.x - width, min.y - width, min.z - width,
+            min.x + width, min.y + width, min.z + width).contract(distance.x, distance.y, distance.z);
         renderHitboxParticles(user, box);
-        return user.world.getEntitiesWithinAABB(EntityLivingBase.class, box, entity -> entity != user && entity.isEntityAlive() &!
-                (user instanceof EntityPlayer &! ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity)) && predicate.test(entity));
+        List<Entity> entities = Lists.newArrayList();
+        for (EntityLivingBase entity : user.world.getEntitiesWithinAABB(EntityLivingBase.class, box)) {
+            Vec3d pos = new Vec3d(entity.posX, entity.posY + entity.height * 0.5, entity.posZ);
+            if (entity == user |! entity.isEntityAlive()) continue;
+            //find the closest point on the line to the entity and check if it's in the entities inflated hitbox
+            double magnitude = MathHelper.clamp(pos.subtract(max).dotProduct(distance) / distance.dotProduct(distance), 0, 1);
+            Vec3d point = max.add(distance.scale(magnitude));
+            AxisAlignedBB bb = entity.getEntityBoundingBox().grow(width);
+            //System.out.println(bb + ", " + point);
+            if (!bb.contains(point)) continue;
+            if (!predicate.test(entity) || (user instanceof EntityPlayer &!
+                    ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity))) continue;
+            entities.add(entity);
+        }
+        return entities;
     }
 
     private static double getSpeed(Vec3d look, Entity entity) {
