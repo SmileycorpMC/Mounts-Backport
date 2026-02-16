@@ -35,15 +35,16 @@ public class Jockeys {
         living.rotationYawHead = living.rotationYaw;
         living.renderYawOffset = living.rotationYaw;
         living.setPosition(x, y, z);
-        living.onInitialSpawn(living.world.getDifficultyForLocation(living.getPosition()), null);
         world.spawnEntity(living);
         type.spawn(living, true);
         living.playLivingSound();
         return living;
     }
 
-    public static void spawnSpiderJockey(EntityLivingBase entity, boolean summoned) {
+    public static void spawnSpiderJockey(EntityLiving entity, boolean summoned) {
         if (!(entity instanceof EntitySpider)) return;
+        DifficultyInstance difficulty = entity.world.getDifficultyForLocation(entity.getPosition());
+        if (entity.getClass() != EntitySpider.class) entity.onInitialSpawn(difficulty, null);
         World world = entity.world;
         AbstractSkeleton skeleton = new EntitySkeleton(entity.world);
         Random rand = entity.world.rand;
@@ -54,31 +55,35 @@ public class Jockeys {
                 && rand.nextFloat() <= MountsConfig.parchedChance) skeleton = new EntityParched(world);
         if (Loader.isModLoaded("deeperdepths") && DeeperDepthsIntegration.canBoggedSpawn(rand, types))
             skeleton = DeeperDepthsIntegration.getBogged(world);
-        if (skeleton == null) return;
         skeleton.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, 0.0F);
-        skeleton.onInitialSpawn(world.getDifficultyForLocation(entity.getPosition()), null);
+        skeleton.onInitialSpawn(difficulty, null);
         world.spawnEntity(skeleton);
         skeleton.startRiding(entity);
     }
 
-    public static void spawnBabyZombieJockey(EntityLivingBase entity, boolean summoned) {
+    public static void spawnBabyZombieJockey(EntityLiving entity, boolean summoned) {
+        DifficultyInstance difficulty = entity.world.getDifficultyForLocation(entity.getPosition());
+        entity.onInitialSpawn(difficulty, null);
         if (summoned) ((EntityZombie)entity).setChild(true);
-        ((EntityZombie) entity).tasks.addTask(1, new EntityAIFindMount((EntityLiving) entity));
+        entity.tasks.addTask(1, new EntityAIFindMount(entity));
     }
 
-    public static void spawnZombieHorseman(EntityLivingBase entity, boolean summoned) {
+    public static void spawnZombieHorseman(EntityLiving entity, boolean summoned) {
+        DifficultyInstance difficulty = entity.world.getDifficultyForLocation(entity.getPosition());
+        entity.onInitialSpawn(difficulty, null);
         EntityZombie zombie = new EntityZombie(entity.world);
         zombie.setPosition(entity.posX, entity.posY, entity.posZ);
-        zombie.onInitialSpawn(entity.world.getDifficultyForLocation(entity.getPosition()), null);
+        zombie.onInitialSpawn(difficulty, null);
         if (zombie.isChild()) ((EntityZombieHorse)entity).setGrowingAge(Integer.MIN_VALUE);
         zombie.startRiding(entity);
         zombie.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(VanillaSpears.IRON_SPEAR.get()));
         zombie.world.spawnEntity(zombie);
     }
 
-    public static void spawnCamelHusk(EntityLivingBase entity, boolean summoned) {
+    public static void spawnCamelHusk(EntityLiving entity, boolean summoned) {
         World world = entity.world;
         DifficultyInstance difficulty = world.getDifficultyForLocation(entity.getPosition());
+        entity.onInitialSpawn(difficulty, null);
         EntityCamelHusk camel = new EntityCamelHusk(world);
         camel.setPosition(entity.posX, entity.posY, entity.posZ);
         camel.onInitialSpawn(difficulty, null);
@@ -91,7 +96,6 @@ public class Jockeys {
         world.spawnEntity(parched);
         entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(VanillaSpears.IRON_SPEAR.get()));
     }
-
 
     public enum Type {
         SPIDER(new ResourceLocation("spider"), Jockeys::spawnSpiderJockey),
@@ -114,7 +118,7 @@ public class Jockeys {
             return entity;
         }
 
-        public void spawn(EntityLivingBase entity, boolean summoned) {
+        public void spawn(EntityLiving entity, boolean summoned) {
             spawner.spawn(entity, summoned);
         }
 
@@ -131,7 +135,7 @@ public class Jockeys {
     @FunctionalInterface
     public interface Spawner {
 
-        void spawn(EntityLivingBase entity, boolean summoned);
+        void spawn(EntityLiving entity, boolean summoned);
 
     }
 

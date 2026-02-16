@@ -2,9 +2,11 @@ package net.smileycorp.mounts.common;
 
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityCaveSpider;
 import net.minecraft.entity.monster.EntityHusk;
+import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +18,7 @@ import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.smileycorp.mounts.api.SpearJabEvent;
@@ -82,14 +85,20 @@ public class MountsCommonEvents
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
     public static void spawnMob(LivingSpawnEvent.SpecialSpawn event) {
         EntityLivingBase entity = event.getEntityLiving();
         World world = entity.world;
-        if (entity instanceof EntityZombie) Jockeys.spawnBabyZombieJockey(entity, false);
-        if (entity.getClass() == EntityCaveSpider.class && world.rand.nextFloat() <= MountsConfig.caveSpiderJockeyChance) Jockeys.spawnSpiderJockey(entity, false);
-        if (entity.getClass() == EntityHusk.class && world.rand.nextFloat() <= MountsConfig.huskJockeyChance) Jockeys.spawnCamelHusk(entity, false);
-        if (entity.getClass() == EntityZombieHorse.class) Jockeys.spawnZombieHorseman(entity, false);
+        if (entity instanceof EntityZombie && entity.getRNG().nextFloat() > MountsConfig.babyZombieJockeyChance)
+            Jockeys.spawnBabyZombieJockey((EntityLiving) entity, false);
+        else if (entity.getClass() == EntityCaveSpider.class && world.rand.nextFloat() <= MountsConfig.caveSpiderJockeyChance)
+            Jockeys.spawnSpiderJockey((EntityLiving) entity, false);
+        else if (entity.getClass() == EntityHusk.class && world.rand.nextFloat() <= MountsConfig.huskJockeyChance)
+            Jockeys.spawnCamelHusk((EntityLiving) entity, false);
+        else if (entity.getClass() == EntityZombieHorse.class)
+            Jockeys.spawnZombieHorseman((EntityLiving) entity, false);
+        else return;
+        event.setCanceled(true);
     }
 
     @SubscribeEvent

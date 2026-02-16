@@ -23,7 +23,6 @@ public class EntityAIFindMount extends EntityAIBase {
         if (checks == 0) return false;
         if (!validated) {
             if (!entity.isChild()) removeTask();
-            if (entity.getRNG().nextFloat() > MountsConfig.babyZombieJockeyChance) removeTask();
             validated = true;
             return false;
         }
