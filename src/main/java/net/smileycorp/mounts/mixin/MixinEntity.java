@@ -18,8 +18,6 @@ import java.util.List;
 @Mixin(Entity.class)
 public abstract class MixinEntity {
 
-    @Shadow public abstract boolean isPassenger(Entity entityIn);
-
     @Shadow public double posX;
 
     @Shadow public double posY;
@@ -28,18 +26,22 @@ public abstract class MixinEntity {
 
     @Shadow public float rotationYaw;
 
+    @Shadow private Entity ridingEntity;
+
+    @Shadow public float rotationPitch;
+
+    @Shadow public abstract boolean isPassenger(Entity entityIn);
+
     @Shadow public abstract double getMountedYOffset();
 
     @Shadow public abstract List<Entity> getPassengers();
-
-    @Shadow private Entity ridingEntity;
 
     //bedrock feature, makes it so baby zombies piggyback adult zombies when riding them
     @Inject(at = @At("HEAD"), method = "updatePassenger", cancellable = true)
     public void mounts$updatePassenger(Entity passenger, CallbackInfo callback) {
         if (!isPassenger(passenger) |! (((Object)this)instanceof EntityZombie) |! (passenger instanceof EntityZombie)) return;
         Vec3d offset = new Vec3d(0, 0, -0.4f).rotateYaw(-rotationYaw * 0.017453292f);
-        passenger.setPosition(posX + offset.x, posY + getMountedYOffset() - 0.35, posZ + offset.z);
+        passenger.setPositionAndRotation(posX + offset.x, posY + getMountedYOffset() - 0.35, posZ + offset.z, rotationYaw, rotationPitch);
         callback.cancel();
     }
 
