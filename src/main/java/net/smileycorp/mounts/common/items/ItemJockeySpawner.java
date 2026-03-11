@@ -1,7 +1,6 @@
 package net.smileycorp.mounts.common.items;
 
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
