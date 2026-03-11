@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "mounts:items/leather_horse_armor"
+	  "layer0": "mounts:items/leather_horse_armor_0",
+	  "layer1": "mounts:items/leather_horse_armor_1"
   }
 }
