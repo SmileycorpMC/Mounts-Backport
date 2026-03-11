@@ -1,0 +1,21 @@
+{
+  "group": "mounts:leather_horse_armour",
+  "type": "minecraft:crafting_shaped",
+  "mirror": true,
+  "pattern": [
+    "L L",
+    "LLL",
+    "L L"
+  ],
+  "key": {
+    "L": {
+      "type": "forge:ore_dict",
+      "ore": "leather"
+    }
+  },
+  "result": {
+    "item": "mounts:leather_horse_armour",
+    "data": 0,
+    "count": 1
+  }
+}

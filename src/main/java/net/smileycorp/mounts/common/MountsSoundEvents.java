@@ -2,9 +2,14 @@ package net.smileycorp.mounts.common;
 
 import com.google.common.collect.Sets;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Set;
 
+@Mod.EventBusSubscriber(modid = Constants.MODID)
 public class MountsSoundEvents {
     
     public static final Set<SoundEvent> SOUNDS = Sets.newHashSet();
@@ -47,6 +52,12 @@ public class MountsSoundEvents {
         sound.setRegistryName(name);
         SOUNDS.add(sound);
         return sound;
+    }
+
+    @SubscribeEvent
+    public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
+        IForgeRegistry<SoundEvent> registry = event.getRegistry();
+        SOUNDS.forEach(registry::register);
     }
 
 }

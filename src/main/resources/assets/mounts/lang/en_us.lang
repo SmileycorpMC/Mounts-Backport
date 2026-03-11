@@ -1,6 +1,8 @@
 death.attack.mounts.spear=%1$s was speared by %2$s
 death.attack.mounts.spear.item=%1$s was speared by %2$s using %3$s
 
+item.mounts.leather_horse_armour.name=Leather Horse Armor
+
 entity.mounts.camel.name=Camel
 entity.mounts.camel_husk.name=Camel Husk
 entity.mounts.parched.name=Parched
