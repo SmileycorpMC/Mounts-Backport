@@ -7,6 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.smileycorp.mounts.client.entity.layer.LayerParchedEmissive;
+import net.smileycorp.mounts.client.entity.layer.LayerParchedOverlay;
 import net.smileycorp.mounts.common.Constants;
 
 @SideOnly(Side.CLIENT)
