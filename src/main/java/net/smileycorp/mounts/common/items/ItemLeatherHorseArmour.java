@@ -1,6 +1,7 @@
 package net.smileycorp.mounts.common.items;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.smileycorp.atlas.api.item.ItemHorseArmourBase;
@@ -45,6 +46,11 @@ public class ItemLeatherHorseArmour extends ItemHorseArmourBase {
             NBTTagCompound display = nbt.getCompoundTag("display");
             if (!nbt.hasKey("display", 10)) nbt.setTag("display", display);
             display.setInteger("color", color);
+    }
+
+    @Override
+    public String getHorseArmorTexture(EntityLiving wearer, ItemStack stack) {
+        return null;
     }
 
 }
