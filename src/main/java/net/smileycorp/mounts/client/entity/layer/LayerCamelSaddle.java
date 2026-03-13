@@ -1,11 +1,12 @@
-package net.smileycorp.mounts.client.entity.render;
+package net.smileycorp.mounts.client.entity.layer;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.smileycorp.mounts.client.entity.ModelCamelSaddle;
+import net.smileycorp.mounts.client.entity.models.ModelCamelSaddle;
+import net.smileycorp.mounts.client.entity.render.RenderCamel;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 

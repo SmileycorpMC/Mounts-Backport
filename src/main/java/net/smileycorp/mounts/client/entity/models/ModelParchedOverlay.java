@@ -1,4 +1,4 @@
-package net.smileycorp.mounts.client.entity;
+package net.smileycorp.mounts.client.entity.models;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBox;
