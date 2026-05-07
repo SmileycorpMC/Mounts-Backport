@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.smileycorp.mounts.common.capabilities.CapabilitySpearAnimation;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
@@ -38,6 +39,7 @@ public class MountsCommonEvents
         if (event.getObject() instanceof EntityPlayer)
         {
             event.addCapability(CapabilitySpearMovement.ID, new CapabilitySpearMovement.Provider(new CapabilitySpearMovement.MountsPlayerInfoMethods(), CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null));
+            event.addCapability(CapabilitySpearAnimation.ID, new CapabilitySpearAnimation.Provider(new CapabilitySpearAnimation.AnimationMethods(), CapabilitySpearAnimation.MOUNTS_PLAYER_ANIM_CAP, null));
         }
     }
 

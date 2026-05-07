@@ -10,6 +10,7 @@
   ],
   "client": [
     "MixinEntityPlayerSP",
+    "MixinLayerHeldItem",
     "MixinMinecraft",
     "MixinModelBiped"
   ],

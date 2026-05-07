@@ -57,7 +57,7 @@ public class ClientProxy extends CommonProxy {
 		else armSwing += (swingProgress * 10f / 6f) - 1;
 		arm.rotateAngleX += 0.523598775f * armSwing;
 		//if (swingProgress > 0) System.out.println(swingProgress + "," + arm.rotateAngleX);
-		LayerHeldItem
+		//LayerHeldItem
 	}
 	
 }

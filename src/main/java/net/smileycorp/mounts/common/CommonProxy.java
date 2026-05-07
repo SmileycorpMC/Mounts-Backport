@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.smileycorp.mounts.common.capabilities.CapabilitySpearAnimation;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.entity.MountsEntities;
 import net.smileycorp.mounts.common.network.PacketHandler;
@@ -33,6 +34,7 @@ public class CommonProxy
 	public void init(FMLInitializationEvent event)
 	{
 		CapabilityManager.INSTANCE.register(CapabilitySpearMovement.ICapabilityMountsPlayerInfo.class, new CapabilitySpearMovement.Storage(), CapabilitySpearMovement.MountsPlayerInfoMethods::new);
+		CapabilityManager.INSTANCE.register(CapabilitySpearAnimation.ICapabilityAnimations.class, new CapabilitySpearAnimation.Storage(), CapabilitySpearAnimation.AnimationMethods::new);
 	}
 	
 	public void postInit(FMLPostInitializationEvent event) {}

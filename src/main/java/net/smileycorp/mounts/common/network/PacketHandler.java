@@ -13,6 +13,9 @@ public class PacketHandler {
 		int id = 0;
 		NETWORK_INSTANCE.registerMessage(SpearAttackMessage::process, SpearAttackMessage.class, id++, Side.SERVER);
 		NETWORK_INSTANCE.registerMessage(HoldingSpaceMessage::process, HoldingSpaceMessage.class, id++, Side.SERVER);
+		NETWORK_INSTANCE.registerMessage(SpearSwingAnimMessage.Handler.class, SpearSwingAnimMessage.class, id++, Side.CLIENT);
+		NETWORK_INSTANCE.registerMessage(SpearAnimSwingServerMessage.Handler.class, SpearAnimSwingServerMessage.class, id++, Side.SERVER);
+		NETWORK_INSTANCE.registerMessage(SpearRecoilAnimMessage.Handler.class, SpearRecoilAnimMessage.class, id++, Side.CLIENT);
 	}
 
 }

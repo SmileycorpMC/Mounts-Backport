@@ -22,9 +22,13 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.MountsSoundEvents;
+import net.smileycorp.mounts.common.capabilities.CapabilitySpearAnimation;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
+import net.smileycorp.mounts.common.network.PacketHandler;
+import net.smileycorp.mounts.common.network.SpearRecoilAnimMessage;
 
 import java.util.UUID;
 
@@ -148,6 +152,14 @@ public class ItemSpear extends Item {
         if (hit)
         {
             user.world.playSound(null, user.posX, user.posY, user.posZ, ((ItemSpear) stack.getItem()).getHitSound(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+
+            if (user.hasCapability(CapabilitySpearAnimation.MOUNTS_PLAYER_ANIM_CAP, null))
+            {
+                CapabilitySpearAnimation.ICapabilityAnimations cap = user.getCapability(CapabilitySpearAnimation.MOUNTS_PLAYER_ANIM_CAP, null);
+                cap.setSpearRecoilStartTime(user.ticksExisted);
+
+                PacketHandler.NETWORK_INSTANCE.sendToAllTracking(new SpearRecoilAnimMessage(user.getEntityId()), new NetworkRegistry.TargetPoint(user.world.provider.getDimension(), user.posX, user.posY, user.posZ, 0.0D));
+            }
         }
         else if (!charge)
         {

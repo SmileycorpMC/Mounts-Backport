@@ -6,13 +6,14 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.AbstractSkeleton;
-import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.math.MathHelper;
 import net.smileycorp.mounts.api.ItemSpear;
+import net.smileycorp.mounts.api.SpearDefinition;
 import net.smileycorp.mounts.client.ClientProxy;
+import net.smileycorp.mounts.client.animation.AnimationsSpear;
+import net.smileycorp.mounts.client.animation.MountsPlayerAnimationMethods;
+import net.smileycorp.mounts.common.capabilities.CapabilityHelperUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -50,17 +51,50 @@ public abstract class MixinModelBiped extends ModelBase {
         if (!(entity instanceof EntityLivingBase)) return;
         EntityLivingBase living = (EntityLivingBase) entity;
         if (!(living.getHeldItemMainhand().getItem() instanceof ItemSpear)) return;
-        boolean isRight = living.getPrimaryHand() == EnumHandSide.RIGHT;
-        ModelRenderer arm = isRight ? bipedRightArm : bipedLeftArm;
-        arm.rotateAngleY = -0.1f * (isRight ? 1 : -1) + bipedHead.rotateAngleY;
-        arm.rotateAngleX = (float) -(Math.PI/2) + bipedHead.rotateAngleX + 0.8f;
-        if (entity instanceof EntityPlayer && ((EntityPlayer) entity).isElytraFlying()) arm.rotateAngleX -= 0.9599311f;
-        swingProgress = ((EntityLivingBase) entity).getSwingProgress(Minecraft.getMinecraft().getRenderPartialTicks());
-        //System.out.println(swingProgress);
-        bipedRightArm.rotateAngleY = bipedRightArm.rotateAngleY - bipedBody.rotateAngleY;
-        bipedLeftArm.rotateAngleY = bipedLeftArm.rotateAngleY - bipedBody.rotateAngleY;
-        bipedLeftArm.rotateAngleX = bipedLeftArm.rotateAngleX - bipedBody.rotateAngleZ;
-        ClientProxy.animateSpearSwing(arm, swingProgress);
+
+        /* If an animation is currently playing. */
+        boolean busyAnimating = false;
+        ModelBiped model = (ModelBiped)(Object)this;
+        float partialTicks = ageInTicks - entity.ticksExisted;
+
+
+        EnumHandSide spearHand = MountsPlayerAnimationMethods.getHandSide(living, ItemSpear.class);
+        SpearDefinition spearDef = ((ItemSpear) living.getHeldItemMainhand().getItem()).getDefinition();
+
+        if (true)
+        {
+            /* Only Players use the custom animation durations. */
+            if (living instanceof EntityPlayer)
+            {
+                if (CapabilityHelperUtil.isPlayerCustomSwingAnimating((EntityPlayer)living))
+                {
+                    float customSwing = CapabilityHelperUtil.getPlayerCustomSwingAnimProgress((EntityPlayer)living, partialTicks);
+
+                    if (spearHand != null)
+                    {
+                        AnimationsSpear.preformSpearArmRotations3edPerson(living, model, ageInTicks, customSwing, netHeadYaw, headPitch, spearHand, spearDef, true);
+                        busyAnimating = true;
+                    }
+                }
+            }
+
+            if (!busyAnimating && spearHand != null)
+            { AnimationsSpear.preformSpearArmRotations3edPerson(living, model, ageInTicks, model.swingProgress, netHeadYaw, headPitch, spearHand, spearDef); }
+        }
+        else
+        {
+            boolean isRight = living.getPrimaryHand() == EnumHandSide.RIGHT;
+            ModelRenderer arm = isRight ? bipedRightArm : bipedLeftArm;
+            arm.rotateAngleY = -0.1f * (isRight ? 1 : -1) + bipedHead.rotateAngleY;
+            arm.rotateAngleX = (float) -(Math.PI/2) + bipedHead.rotateAngleX + 0.8f;
+            if (entity instanceof EntityPlayer && ((EntityPlayer) entity).isElytraFlying()) arm.rotateAngleX -= 0.9599311f;
+            swingProgress = ((EntityLivingBase) entity).getSwingProgress(Minecraft.getMinecraft().getRenderPartialTicks());
+            //System.out.println(swingProgress);
+            bipedRightArm.rotateAngleY = bipedRightArm.rotateAngleY - bipedBody.rotateAngleY;
+            bipedLeftArm.rotateAngleY = bipedLeftArm.rotateAngleY - bipedBody.rotateAngleY;
+            bipedLeftArm.rotateAngleX = bipedLeftArm.rotateAngleX - bipedBody.rotateAngleZ;
+            ClientProxy.animateSpearSwing(arm, swingProgress);
+        }
     }
     
 }
