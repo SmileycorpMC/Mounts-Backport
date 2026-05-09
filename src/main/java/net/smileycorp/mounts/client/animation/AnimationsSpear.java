@@ -113,18 +113,36 @@ public class AnimationsSpear
         if (!(entityIn instanceof EntityLivingBase)) return;
         EntityLivingBase living = (EntityLivingBase)entityIn;
 
-
-        EnumHandSide side = living.getHeldItemMainhand().getItem() instanceof ItemSpear ? living.getPrimaryHand() : living.getHeldItemOffhand().getItem() instanceof ItemSpear ? living.getPrimaryHand().opposite() : null;
-
-        if (side == null) return;
-
-        boolean rightHanded = side == EnumHandSide.RIGHT;
-        ModelRenderer mainArm = side == EnumHandSide.RIGHT ? model.bipedRightArm : model.bipedLeftArm;
-        ModelRenderer offArm  = side == EnumHandSide.RIGHT ? model.bipedLeftArm  : model.bipedRightArm;
+        boolean rightHanded = hand == EnumHandSide.RIGHT;
+        ModelRenderer mainArm = hand == EnumHandSide.RIGHT ? model.bipedRightArm : model.bipedLeftArm;
+        ModelRenderer offArm  = hand == EnumHandSide.RIGHT ? model.bipedLeftArm  : model.bipedRightArm;
 
 
 
-        if (swing > 0 & (!useFullerTimings || swing < 0.5F))
+        if (living.getItemInUseCount() > 0)
+        {
+            float totalUseTick = living.getItemInUseMaxCount() + (ageInTicks - entityIn.ticksExisted);
+            int dismountEnd = spearDef.getChargeDismountDuration();
+            int knockbackEnd = spearDef.getChargeKnockbackDuration();
+            //int damageEnd = spearDef.getChargeDamageDuration();
+
+            float ready1 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, 0, 3);
+            float ready2 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, 3, 6);
+            float ready3 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, 6, 10);
+            float knockbackPhaseStart = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, dismountEnd, dismountEnd + 16);
+            float damagePhaseStart1 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, knockbackEnd, knockbackEnd + 6);
+            float damagePhaseStart2 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, knockbackEnd + 6, knockbackEnd + 16);
+
+
+            mainArm.rotateAngleX = -0.9F + (ready1 * -0.8F) + (ready2 * 0.8F) + (ready3 * -0.4F) + (damagePhaseStart1 * -0.3F)+ (damagePhaseStart2 * 0.7F) + (ready1 * model.bipedHead.rotateAngleX);
+
+            float shake1 = MathHelper.sin(ageInTicks * 0.3F) * 0.1F;
+            float shakeZ = MathHelper.cos(ageInTicks * 0.5F) * 0.1F;
+
+            mainArm.rotateAngleX += shake1 * knockbackPhaseStart;
+            mainArm.rotateAngleZ += shakeZ * knockbackPhaseStart;
+        }
+        else if (swing > 0 & (!useFullerTimings || swing < 0.5F))
         {
             float archBack1 = MountsPlayerAnimationMethods.segmentAnimationTime(swing, 0.0F, 0.1F);
             float archForward1 = MountsPlayerAnimationMethods.segmentAnimationTime(swing, 0.1F, 0.3F);
@@ -153,35 +171,8 @@ public class AnimationsSpear
                 mainArm.rotateAngleZ *= -1;
             }
         }
-        else if (living.getItemInUseCount() > 0)
-        {
-            float totalUseTick = living.getItemInUseMaxCount() + (ageInTicks - entityIn.ticksExisted);
-            int dismountEnd = spearDef.getChargeDismountDuration();
-            int knockbackEnd = spearDef.getChargeKnockbackDuration();
-            //int damageEnd = spearDef.getChargeDamageDuration();
-
-            float ready1 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, 0, 3);
-            float ready2 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, 3, 6);
-            float ready3 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, 6, 10);
-            float knockbackPhaseStart = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, dismountEnd, dismountEnd + 16);
-            float damagePhaseStart1 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, knockbackEnd, knockbackEnd + 6);
-            float damagePhaseStart2 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, knockbackEnd + 6, knockbackEnd + 16);
-
-
-            mainArm.rotateAngleX = -0.9F + (ready1 * -0.8F) + (ready2 * 0.8F) + (ready3 * -0.4F) + (damagePhaseStart1 * -0.3F)+ (damagePhaseStart2 * 0.7F) + (ready1 * model.bipedHead.rotateAngleX);
-
-            float shake1 = MathHelper.sin(ageInTicks * 0.3F) * 0.1F;
-            float shakeZ = MathHelper.cos(ageInTicks * 0.5F) * 0.1F;
-
-            mainArm.rotateAngleX += shake1 * knockbackPhaseStart;
-            mainArm.rotateAngleZ += shakeZ * knockbackPhaseStart;
-
-            //* (!rightHanded ? 1 : -1)
-        }
         else
-        {
-            mainArm.rotateAngleX = (-0.9F + (entityIn.isSneaking() ? 0.5F : 0));
-        }
+        { mainArm.rotateAngleX = (-0.9F + (entityIn.isSneaking() ? 0.5F : 0)); }
 
         mainArm.rotateAngleY = -0.1F + (MountsPlayerAnimationMethods.getEntityHeadYaw(living, ageInTicks, 70));
     }

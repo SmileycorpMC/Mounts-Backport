@@ -1,16 +1,16 @@
 package net.smileycorp.mounts.mixin;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.smileycorp.mounts.api.ItemSpear;
 import net.smileycorp.mounts.api.SpearDefinition;
-import net.smileycorp.mounts.client.ClientProxy;
 import net.smileycorp.mounts.client.animation.AnimationsSpear;
 import net.smileycorp.mounts.client.animation.MountsPlayerAnimationMethods;
 import net.smileycorp.mounts.common.capabilities.CapabilityHelperUtil;
@@ -47,54 +47,43 @@ public abstract class MixinModelBiped extends ModelBase {
     }
     
     @Inject(method = "setRotationAngles", at = @At("RETURN"))
-    public void deeperdepths$setRotationAngles$TAIL(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entity, CallbackInfo ci) {
+    public void deeperdepths$setRotationAngles$TAIL(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entity, CallbackInfo ci)
+    {
         if (!(entity instanceof EntityLivingBase)) return;
         EntityLivingBase living = (EntityLivingBase) entity;
-        if (!(living.getHeldItemMainhand().getItem() instanceof ItemSpear)) return;
+
+        EnumHandSide spearHandSide = MountsPlayerAnimationMethods.getHandSide(living, ItemSpear.class);
+        if (spearHandSide == null) return;
 
         /* If an animation is currently playing. */
         boolean busyAnimating = false;
         ModelBiped model = (ModelBiped)(Object)this;
         float partialTicks = ageInTicks - entity.ticksExisted;
 
+        EnumHand spearHand = spearHandSide == EnumHandSide.RIGHT && living.getPrimaryHand() == EnumHandSide.RIGHT ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
 
-        EnumHandSide spearHand = MountsPlayerAnimationMethods.getHandSide(living, ItemSpear.class);
-        SpearDefinition spearDef = ((ItemSpear) living.getHeldItemMainhand().getItem()).getDefinition();
+        Item heldItem = living.getHeldItemMainhand().getItem();
+        if (spearHandSide != living.getPrimaryHand()) heldItem = living.getHeldItemOffhand().getItem();
 
-        if (true)
+        SpearDefinition spearDef = ((ItemSpear) heldItem).getDefinition();
+
+        /* Only Players use the custom animation durations. */
+        if (living instanceof EntityPlayer)
         {
-            /* Only Players use the custom animation durations. */
-            if (living instanceof EntityPlayer)
+            if (CapabilityHelperUtil.isPlayerCustomSwingAnimating((EntityPlayer)living))
             {
-                if (CapabilityHelperUtil.isPlayerCustomSwingAnimating((EntityPlayer)living))
-                {
-                    float customSwing = CapabilityHelperUtil.getPlayerCustomSwingAnimProgress((EntityPlayer)living, partialTicks);
+                float customSwing = CapabilityHelperUtil.getPlayerCustomSwingAnimProgress((EntityPlayer)living, partialTicks);
 
-                    if (spearHand != null)
-                    {
-                        AnimationsSpear.preformSpearArmRotations3edPerson(living, model, ageInTicks, customSwing, netHeadYaw, headPitch, spearHand, spearDef, true);
-                        busyAnimating = true;
-                    }
+                if (living.swingingHand == spearHand)
+                {
+                    AnimationsSpear.preformSpearArmRotations3edPerson(living, model, ageInTicks, customSwing, netHeadYaw, headPitch, spearHandSide, spearDef, true);
+                    busyAnimating = true;
                 }
             }
+        }
 
-            if (!busyAnimating && spearHand != null)
-            { AnimationsSpear.preformSpearArmRotations3edPerson(living, model, ageInTicks, model.swingProgress, netHeadYaw, headPitch, spearHand, spearDef); }
-        }
-        else
-        {
-            boolean isRight = living.getPrimaryHand() == EnumHandSide.RIGHT;
-            ModelRenderer arm = isRight ? bipedRightArm : bipedLeftArm;
-            arm.rotateAngleY = -0.1f * (isRight ? 1 : -1) + bipedHead.rotateAngleY;
-            arm.rotateAngleX = (float) -(Math.PI/2) + bipedHead.rotateAngleX + 0.8f;
-            if (entity instanceof EntityPlayer && ((EntityPlayer) entity).isElytraFlying()) arm.rotateAngleX -= 0.9599311f;
-            swingProgress = ((EntityLivingBase) entity).getSwingProgress(Minecraft.getMinecraft().getRenderPartialTicks());
-            //System.out.println(swingProgress);
-            bipedRightArm.rotateAngleY = bipedRightArm.rotateAngleY - bipedBody.rotateAngleY;
-            bipedLeftArm.rotateAngleY = bipedLeftArm.rotateAngleY - bipedBody.rotateAngleY;
-            bipedLeftArm.rotateAngleX = bipedLeftArm.rotateAngleX - bipedBody.rotateAngleZ;
-            ClientProxy.animateSpearSwing(arm, swingProgress);
-        }
+        if (!busyAnimating && living.swingingHand == spearHand)
+        { AnimationsSpear.preformSpearArmRotations3edPerson(living, model, ageInTicks, model.swingProgress, netHeadYaw, headPitch, spearHandSide, spearDef); }
     }
     
 }

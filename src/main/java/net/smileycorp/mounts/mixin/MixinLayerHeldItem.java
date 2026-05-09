@@ -58,15 +58,15 @@ public class MixinLayerHeldItem
         SpearDefinition spearDef = ((ItemSpear) itemType).getDefinition();
 
         /* Then, I take over with special transforms. */
-        if (entity instanceof EntityPlayer && CapabilityHelperUtil.isPlayerCustomSwingAnimating((EntityPlayer)entity))
-        {
-            float fucker = CapabilityHelperUtil.getPlayerCustomSwingAnimProgress((EntityPlayer)entity, partialTicks);
-            AnimationsSpear.preformSpearSwingItemRotations3edPerson(entity, hand, partialTicks, fucker, model, true);
-        }
-        else
+        if (entity.getItemInUseCount() > 0)
         {
             if (entity.getActiveItemStack() == stack) AnimationsSpear.preformSpearUseItemRotations3edPerson(entity, hand, partialTicks, model.swingProgress, model, spearDef);
             else AnimationsSpear.preformSpearSwingItemRotations3edPerson(entity, hand, partialTicks, model.swingProgress, model);
+        }
+        else if (entity instanceof EntityPlayer && CapabilityHelperUtil.isPlayerCustomSwingAnimating((EntityPlayer)entity))
+        {
+            float fucker = CapabilityHelperUtil.getPlayerCustomSwingAnimProgress((EntityPlayer)entity, partialTicks);
+            AnimationsSpear.preformSpearSwingItemRotations3edPerson(entity, hand, partialTicks, fucker, model, true);
         }
 
         Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, stack, transforms, flag);
