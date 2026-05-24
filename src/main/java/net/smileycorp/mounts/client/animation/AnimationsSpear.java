@@ -23,33 +23,61 @@ public class AnimationsSpear
         float handAdjustment = hand == EnumHandSide.RIGHT ? 1 : -1;
         float cooldown = player.getCooledAttackStrength(partialTicks);
 
-        float windUp = MountsPlayerAnimationMethods.segmentAnimationTime(swing, 0.0F, 0.1F);
-        float thrust = MountsPlayerAnimationMethods.segmentAnimationTime(swing, 0.125F, 0.175F);
-        float toNeutral = MountsPlayerAnimationMethods.segmentAnimationTime(swing, 0.3F, 0.99F);
+        float r1 = MountsPlayerAnimationMethods.segmentAnimationTime(swing, 0.0F, 0.15F);
+        float r2 = MountsPlayerAnimationMethods.segmentAnimationTime(swing, 0.75F, 0.9F);
 
-        GlStateManager.translate(0,(windUp * 0.4F) + (toNeutral * -0.4F) + (toNeutral * (-1 + (cooldown * 1))),(windUp * 0.2F) + (thrust * -1.1) + (toNeutral * 0.8F));
+        float ready = MountsPlayerAnimationMethods.segmentAnimationTime(swing, 0.0F, 0.15F);
+        float thrust = MountsPlayerAnimationMethods.segmentAnimationTime(swing, 0.15F, 0.2F);
+        float thrustRecoil = MountsPlayerAnimationMethods.segmentAnimationTime(swing, 0.2F, 0.4F);
+        float reset = MountsPlayerAnimationMethods.segmentAnimationTime(swing, 0.75F, 0.9F);
 
-        GlStateManager.rotate((windUp * -30.0F) + (toNeutral * 30.0F), 1.0F, 0.0F, 0);
-        GlStateManager.rotate((thrust * 30.0F) + (toNeutral * -30.0F), 0.0F, handAdjustment, 0);
+
+        GlStateManager.rotate((r1 * 70.0F) + (r2 * -70.0F), -1.0F, 0.0F, 0.0F);
+        GlStateManager.rotate((r1 * 5.0F) + (r2 * -5.0F), 0.0F, handAdjustment, 0.0F);
+        GlStateManager.translate(0, (ready * 0.4F) + (thrust * 0.7F) + (thrustRecoil * -0.3F) + (reset * -0.8F), (ready * 0.3F) + (reset * -0.3F));
 
         if (swing >= 1) MountsClientEvents.swingSpear = false;
     }
 
-    public static void preformSpearUseItemRotations1stPerson(EntityPlayer player, float swing, float partialTicks, EnumHandSide hand)
+    public static void preformSpearUseItemRotations1stPerson(EntityPlayer player, float swing, float partialTicks, EnumHandSide hand, SpearDefinition spearDef)
     {
         float handAdjustment = hand == EnumHandSide.RIGHT ? 1 : -1;
 
         if (player.getItemInUseCount() > 0)
         {
             float totalUseTick = player.getItemInUseMaxCount() + partialTicks;
-            float progress = Math.min(totalUseTick / 8F, 1F);
+            int dismountEnd = spearDef.getChargeDismountDuration();
+            int knockbackEnd = spearDef.getChargeKnockbackDuration();
 
-            GlStateManager.translate(progress * -0.25F * handAdjustment,progress * 0.5F,progress * 0.55F);
-            GlStateManager.rotate(progress * -10.0F, 1.0F, 0.0F, 0);
+            float ready1 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, 0, 3);
+            float ready2 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, 3, 6);
+            float ready3 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, 6, 10);
+            float dismountPhaseStart = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, 0, 8);
 
-            float shakeProgress = Math.min(totalUseTick / 300F, 1F);
-            float shake = (MathHelper.cos(player.ticksExisted * 1.5F) * 0.005F) * (0.5F + shakeProgress);
-            GlStateManager.translate(0, shake, 0);
+            float knockbackPhaseStart = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, dismountEnd, dismountEnd + 32);
+            float knockbackPhaseStart1 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, dismountEnd, dismountEnd + 16);
+            float knockbackPhaseStart2 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, dismountEnd + 16, dismountEnd + 32);
+            float damagePhaseStart1 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, knockbackEnd, knockbackEnd + 3);
+            float damagePhaseStart2 = MountsPlayerAnimationMethods.segmentAnimationTime(totalUseTick, knockbackEnd + 3, knockbackEnd + 16);
+
+            float recoilProgress = CapabilityHelperUtil.getSpearRecoilAnimationProgress(player, partialTicks);
+            float rKey1 = MountsPlayerAnimationMethods.segmentAnimationTime(recoilProgress, 0F, 0.4F);
+            float rKey2 = MountsPlayerAnimationMethods.segmentAnimationTime(recoilProgress, 0.4F, 1.0F);
+
+            GlStateManager.translate(0, (rKey1 * -0.1F) + (rKey2 * 0.1F), (rKey1 * 0.25F) + (rKey2 * -0.25F));
+
+            GlStateManager.translate(((dismountPhaseStart * 1.5F) + (knockbackPhaseStart1 * -0.75F)) * handAdjustment, (dismountPhaseStart * 0.3F) + (knockbackPhaseStart1 * 0.4F), (dismountPhaseStart * -0.9F));
+            GlStateManager.translate((knockbackPhaseStart2 * -0.85F) * handAdjustment, (knockbackPhaseStart2 * -0.275F), 0);
+            GlStateManager.rotate((90 * dismountPhaseStart) * handAdjustment, 0.0F,1.0F,0.0F);
+            GlStateManager.rotate(((-70 * dismountPhaseStart) + (10 * damagePhaseStart1) + (-40 * damagePhaseStart2)) * handAdjustment, 0.0F,0.0F,1.0F);
+            GlStateManager.rotate((-90 * knockbackPhaseStart) * handAdjustment, 0.0F,1.0F,0.0F);
+
+
+            float shake1 = MathHelper.sin((player.ticksExisted + partialTicks) * 0.3F) * 1F;
+            float shakeZ = MathHelper.cos((player.ticksExisted + partialTicks) * 0.5F) * 1F;
+
+            GlStateManager.rotate((-shake1 * knockbackPhaseStart), 0.0F,0.0F,1.0F);
+            GlStateManager.rotate((-shakeZ * knockbackPhaseStart), 0.0F,1.0F,0.0F);
         }
     }
 
