@@ -32,7 +32,7 @@ public interface Piercing {
 
         @Override
         public boolean canPierce(Entity entity) {
-            return !piercedEntities.containsKey(entity) || entity.world.getWorldTime() - piercedEntities.get(entity) < 10;
+            return !piercedEntities.containsKey(entity) || entity.world.getWorldTime() - piercedEntities.get(entity) > 10;
         }
 
         @Override
