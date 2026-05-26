@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
@@ -28,6 +29,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.MountsSoundEvents;
+import net.smileycorp.mounts.common.advancements.MountsAdvancements;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.capabilities.Piercing;
 
@@ -184,8 +186,10 @@ public class ItemSpear extends Item {
             piercing.pierce(entity);
             hit = true;
         }
-        if (user instanceof EntityPlayer && piercing.getPiercedEntities().size() > 5); //advancement trigger
-        if (hit) user.world.playSound(null, user.posX, user.posY, user.posZ, ((ItemSpear) stack.getItem()).getHitSound(), user.getSoundCategory(), 1, 1);
+        if (hit) {
+            user.world.playSound(null, user.posX, user.posY, user.posZ, ((ItemSpear) stack.getItem()).getHitSound(), user.getSoundCategory(), 1, 1);
+            if (user instanceof EntityPlayerMP) MountsAdvancements.CHARGE_PIERCE_ENTITIES.trigger((EntityPlayerMP) user, piercing.getPiercedEntities().size());
+        }
         return hit;
     }
 

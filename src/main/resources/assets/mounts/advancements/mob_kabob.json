@@ -1,0 +1,27 @@
+{
+    "parent": "adventure/kill_a_mob",
+    "display": {
+        "icon": {
+            "item": "mounts:iron_spear"
+        },
+        "title": {
+            "translate": "advancements.mounts.mob_kabob.title"
+        },
+        "description": {
+            "translate": "advancements.mounts.mob_kabob.description"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false
+    },
+    "criteria": {
+        "charge_pierce_entities": {
+            "trigger": "mounts:charge_pierce_entities",
+            "conditions": {
+                "count": 5
+            }
+        }
+    },
+    "requirements": []
+}

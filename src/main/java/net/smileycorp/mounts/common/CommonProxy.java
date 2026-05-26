@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.smileycorp.mounts.common.advancements.MountsAdvancements;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.capabilities.Piercing;
 import net.smileycorp.mounts.common.entity.EntityParched;
@@ -38,6 +39,7 @@ public class CommonProxy
 		MountsEntities.registerEntities();
 		MountsEntities.registerEntitySpawns();
 		MountsLootTables.registerLootTables();
+		MountsAdvancements.registerCriterionTriggers();
 		PacketHandler.initPackets();
 	}
 

@@ -16,6 +16,9 @@ jockey.mounts.camel_husk=Camel Husk Jockey
 enchantment.mounts.lunge=Lunge
 enchantment.mounts.lunge.desc=Launches the user forwards on a jab attack, consuming hunger and saturation
 
+advancements.mounts.mob_kabob.title=Mob Kabob
+advancements.mounts.mob_kabob.description=Hit five mobs in the same Charge attack using the Spear.
+
 subtitle.mounts.entity.camel.ambient=Camel grunts
 subtitle.mounts.entity.camel.dash=Camel yeets
 subtitle.mounts.entity.camel.dash_ready=Camel recovers
