@@ -129,7 +129,7 @@ public class ItemSpear extends Item {
 
     public static boolean performJabAttack(EntityLivingBase user, ItemStack stack) {
         if (user.world.isRemote |! (stack.getItem() instanceof ItemSpear)) return false;
-        if (!charge) user.swingArm(EnumHand.MAIN_HAND);
+        user.swingArm(EnumHand.MAIN_HAND);
         SpearDefinition definition = ((ItemSpear) stack.getItem()).getDefinition();
         if (MinecraftForge.EVENT_BUS.post(new SpearJabEvent(user, stack, definition))) return false;
         boolean hit = false;
