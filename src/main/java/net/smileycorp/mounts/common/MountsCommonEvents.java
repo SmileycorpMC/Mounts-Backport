@@ -21,11 +21,13 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.smileycorp.mounts.api.SpearJabEvent;
+import net.smileycorp.mounts.common.capabilities.CapabilitySpearAnimation;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.capabilities.Piercing;
 import net.smileycorp.mounts.common.enchantments.MountsEnchantments;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 import net.smileycorp.mounts.common.entity.Jockeys;
+import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
 import net.smileycorp.mounts.config.LootConfig;
 import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.MountsConfig;
@@ -53,6 +55,7 @@ public class MountsCommonEvents
         if (event.getObject() instanceof EntityPlayer)
         {
             event.addCapability(CapabilitySpearMovement.ID, new CapabilitySpearMovement.Provider(new CapabilitySpearMovement.MountsPlayerInfoMethods(), CapabilitySpearMovement.MOUNTS_PLAYER_CAP, null));
+            event.addCapability(CapabilitySpearAnimation.ID, new CapabilitySpearAnimation.Provider(new CapabilitySpearAnimation.AnimationMethods(), CapabilitySpearAnimation.MOUNTS_PLAYER_ANIM_CAP, null));
         }
         if (event.getObject() instanceof EntityLivingBase) event.addCapability(Constants.loc("piercing"), new Piercing.Impl());
     }

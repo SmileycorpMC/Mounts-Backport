@@ -1,15 +1,22 @@
 package net.smileycorp.mounts.client;
 
+import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.InputUpdateEvent;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,12 +25,19 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.smileycorp.mounts.api.ItemSpear;
+import net.smileycorp.mounts.api.SpearDefinition;
+import net.smileycorp.mounts.client.animation.AnimationsSpear;
 import net.smileycorp.mounts.common.Constants;
+import net.smileycorp.mounts.common.capabilities.CapabilitySpearAnimation;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 import net.smileycorp.mounts.common.network.HoldingSpaceMessage;
 import net.smileycorp.mounts.common.network.PacketHandler;
+import net.smileycorp.mounts.common.network.SpearAnimSwingServerMessage;
+
+import javax.annotation.Nonnull;
 
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class MountsClientEvents
@@ -67,6 +81,37 @@ public class MountsClientEvents
         }
     }
 
+    /** This sends a packet of the custom swing's animation speed. */
+    @SubscribeEvent
+    public static void onMouseClick(MouseEvent event)
+    {
+        if (event.getButton() != 0 || !event.isButtonstate()) return;
+
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayerSP player = mc.player;
+        ItemStack stack = player.getHeldItemMainhand();
+
+        if (!(stack.getItem() instanceof ItemSpear)) return;
+
+        double attackSpeed = 4.0D;
+        Multimap<String, AttributeModifier> modifiers = stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND);
+
+        if (modifiers.containsKey(SharedMonsterAttributes.ATTACK_SPEED.getName()))
+        {
+            for (AttributeModifier mod : modifiers.get(SharedMonsterAttributes.ATTACK_SPEED.getName()))
+            { attackSpeed += mod.getAmount(); }
+        }
+        int duration = (int)(30.0D / attackSpeed);
+
+
+        CapabilitySpearAnimation.ICapabilityAnimations anim = player.getCapability(CapabilitySpearAnimation.MOUNTS_PLAYER_ANIM_CAP, null);
+        if (anim == null) return;
+
+        anim.setCustomSwingStartTime(player.ticksExisted);
+        anim.setCustomSwingEndTime(player.ticksExisted + duration);
+
+        PacketHandler.NETWORK_INSTANCE.sendToServer(new SpearAnimSwingServerMessage(player.getEntityId(), duration));
+    }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRenderOverlay(RenderGameOverlayEvent.Pre event)
@@ -139,7 +184,11 @@ public class MountsClientEvents
     }
 
     @SubscribeEvent
-    public static void renderItem(RenderSpecificHandEvent event) {
+    public static void renderItem(RenderSpecificHandEvent event)
+    {
+        /* TEMP EARLY EXIT FOR TESTING */
+        if (true) return;
+
         ItemStack stack = event.getItemStack();
         EnumHand hand = event.getHand();
         if (!(stack.getItem() instanceof ItemSpear)) {
@@ -154,7 +203,7 @@ public class MountsClientEvents
         ItemRenderer itemRenderer = mc.getItemRenderer();
         GlStateManager.pushMatrix();
         float swing = player.getCooledAttackStrength(partialTicks);
-        if (hand == EnumHand.MAIN_HAND && swing < 1 && swingSpear)
+            if (hand == EnumHand.MAIN_HAND && swing < 1 && swingSpear)
         {
             float swingS1End = 0.1f;
             float swingS2End = 0.5f;
@@ -173,5 +222,45 @@ public class MountsClientEvents
         if (swingSpear && swing == 1) swingSpear = false;
         itemRenderer.renderItemInFirstPerson(player, partialTicks, event.getInterpolatedPitch(), hand, 0, stack, swingSpear ? 0 : event.getEquipProgress());
         GlStateManager.popMatrix();
+    }
+
+
+
+    /** Remember, this hook leads to `ItemRenderer`, so check it for transformation info and bullshit. */
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public static void renderFirstPersonTrident(@Nonnull RenderSpecificHandEvent event)
+    {
+        final ItemStack stack = event.getItemStack();
+        final EntityPlayer player = Minecraft.getMinecraft().player;
+        final ItemRenderer renderer = Minecraft.getMinecraft().getItemRenderer();
+        float partialTicks = event.getPartialTicks();
+        final EnumHandSide arm = event.getHand() == EnumHand.MAIN_HAND ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
+
+        boolean isRightArm = arm == EnumHandSide.RIGHT;
+        float cooldownStrength = player.getCooledAttackStrength(partialTicks);
+
+        if(stack.getItem() instanceof ItemSpear)
+        {
+            SpearDefinition spearDef = ((ItemSpear) stack.getItem()).getDefinition();
+
+            if (player.getActiveItemStack() == stack)
+            {
+                GlStateManager.pushMatrix();
+                AnimationsSpear.preformSpearUseItemRotations1stPerson(player, cooldownStrength, partialTicks, arm, spearDef);;
+                renderer.renderItemInFirstPerson(Minecraft.getMinecraft().player, partialTicks, event.getInterpolatedPitch(), event.getHand(), 0, stack, 0);
+                GlStateManager.popMatrix();
+                event.setCanceled(true);
+            }
+            else if (cooldownStrength > 0 && swingSpear)
+            {
+                GlStateManager.pushMatrix();
+                AnimationsSpear.preformSpearSwingItemRotations1stPerson(player, cooldownStrength, partialTicks, arm);
+                renderer.renderItemInFirstPerson(Minecraft.getMinecraft().player, partialTicks, event.getInterpolatedPitch(), event.getHand(), 0, stack, 0);
+                GlStateManager.popMatrix();
+                event.setCanceled(true);
+            }
+        }
+        else if (event.getHand() == EnumHand.MAIN_HAND) swingSpear = false;
     }
 }

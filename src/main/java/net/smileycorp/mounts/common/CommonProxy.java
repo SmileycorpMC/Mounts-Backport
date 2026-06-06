@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.smileycorp.mounts.common.advancements.MountsAdvancements;
+import net.smileycorp.mounts.common.capabilities.CapabilitySpearAnimation;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.capabilities.Piercing;
 import net.smileycorp.mounts.common.entity.EntityParched;
@@ -47,6 +48,7 @@ public class CommonProxy
 	{
 		CapabilityManager.INSTANCE.register(CapabilitySpearMovement.ICapabilityMountsPlayerInfo.class, new CapabilitySpearMovement.Storage(), CapabilitySpearMovement.MountsPlayerInfoMethods::new);
 		CapabilityManager.INSTANCE.register(Piercing.class, Piercing.STORAGE, Piercing.Impl::new);
+		CapabilityManager.INSTANCE.register(CapabilitySpearAnimation.ICapabilityAnimations.class, new CapabilitySpearAnimation.Storage(), CapabilitySpearAnimation.AnimationMethods::new);
 	}
 	
 	public void postInit(FMLPostInitializationEvent event) {

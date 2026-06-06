@@ -18,7 +18,9 @@
   ],
   "client": [
     "MixinEntityPlayerSP",
-    "MixinMinecraft"
+    "MixinLayerHeldItem",
+    "MixinMinecraft",
+    "MixinModelBiped"
   ],
   "server": [
     "MixinMinecraftServer"

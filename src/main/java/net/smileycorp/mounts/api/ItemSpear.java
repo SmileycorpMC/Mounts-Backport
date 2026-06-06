@@ -27,11 +27,15 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.MountsSoundEvents;
 import net.smileycorp.mounts.common.advancements.MountsAdvancements;
+import net.smileycorp.mounts.common.capabilities.CapabilitySpearAnimation;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.capabilities.Piercing;
+import net.smileycorp.mounts.common.network.PacketHandler;
+import net.smileycorp.mounts.common.network.SpearRecoilAnimMessage;
 
 import java.util.List;
 import java.util.UUID;
@@ -125,6 +129,7 @@ public class ItemSpear extends Item {
 
     public static boolean performJabAttack(EntityLivingBase user, ItemStack stack) {
         if (user.world.isRemote |! (stack.getItem() instanceof ItemSpear)) return false;
+        if (!charge) user.swingArm(EnumHand.MAIN_HAND);
         SpearDefinition definition = ((ItemSpear) stack.getItem()).getDefinition();
         if (MinecraftForge.EVENT_BUS.post(new SpearJabEvent(user, stack, definition))) return false;
         boolean hit = false;
@@ -141,6 +146,11 @@ public class ItemSpear extends Item {
                 ((EntityPlayer) user).addStat(StatList.getObjectUseStats(stack.getItem()));
                 ((EntityPlayer) user).resetCooldown();
             }
+        }
+        if (hit && user.hasCapability(CapabilitySpearAnimation.MOUNTS_PLAYER_ANIM_CAP, null)) {
+            CapabilitySpearAnimation.ICapabilityAnimations cap = user.getCapability(CapabilitySpearAnimation.MOUNTS_PLAYER_ANIM_CAP, null);
+            cap.setSpearRecoilStartTime(user.ticksExisted);
+            PacketHandler.NETWORK_INSTANCE.sendToAllTracking(new SpearRecoilAnimMessage(user.getEntityId()), new NetworkRegistry.TargetPoint(user.world.provider.getDimension(), user.posX, user.posY, user.posZ, 0.0D));
         }
         user.world.playSound(null, user.posX, user.posY, user.posZ, hit ? ((ItemSpear) stack.getItem()).getHitSound()
                 : ((ItemSpear) stack.getItem()).getAttackSound(), user.getSoundCategory(), 1, 1);

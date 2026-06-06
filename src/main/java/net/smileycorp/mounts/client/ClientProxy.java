@@ -1,13 +1,16 @@
 package net.smileycorp.mounts.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -78,6 +81,21 @@ public class ClientProxy extends CommonProxy {
 		ItemColors registry = event.getItemColors();
 		registry.registerItemColorHandler(ItemJockeySpawner::getColours, MountsItems.JOCKEY_SPAWNER);
 		registry.registerItemColorHandler((stack, index) -> index == 0 ? ItemLeatherHorseArmour.getColour(stack) : -1, MountsItems.LEATHER_HORSE_ARMOUR);
+	}
+
+	public static float lerp(float value, float start, float end) {
+		return MathHelper.clamp(value - start / end - start, 0, 1);
+	}
+
+	public static void animateSpearSwing(ModelRenderer arm, float swingProgress) {
+		float armSwing = 0;
+		if (swingProgress < 0.1) armSwing += 10f * swingProgress;
+		else if (swingProgress < 0.2f) armSwing += 1 - swingProgress * 10f;
+		else if (swingProgress < 0.4f) armSwing--;
+		else armSwing += (swingProgress * 10f / 6f) - 1;
+		arm.rotateAngleX += 0.523598775f * armSwing;
+		//if (swingProgress > 0) System.out.println(swingProgress + "," + arm.rotateAngleX);
+		//LayerHeldItem
 	}
 	
 }
