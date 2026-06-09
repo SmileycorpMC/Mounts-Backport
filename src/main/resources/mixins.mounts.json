@@ -7,6 +7,7 @@
     "MixinAbstractSkeleton",
     "MixinEntity",
     "MixinEntityAIRunAroundLikeCrazy",
+    "MixinEntityAISkeletonRiders",
     "MixinEntityAnimal",
     "MixinEntityArrow",
     "MixinEntityHorse",
