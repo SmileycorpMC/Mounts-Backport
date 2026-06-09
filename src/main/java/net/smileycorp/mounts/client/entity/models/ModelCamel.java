@@ -17,13 +17,13 @@ public class ModelCamel extends ModelBase
     public final ModelRenderer main;
     public final ModelRenderer upper_body;
     public final ModelRenderer head;
-    private final ModelRenderer earR;
-    private final ModelRenderer earL;
-    private final ModelRenderer tail;
-    private final ModelRenderer legFL;
-    private final ModelRenderer legFR;
-    private final ModelRenderer legBL;
-    private final ModelRenderer legBR;
+    public final ModelRenderer earR;
+    public final ModelRenderer earL;
+    public final ModelRenderer tail;
+    public final ModelRenderer legFL;
+    public final ModelRenderer legFR;
+    public final ModelRenderer legBL;
+    public final ModelRenderer legBR;
 
     public ModelCamel() { this(128, 128); }
 

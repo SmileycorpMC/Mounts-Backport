@@ -12,7 +12,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemSaddle;
 import net.minecraft.item.ItemShears;
@@ -46,6 +45,7 @@ public class EntityCamel extends EntityAnimal
     /* Primarily handles the Dashing Animation. */
     private static final DataParameter<Integer> DASHING = EntityDataManager.createKey(EntityCamel.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> DASH_COOLDOWN = EntityDataManager.createKey(EntityCamel.class, DataSerializers.VARINT);
+    private static final DataParameter<ItemStack> DECOR_STACK = EntityDataManager.createKey(EntityCamel.class, DataSerializers.ITEM_STACK);
     private static final DataParameter<ItemStack> SADDLE_STACK = EntityDataManager.createKey(EntityCamel.class, DataSerializers.ITEM_STACK);
     private static final DataParameter<Boolean> SMOKING = EntityDataManager.createKey(EntityCamel.class, DataSerializers.BOOLEAN);
     private float animTransSpeed = 0.4F;
@@ -65,6 +65,7 @@ public class EntityCamel extends EntityAnimal
         this.dataManager.register(ANIMSTATE, 0);
         this.dataManager.register(DASHING, 0);
         this.dataManager.register(DASH_COOLDOWN, 0);
+        this.dataManager.register(DECOR_STACK, ItemStack.EMPTY);
         this.dataManager.register(SADDLE_STACK, ItemStack.EMPTY);
         this.dataManager.register(SMOKING, false);
     }
@@ -165,6 +166,16 @@ public class EntityCamel extends EntityAnimal
             itemstack.shrink(1);
             return true;
         }
+        if (itemstack.getItem() == Item.getItemFromBlock(Blocks.CARPET) && !this.isChild())
+        {
+            if (!this.getDecorItemStack().isEmpty() && !world.isRemote) this.entityDropItem(this.getDecorItemStack(), 1.75F);
+
+            player.swingArm(hand);
+            this.playSound(MountsSoundEvents.ITEM_SADDLE_CAMEL_EQUIP, 0.5F, 0.8F);
+            this.setDecorItemStack(itemstack.copy());
+            itemstack.shrink(1);
+            return true;
+        }
         if (itemstack.getItem() == Items.BLAZE_ROD && !this.getSmoking() && !this.isChild())
         {
             player.swingArm(hand);
@@ -175,6 +186,14 @@ public class EntityCamel extends EntityAnimal
         }
         else if (itemstack.getItem() instanceof ItemShears)
         {
+            if (!this.getDecorItemStack().isEmpty())
+            {
+                player.swingArm(hand);
+                this.playSound(MountsSoundEvents.ITEM_SADDLE_CAMEL_UNEQUIP, 1.0F, 1.0F);
+                if (!world.isRemote) this.entityDropItem(this.getDecorItemStack(), 1.75F);
+                this.setDecorItemStack(ItemStack.EMPTY);
+                return true;
+            }
             if (!this.getSaddle().isEmpty())
             {
                 player.swingArm(hand);
@@ -618,6 +637,18 @@ public class EntityCamel extends EntityAnimal
         this.dataManager.set(SADDLE_STACK, stack);
     }
 
+    public ItemStack getDecorItemStack() { return this.dataManager.get(DECOR_STACK); }
+    public void setDecorItemStack(ItemStack stack)
+    {
+        if (!stack.isEmpty())
+        {
+            stack = stack.copy();
+            stack.setCount(1);
+        }
+
+        this.dataManager.set(DECOR_STACK, stack);
+    }
+
     public boolean getSmoking() { return this.dataManager.get(SMOKING); }
 
     public void writeEntityToNBT(NBTTagCompound compound)
@@ -625,6 +656,9 @@ public class EntityCamel extends EntityAnimal
         super.writeEntityToNBT(compound);
         compound.setInteger("AnimationState", this.getAnimState().ordinal());
         compound.setInteger("DashCooldown", this.getDashCooldown());
+
+        if (!this.getDecorItemStack().isEmpty())
+        { compound.setTag("DecorItem", this.getDecorItemStack().writeToNBT(new NBTTagCompound())); }
 
         if (!this.getSaddle().isEmpty())
         { compound.setTag("SaddleItem", this.getSaddle().writeToNBT(new NBTTagCompound())); }
@@ -637,6 +671,9 @@ public class EntityCamel extends EntityAnimal
         super.readEntityFromNBT(compound);
         this.setAnimState(EntityCamel.AnimState.values()[compound.getInteger("AnimationState")]);
         this.setDashCooldown(compound.getInteger("DashCooldown"));
+
+        if (!compound.getCompoundTag("DecorItem").hasNoTags())
+        { this.setDecorItemStack(new ItemStack(compound.getCompoundTag("DecorItem"))); }
 
         if (!compound.getCompoundTag("SaddleItem").hasNoTags())
         { this.setSaddle(new ItemStack(compound.getCompoundTag("SaddleItem"))); }

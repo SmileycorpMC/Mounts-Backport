@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.smileycorp.mounts.client.entity.layer.LayerCamelCarpet;
 import net.smileycorp.mounts.client.entity.layer.LayerCamelChuffingIt;
 import net.smileycorp.mounts.client.entity.layer.LayerCamelSaddle;
 import net.smileycorp.mounts.client.entity.models.ModelCamel;
@@ -21,6 +22,7 @@ public class RenderCamel<T extends EntityCamel> extends RenderLiving<T>
         super(renderManagerIn, new ModelCamel(), 1.1f);
         this.addLayer(new LayerCamelChuffingIt(this));
         this.addLayer(new LayerCamelSaddle(this));
+        this.addLayer(new LayerCamelCarpet(this));
     }
 
     @Override
