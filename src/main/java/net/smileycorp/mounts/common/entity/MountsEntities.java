@@ -5,6 +5,8 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.init.Biomes;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
@@ -21,6 +23,7 @@ public class MountsEntities
         registerEntity("camel", EntityCamel.class, ++id, 80, 16565097, 13341495);
         registerEntity("camel_husk", EntityCamelHusk.class, ++id, 80, 16565097, 13341495);
         registerEntity("parched", EntityParched.class, ++id, 80, 11376223, 6249550);
+        registerEntity("skeleton_horseman", EntitySkeletonHorseman.class, ++id, 80, 0xC1C1C1, 0x13FFFF);
     }
 
     public static void registerEntitySpawns()

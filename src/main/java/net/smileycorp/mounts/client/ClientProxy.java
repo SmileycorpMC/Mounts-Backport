@@ -26,6 +26,7 @@ import net.smileycorp.mounts.client.entity.models.ModelScalableHorse;
 import net.smileycorp.mounts.client.entity.render.RenderCamel;
 import net.smileycorp.mounts.client.entity.render.RenderCamelHusk;
 import net.smileycorp.mounts.client.entity.render.RenderParched;
+import net.smileycorp.mounts.client.entity.render.RenderSkeletonHorseman;
 import net.smileycorp.mounts.common.CommonProxy;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.entity.*;
@@ -73,6 +74,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityCamel.class, RenderCamel::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityCamelHusk.class, RenderCamelHusk::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityParched.class, RenderParched::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntitySkeletonHorseman.class, RenderSkeletonHorseman::new);
 	}
 
 	//colour our custom spawn egg

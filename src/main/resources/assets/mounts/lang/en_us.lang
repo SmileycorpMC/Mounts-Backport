@@ -6,6 +6,7 @@ item.mounts.leather_horse_armour.name=Leather Horse Armor
 entity.mounts.camel.name=Camel
 entity.mounts.camel_husk.name=Camel Husk
 entity.mounts.parched.name=Parched
+entity.mounts.skeleton_horseman.name=Skeleton Horseman
 
 jockey.mounts.spider=Spider Jockey
 jockey.mounts.cave_spider=Cave Spider Jockey
