@@ -169,6 +169,7 @@ public class ItemSpear extends Item {
         double speed = getSpeed(look, user);
         boolean hit = false;
         for (Entity entity : getHitEntities(user, e -> piercing.canPierce(e))) {
+            if (MinecraftForge.EVENT_BUS.post(new SpearChargeHitEvent.Pre(user, entity, stack, definition))) continue;
             boolean pierced = false;
             //damage is based on relative speed between the user and the target
             double relativeSpeed = speed - getSpeed(look, entity);
@@ -195,6 +196,7 @@ public class ItemSpear extends Item {
             if (user instanceof EntityPlayer) ((EntityPlayer) user).addStat(StatList.getObjectUseStats(stack.getItem()));
             piercing.pierce(entity);
             hit = true;
+            MinecraftForge.EVENT_BUS.post(new SpearChargeHitEvent.Post(user, entity, stack, definition));
         }
         if (hit) {
             user.world.playSound(null, user.posX, user.posY, user.posZ, ((ItemSpear) stack.getItem()).getHitSound(), user.getSoundCategory(), 1, 1);

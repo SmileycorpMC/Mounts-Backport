@@ -24,6 +24,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.smileycorp.mounts.api.SpearChargeHitEvent;
 import net.smileycorp.mounts.api.SpearJabEvent;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearAnimation;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
@@ -124,6 +125,16 @@ public class MountsCommonEvents
         stack.damageItem(1, entity);
         if (entity instanceof EntityPlayer &! ((EntityPlayer) entity).capabilities.isCreativeMode)
             ((EntityPlayer) entity).getFoodStats().addExhaustion(4 * lunge);
+    }
+
+    @SubscribeEvent
+    public static void spearChargePre(SpearChargeHitEvent.Pre event) {
+        EntityLivingBase entity = event.getEntityLiving();
+        if (!(entity instanceof EntitySkeletonRider)) return;
+        Entity target = event.getTarget();
+        if (!(target instanceof EntitySkeletonRider)
+                && target.getRecursivePassengersByType(EntitySkeletonRider.class).isEmpty()) return;
+        event.setCanceled(true);
     }
 
     @SubscribeEvent
