@@ -13,6 +13,7 @@ jockey.mounts.cave_spider=Cave Spider Jockey
 jockey.mounts.baby_zombie=Baby Zombie Jockey
 jockey.mounts.zombie_horseman=Zombie Horseman
 jockey.mounts.camel_husk=Camel Husk Jockey
+jockey.mounts.skeleton_horse_trap=Skeleton Horse Trap
 
 enchantment.mounts.lunge=Lunge
 enchantment.mounts.lunge.desc=Launches the user forwards on a jab attack, consuming hunger and saturation

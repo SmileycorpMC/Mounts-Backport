@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.*;
+import net.minecraft.entity.passive.EntitySkeletonHorse;
 import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -100,7 +101,8 @@ public class Jockeys {
         CAVE_SPIDER(new ResourceLocation("cave_spider"), Jockeys::spawnSpiderJockey),
         BABY_ZOMBIE(new ResourceLocation("zombie"), Jockeys::spawnBabyZombieJockey),
         ZOMBIE_HORSEMAN(new ResourceLocation("zombie_horse"), Jockeys::spawnZombieHorseman),
-        CAMEL_HUSK(new ResourceLocation("husk"), Jockeys::spawnCamelHusk);
+        CAMEL_HUSK(new ResourceLocation("husk"), Jockeys::spawnCamelHusk),
+        SKELETON_HORSE_TRAP(new ResourceLocation("skeleton_horse"), (entity, summoned) -> ((EntitySkeletonHorse)entity).setTrap(true));
 
         private final ResourceLocation entity;
         private final Spawner spawner;
