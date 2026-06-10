@@ -38,13 +38,14 @@ public abstract class MixinEntityLiving extends EntityLivingBase {
         if (!(entity instanceof EntityLiving)) return false;
         if (this != entity.getControllingPassenger()) return false;
         EntityLiving living = (EntityLiving) entity;
-        Path path = getNavigator().getPath();
+        PathNavigate navigator = getNavigator();
+        Path path = navigator.getPath();
         if (path == null) {
-            living.getNavigator().setPath(null, 1.5);
+            living.getNavigator().setPath(null, 1);
             return false;
         }
         PathPoint point = path.getFinalPathPoint();
-        living.getNavigator().setPath(point == null ? path : living.getNavigator().getPathToXYZ(point.x, point.y, point.z), 1.5);
+        living.getNavigator().setPath(point == null ? path : living.getNavigator().getPathToXYZ(point.x, point.y, point.z), navigator.speed);
         return false;
     }
 
