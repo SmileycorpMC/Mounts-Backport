@@ -20,6 +20,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
@@ -29,6 +30,7 @@ import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.config.SpearRegistry;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class EntitySkeletonRider extends EntitySkeleton {
 
@@ -149,12 +151,14 @@ public class EntitySkeletonRider extends EntitySkeleton {
         super.writeEntityToNBT(nbt);
         ItemStack stack = getBackItem();
         if (!stack.isEmpty()) nbt.setTag("BackItem", stack.writeToNBT(new NBTTagCompound()));
+        nbt.setInteger("CirclingAngle", circlingAngle);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         if (nbt.hasKey("BackItem")) setBackItem(new ItemStack(nbt.getCompoundTag("BackItem")));
+        if (nbt.hasKey("CirclingAngle")) circlingAngle = nbt.getInteger("CirclingAngle");
     }
 
     public static class HorseTrapSpawnData implements IEntityLivingData {}
@@ -247,11 +251,11 @@ public class EntitySkeletonRider extends EntitySkeleton {
                 findNext();
                 rider.getNavigator().tryMoveToXYZ(targetMovePos.x, targetMovePos.y, targetMovePos.z, 2);
             }
-
-            rider.getLookHelper().setLookPositionWithEntity(rider.getAttackTarget(), 30.0F, 30.0F);
+            EntityLivingBase target = rider.getAttackTarget();
+            rider.getLookHelper().setLookPositionWithEntity(target, 30.0F, 30.0F);
             rider.setSwingingArms(rider.isHandActive());
 
-            boolean canSee = rider.getEntitySenses().canSee(rider.getAttackTarget());
+            boolean canSee = rider.getEntitySenses().canSee(target);
             if (!canSee)
             {
                 if (seeTime > 0) seeTime = 0;
@@ -267,7 +271,7 @@ public class EntitySkeletonRider extends EntitySkeleton {
                 if (canSee && useCount > 20)
                 {
                     rider.resetActiveHand();
-                    rider.attackEntityWithRangedAttack(rider.getAttackTarget(), ItemBow.getArrowVelocity(useCount));
+                    rider.attackEntityWithRangedAttack(target, ItemBow.getArrowVelocity(useCount));
                     this.attackTime = 40;
 
                 }
