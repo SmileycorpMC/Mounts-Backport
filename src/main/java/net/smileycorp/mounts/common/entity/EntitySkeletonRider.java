@@ -249,7 +249,8 @@ public class EntitySkeletonRider extends EntitySkeleton {
             if(rider.ticksExisted % 10 == 0)
             {
                 findNext();
-                rider.getNavigator().tryMoveToXYZ(targetMovePos.x, targetMovePos.y, targetMovePos.z, 2);
+                double distance = rider.getDistanceSq(targetMovePos.x, targetMovePos.y, targetMovePos.z);
+                rider.getNavigator().tryMoveToXYZ(targetMovePos.x, targetMovePos.y, targetMovePos.z, distance >= 49 ? 2.5 : 2);
             }
             EntityLivingBase target = rider.getAttackTarget();
             rider.getLookHelper().setLookPositionWithEntity(target, 30.0F, 30.0F);
@@ -266,7 +267,7 @@ public class EntitySkeletonRider extends EntitySkeleton {
             if (rider.isHandActive())
             {
                 /* TODO: REPLACE this with a better distance check, this current one does nothing but screw up the bow animations. */
-                //if (seeTime < -60 || rider.getDistance(targetMovePos.x, targetMovePos.y, targetMovePos.z) > 4) rider.resetActiveHand();
+                if (seeTime < -60 || rider.getDistanceSq(target) >= 49) rider.resetActiveHand();
                 int useCount = rider.getItemInUseMaxCount();
                 if (canSee && useCount > 20)
                 {
