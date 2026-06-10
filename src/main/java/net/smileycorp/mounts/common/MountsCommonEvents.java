@@ -4,16 +4,20 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.monster.EntityCaveSpider;
 import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -26,6 +30,7 @@ import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
 import net.smileycorp.mounts.common.capabilities.Piercing;
 import net.smileycorp.mounts.common.enchantments.MountsEnchantments;
 import net.smileycorp.mounts.common.entity.EntityCamel;
+import net.smileycorp.mounts.common.entity.EntitySkeletonRider;
 import net.smileycorp.mounts.common.entity.Jockeys;
 import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
 import net.smileycorp.mounts.config.LootConfig;
@@ -119,6 +124,22 @@ public class MountsCommonEvents
         stack.damageItem(1, entity);
         if (entity instanceof EntityPlayer &! ((EntityPlayer) entity).capabilities.isCreativeMode)
             ((EntityPlayer) entity).getFoodStats().addExhaustion(4 * lunge);
+    }
+
+    @SubscribeEvent
+    public static void arrowImpact(ProjectileImpactEvent.Arrow event) {
+        RayTraceResult result = event.getRayTraceResult();
+        if (result.entityHit == null) return;
+        EntityArrow arrow = event.getArrow();
+        Entity owner = arrow.shootingEntity;
+        if (owner.isRiding() && (result.entityHit == owner.getRidingEntity() || owner.getRidingEntity() == result.entityHit.getRidingEntity())) {
+            event.setCanceled(true);
+            return;
+        }
+        if (!(owner instanceof EntitySkeletonRider)) return;
+        if (!(result.entityHit instanceof EntitySkeletonRider)
+                && result.entityHit.getRecursivePassengersByType(EntitySkeletonRider.class).isEmpty()) return;
+        event.setCanceled(true);
     }
 
 }
