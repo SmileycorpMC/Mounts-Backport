@@ -3,12 +3,12 @@ package net.smileycorp.mounts.common.entity;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.passive.EntitySkeletonHorse;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -55,8 +55,8 @@ public class EntitySkeletonRider extends EntitySkeleton {
     protected void initEntityAI()
     {
         super.initEntityAI();
-        this.tasks.addTask(2, new EntityAIRiderApproach(this));
-        this.tasks.addTask(3, new EntityAIRiderCircle(this));
+        //this.tasks.addTask(2, new EntityAIRiderApproach(this));
+        this.tasks.addTask(2, new EntityAIRiderBowCircling(this));
         this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
         //this.tasks.addTask(3, new EntityAIWeaponSwapping(this));
     }
@@ -199,91 +199,86 @@ public class EntitySkeletonRider extends EntitySkeleton {
         }
     }
 
-    public static class EntityAIRiderApproach extends EntityAIBase {
-
+    public static class EntityAIRiderBowCircling extends EntityAIBase
+    {
         protected final EntitySkeletonRider rider;
-
-        public EntityAIRiderApproach(EntitySkeletonRider rider) {
-            this.rider = rider;
-            this.setMutexBits(3);
-        }
-
-        @Override
-        public boolean shouldExecute() {
-            return rider.getAttackTarget() != null && rider.isRiding() && rider.getDistanceSq(rider.getAttackTarget()) >= 49;
-        }
-
-        @Override
-        public void resetTask() {
-            super.resetTask();
-            rider.getNavigator().clearPath();
-        }
-
-        @Override
-        public void updateTask() {
-            EntityLivingBase target = rider.getAttackTarget();
-            rider.getNavigator().tryMoveToEntityLiving(target, 10);
-        }
-
-    }
-
-    public static class EntityAIRiderCircle extends EntityAIBase {
-
-        protected final EntitySkeletonRider rider;
-        private Vec3d nextPos;
+        /* The position the Rider will try moving to */
+        private Vec3d targetMovePos;
         private int seeTime;
         private int attackTime = -1;
 
-        public EntityAIRiderCircle(EntitySkeletonRider rider) {
+        public EntityAIRiderBowCircling(EntitySkeletonRider rider)
+        {
             this.rider = rider;
             this.setMutexBits(3);
         }
 
         @Override
-        public boolean shouldExecute() {
-            return rider.getAttackTarget() != null && rider.isRiding() && rider.getDistanceSq(rider.getAttackTarget()) <= 49 &&
-                    rider.getHeldItemMainhand().getItem() instanceof ItemBow;
-        }
+        public boolean shouldExecute()
+        { return rider.getAttackTarget() != null && rider.isRiding() && rider.getHeldItemMainhand().getItem() instanceof ItemBow; }
 
         @Override
-        public boolean isInterruptible() {
-            return false;
-        }
+        public boolean isInterruptible() { return false; }
 
         @Override
-        public void startExecuting() {
+        public void startExecuting()
+        {
             EntityLivingBase target = rider.getAttackTarget();
-            nextPos = new Vec3d(target.posX, target.posY, target.posZ)
-                    .add(DirectionUtils.getDirectionVecXZDegrees(rider.circlingAngle).scale(6));
+            targetMovePos = new Vec3d(target.posX, target.posY, target.posZ).add(DirectionUtils.getDirectionVecXZDegrees(rider.circlingAngle).scale(6));
             seeTime = 0;
             attackTime = -1;
         }
 
+        public void resetTask()
+        {
+            super.resetTask();
+            ((IRangedAttackMob)this.rider).setSwingingArms(false);
+            this.seeTime = 0;
+            this.attackTime = -1;
+            this.rider.resetActiveHand();
+        }
+
         @Override
-        public void updateTask() {
-            if (rider.ticksExisted % 20 == 0) findNext();
-            rider.getNavigator().tryMoveToXYZ(nextPos.x, nextPos.y, nextPos.z, 1);
-            rider.getLookHelper().setLookPosition(nextPos.x, nextPos.y, nextPos.z, 30, 30);
+        public void updateTask()
+        {
+            /* Don't spam the nav every tick, it's wasteful and doesn't even look good!*/
+            if(rider.ticksExisted % 10 == 0)
+            {
+                findNext();
+                rider.getNavigator().tryMoveToXYZ(targetMovePos.x, targetMovePos.y, targetMovePos.z, 2);
+            }
+
+            rider.getLookHelper().setLookPositionWithEntity(rider.getAttackTarget(), 30.0F, 30.0F);
+            rider.setSwingingArms(rider.isHandActive());
+
             boolean canSee = rider.getEntitySenses().canSee(rider.getAttackTarget());
-            if (!canSee) {
+            if (!canSee)
+            {
                 if (seeTime > 0) seeTime = 0;
                 seeTime--;
-            } else seeTime++;
-            if (rider.isHandActive()) {
-                if (seeTime < -60 || rider.getDistance(nextPos.x, nextPos.y, nextPos.z) > 4) rider.resetActiveHand();
-                int useCount = rider.getItemInUseCount();
-                if (canSee && useCount > 20) {
+            }
+            else seeTime++;
+
+            if (rider.isHandActive())
+            {
+                /* TODO: REPLACE this with a better distance check, this current one does nothing but screw up the bow animations. */
+                //if (seeTime < -60 || rider.getDistance(targetMovePos.x, targetMovePos.y, targetMovePos.z) > 4) rider.resetActiveHand();
+                int useCount = rider.getItemInUseMaxCount();
+                if (canSee && useCount > 20)
+                {
                     rider.resetActiveHand();
                     rider.attackEntityWithRangedAttack(rider.getAttackTarget(), ItemBow.getArrowVelocity(useCount));
-                    this.attackTime = 20;
+                    this.attackTime = 40;
+
                 }
-            } else if (attackTime-- <= 0 && seeTime >= -60) rider.setActiveHand(EnumHand.MAIN_HAND);
+            }
+            else if (attackTime-- <= 0 && seeTime >= -60) rider.setActiveHand(EnumHand.MAIN_HAND);
         }
 
         private void findNext() {
             rider.setCirclingAngle(rider.getCirclingAngle() - 45);
             EntityLivingBase target = rider.getAttackTarget();
-            nextPos = new Vec3d(target.posX, target.posY, target.posZ)
+            targetMovePos = new Vec3d(target.posX, target.posY, target.posZ)
                     .add(DirectionUtils.getDirectionVecXZDegrees(rider.circlingAngle).scale(6));
             //System.out.println(nextPos + "");
         }

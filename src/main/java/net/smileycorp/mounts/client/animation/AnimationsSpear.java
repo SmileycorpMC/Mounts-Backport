@@ -202,6 +202,8 @@ public class AnimationsSpear
         else
         { mainArm.rotateAngleX = (-0.9F + (entityIn.isSneaking() ? 0.5F : 0)); }
 
-        mainArm.rotateAngleY = -0.1F + (MountsPlayerAnimationMethods.getEntityHeadYaw(living, ageInTicks, 70));
+        if (entityIn instanceof EntityPlayer) mainArm.rotateAngleY = -0.1F + (MountsPlayerAnimationMethods.getEntityHeadYaw(living, ageInTicks, 70));
+        else mainArm.rotateAngleY = -0.1F + model.bipedHead.rotateAngleY;
+
     }
 }
