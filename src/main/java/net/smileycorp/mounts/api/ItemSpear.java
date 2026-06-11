@@ -230,8 +230,9 @@ public class ItemSpear extends Item {
             AxisAlignedBB bb = entity.getEntityBoundingBox().grow(width);
             //System.out.println(bb + ", " + point);
             if (!bb.contains(point)) continue;
-            if (!predicate.test(entity) || (user instanceof EntityPlayer &!
-                    ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity))) continue;
+            if (!predicate.test(entity)) continue;
+            if (user instanceof EntityPlayer && !ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity)) continue;
+
             entities.add(entity);
         }
         return entities;

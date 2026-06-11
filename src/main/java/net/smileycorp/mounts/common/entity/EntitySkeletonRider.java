@@ -19,18 +19,18 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.smileycorp.atlas.api.util.DirectionUtils;
 import net.smileycorp.mounts.api.ItemSpear;
+import net.smileycorp.mounts.common.entity.ai.EntityAIAttackSpear;
 import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.config.SpearRegistry;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class EntitySkeletonRider extends EntitySkeleton {
 
@@ -60,7 +60,8 @@ public class EntitySkeletonRider extends EntitySkeleton {
         //this.tasks.addTask(2, new EntityAIRiderApproach(this));
         this.tasks.addTask(2, new EntityAIRiderBowCircling(this));
         this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
-        //this.tasks.addTask(3, new EntityAIWeaponSwapping(this));
+        this.tasks.addTask(3, new EntityAIAttackSpear(this, 1.7, 1.9));
+        this.tasks.addTask(4, new EntityAIWeaponSwapping(this));
     }
 
     @Override
@@ -93,9 +94,16 @@ public class EntitySkeletonRider extends EntitySkeleton {
     }
 
     @Override
-    public void setCombatTask() {
-        //super.setCombatTask();
+    public void setCombatTask()
+    { if (!this.isRiding()) super.setCombatTask(); }
+
+    /* Instantly update for normal Skeleton AI when dismounting. */
+    public void dismountRidingEntity()
+    {
+        this.setCombatTask();
+        super.dismountRidingEntity();
     }
+
 
     @Nullable
     @Override
@@ -287,7 +295,5 @@ public class EntitySkeletonRider extends EntitySkeleton {
                     .add(DirectionUtils.getDirectionVecXZDegrees(rider.circlingAngle).scale(6));
             //System.out.println(nextPos + "");
         }
-
     }
-
 }
