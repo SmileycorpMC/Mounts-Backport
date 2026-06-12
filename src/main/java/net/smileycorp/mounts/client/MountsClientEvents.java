@@ -244,7 +244,7 @@ public class MountsClientEvents
         {
             SpearDefinition spearDef = ((ItemSpear) stack.getItem()).getDefinition();
 
-            if (player.getActiveItemStack() == stack)
+            if (player.isHandActive() && player.getActiveHand() == event.getHand())
             {
                 GlStateManager.pushMatrix();
                 AnimationsSpear.preformSpearUseItemRotations1stPerson(player, cooldownStrength, partialTicks, arm, spearDef);;
