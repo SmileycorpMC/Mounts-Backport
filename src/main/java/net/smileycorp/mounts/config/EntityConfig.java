@@ -24,7 +24,7 @@ public class EntityConfig {
             parched = new EntityAttributesEntry(config, "parched", 0.25, 32, 2, 16, 0, 0, 0);
             skeletonHorseman = new EntityAttributesEntry(config, "skeleton horseman", 0.25, 32, 2, 20, 0, 0, 0);
             zombieHorsesBurnInSunlight = config.getBoolean("burnInSunlight", "zombie horse", true, "Do zombie horses burn in sunlight? (Vanilla 1.21.11 feature)");
-            skeletonHorsesBurnInSunlight = config.getBoolean("burnInSunlight", "skeleton horse", false, "Do zombie horses burn in sunlight? (Vanilla 1.21.11 feature)");
+            skeletonHorsesBurnInSunlight = config.getBoolean("burnInSunlight", "skeleton horse", false, "Do skeleton horses burn in sunlight? (Added in 25w41a, removed in 25w42a)");
         } catch(Exception e) {
         } finally {
             if (config.hasChanged()) config.save();
