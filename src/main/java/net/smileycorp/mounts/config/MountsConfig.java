@@ -30,6 +30,10 @@ public class MountsConfig {
     //camels
     public static float huskJockeyChance;
 
+    //horse traps
+    public static float horseTrapSpawnChance;
+    public static boolean improvedHorseTraps;
+
     public static void syncConfig(FMLPreInitializationEvent event) {
         Configuration config = new Configuration(new File(event.getModConfigurationDirectory().getPath() + "/mounts/mounts.cfg"));
         try{
@@ -44,9 +48,10 @@ public class MountsConfig {
             caveSpiderJockeyChance = config.getFloat( "caveSpiderJockeyChance", "spiders", 0.01f, 0, 1, "Chance for a cave spider to spawn as a skeleton jockey. (Bedrock feature)");
             strayChance = config.getFloat( "strayChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a stray jockey in snowy biomes. (Bedrock feature)");
             parchedChance = config.getFloat( "parchedChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a parched jockey in deserts. (Bedrock feature)");
-            boggedChance = config.getFloat( "boggedChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a bogged jockey in swamps. (Bedrock feature) (Only if deeper depths is installed)");
-
+            boggedChance = config.getFloat( "boggedChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a bogged jockey in swamps. (Bedrock feature) (Only if Deeper Depths is installed)");
             huskJockeyChance = config.getFloat( "huskJockeyChance", "zombies", 0.1f, 0, 1, "Chance for a husk to spawn as a husk jockey.");
+            horseTrapSpawnChance = config.getFloat("horseTrapSpawnChance", "skeleton horse traps", 0.01f, 0, 1, "How often do Skeleton Horse traps spawn at lightning strikes? (Multiplied by regional difficulty) (Vanilla default is 0.01)");
+            improvedHorseTraps = config.getBoolean("improvedHorseTraps", "skeleton horse traps", true, "Whether to spawn Skeleton Horsemen from horse traps instead of vanilla skeletons?");
         } catch(Exception e) {
         } finally {
             if (config.hasChanged()) config.save();
