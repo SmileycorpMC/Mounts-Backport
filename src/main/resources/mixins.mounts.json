@@ -6,6 +6,7 @@
     "MixinAbstractHorse",
     "MixinAbstractSkeleton",
     "MixinEntity",
+    "MixinEntityAIAttackMelee",
     "MixinEntityAIRunAroundLikeCrazy",
     "MixinEntityAISkeletonRiders",
     "MixinEntityAnimal",
