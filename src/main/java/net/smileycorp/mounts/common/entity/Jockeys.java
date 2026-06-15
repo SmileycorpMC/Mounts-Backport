@@ -100,6 +100,9 @@ public class Jockeys {
         SPIDER(new ResourceLocation("spider"), Jockeys::spawnSpiderJockey),
         CAVE_SPIDER(new ResourceLocation("cave_spider"), Jockeys::spawnSpiderJockey),
         BABY_ZOMBIE(new ResourceLocation("zombie"), Jockeys::spawnBabyZombieJockey),
+        BABY_ZOMBIE_VILLAGER(new ResourceLocation("zombie_villager"), Jockeys::spawnBabyZombieJockey),
+        BABY_HUSK(new ResourceLocation("husk"), Jockeys::spawnBabyZombieJockey),
+        BABY_ZOMBIE_PIGMAN(new ResourceLocation("zombie_pigman"), Jockeys::spawnBabyZombieJockey),
         ZOMBIE_HORSEMAN(new ResourceLocation("zombie_horse"), Jockeys::spawnZombieHorseman),
         CAMEL_HUSK(new ResourceLocation("husk"), Jockeys::spawnCamelHusk),
         SKELETON_HORSE_TRAP(new ResourceLocation("skeleton_horse"), (entity, summoned) -> ((EntitySkeletonHorse)entity).setTrap(true));

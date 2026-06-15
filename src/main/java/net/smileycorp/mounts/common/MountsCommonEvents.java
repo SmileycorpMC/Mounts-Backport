@@ -27,7 +27,6 @@ import net.smileycorp.mounts.common.capabilities.Piercing;
 import net.smileycorp.mounts.common.enchantments.MountsEnchantments;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 import net.smileycorp.mounts.common.entity.Jockeys;
-import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
 import net.smileycorp.mounts.config.LootConfig;
 import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.MountsConfig;
@@ -91,7 +90,7 @@ public class MountsCommonEvents
     public static void spawnMob(LivingSpawnEvent.SpecialSpawn event) {
         EntityLivingBase entity = event.getEntityLiving();
         World world = entity.world;
-        if (entity instanceof EntityZombie && entity.getRNG().nextFloat() > MountsConfig.babyZombieJockeyChance)
+        if (MountsConfig.isJockeyRider(entity) && entity.getRNG().nextFloat() > MountsConfig.jockeyChance)
             Jockeys.spawnBabyZombieJockey((EntityLiving) entity, false);
         else if (entity.getClass() == EntityCaveSpider.class && world.rand.nextFloat() <= MountsConfig.caveSpiderJockeyChance)
             Jockeys.spawnSpiderJockey((EntityLiving) entity, false);

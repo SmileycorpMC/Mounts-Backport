@@ -32,12 +32,12 @@ public class EntityAIFindMount extends EntityAIBase {
         }
         checks--;
         if (target != null) {
-            if (MountsConfig.canBabyZombieMount(target) && (entity.getDistanceSq(entity) <= 1024)) return true;
+            if (MountsConfig.isJockeyMount(target) && (entity.getDistanceSq(entity) <= 1024)) return true;
             target = null;
         }
         for (Entity e : entity.world.getEntitiesWithinAABBExcludingEntity(entity, entity.getEntityBoundingBox().grow(32, 4, 32))) {
             if (!(e instanceof EntityLiving)) continue;
-            if (!MountsConfig.canBabyZombieMount((EntityLivingBase) e)) continue;
+            if (!MountsConfig.isJockeyMount((EntityLivingBase) e)) continue;
             double dis = e.getDistanceSq(entity);
             if (dis > 1024) continue;
             if (target == null) target = (EntityLiving) e;
