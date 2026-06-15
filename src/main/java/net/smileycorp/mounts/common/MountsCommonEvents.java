@@ -138,11 +138,13 @@ public class MountsCommonEvents
     }
 
     @SubscribeEvent
-    public static void arrowImpact(ProjectileImpactEvent.Arrow event) {
+    public static void arrowImpact(ProjectileImpactEvent.Arrow event)
+    {
         RayTraceResult result = event.getRayTraceResult();
         if (result.entityHit == null) return;
         EntityArrow arrow = event.getArrow();
         Entity owner = arrow.shootingEntity;
+        if (owner == null) return;
         if (owner.isRiding() && (result.entityHit == owner.getRidingEntity() || owner.getRidingEntity() == result.entityHit.getRidingEntity())) {
             event.setCanceled(true);
             return;
