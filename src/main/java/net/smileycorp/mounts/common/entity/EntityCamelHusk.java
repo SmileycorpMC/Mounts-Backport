@@ -16,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.smileycorp.mounts.common.MountsLootTables;
 import net.smileycorp.mounts.common.MountsSoundEvents;
+import net.smileycorp.mounts.config.EntityConfig;
 
 import javax.annotation.Nullable;
 
@@ -39,6 +40,12 @@ public class EntityCamelHusk extends EntityCamel
     public SoundEvent getStandSound() { return MountsSoundEvents.CAMEL_HUSK_STAND; }
     public SoundEvent getSitSound() { return MountsSoundEvents.CAMEL_HUSK_SIT; }
     public SoundEvent getEatSound() { return MountsSoundEvents.CAMEL_HUSK_EAT; }
+
+    @Override
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
+        EntityConfig.camelHusk.applyAttributes(this);
+    }
 
     //camel husks can despawn like hostile mobs if a player doesn't ride them
     @Override
