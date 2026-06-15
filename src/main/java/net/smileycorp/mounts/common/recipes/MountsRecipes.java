@@ -20,7 +20,7 @@ import net.smileycorp.mounts.api.ItemSpear;
 import net.smileycorp.mounts.api.SpearDefinition;
 import net.smileycorp.mounts.api.VanillaSpears;
 import net.smileycorp.mounts.common.Constants;
-import net.smileycorp.mounts.config.MountsConfig;
+import net.smileycorp.mounts.config.GeneralConfig;
 import net.smileycorp.mounts.config.SpearRegistry;
 import net.smileycorp.mounts.integration.FutureMCIntegration;
 
@@ -48,7 +48,7 @@ public class MountsRecipes {
         if (OreDictionary.doesOreNameExist("ingotNetherite") && VanillaSpears.DIAMOND_SPEAR.get() != null
                 && VanillaSpears.NETHERITE_SPEAR.get() != null) {
             if (Loader.isModLoaded("futuremc")) FutureMCIntegration.registerNetheriteSpearRecipe();
-            else if (MountsConfig.anvilNetheriteSpearRecipe) MinecraftForge.EVENT_BUS.register(new AnvilRecipeNetheriteSpear());
+            else if (GeneralConfig.anvilNetheriteSpearRecipe) MinecraftForge.EVENT_BUS.register(new AnvilRecipeNetheriteSpear());
         }
     }
 

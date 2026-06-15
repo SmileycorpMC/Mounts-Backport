@@ -22,6 +22,7 @@ import net.smileycorp.mounts.common.entity.EntityParched;
 import net.smileycorp.mounts.common.entity.MountsEntities;
 import net.smileycorp.mounts.common.network.PacketHandler;
 import net.smileycorp.mounts.config.EntityConfig;
+import net.smileycorp.mounts.config.GeneralConfig;
 import net.smileycorp.mounts.config.MountsConfig;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class CommonProxy
 
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		GeneralConfig.syncConfig(event);
 		EntityConfig.syncConfig(event);
 		MountsConfig.syncConfig(event);
 		MountsEntities.registerEntities();

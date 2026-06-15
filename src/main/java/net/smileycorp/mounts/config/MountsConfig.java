@@ -15,8 +15,6 @@ import java.util.List;
 
 public class MountsConfig {
 
-    public static boolean anvilNetheriteSpearRecipe;
-
     //baby zombies
     public static float babyZombieJockeyChance;
     private static String[] babyZombieMountableEntitiesStr;
@@ -36,7 +34,6 @@ public class MountsConfig {
         Configuration config = new Configuration(new File(event.getModConfigurationDirectory().getPath() + "/mounts/mounts.cfg"));
         try{
             config.load();
-            anvilNetheriteSpearRecipe = config.getBoolean("anvilNetheriteSpearRecipe", "general", true, "Add an anvil recipe for the netherite spear if netherite exists but futuremc is not installed?");
             babyZombieJockeyChance = config.getFloat( "jockeyChance", "baby zombies", 0.15f, 0, 1, "Chance for a baby zombie to spawn as a jockey. (Bedrock feature)");
             babyZombieMountableEntitiesStr = config.getStringList("mountableEntities", "baby zombies",
                     new String[] {"minecraft:chicken", "minecraft:sheep", "minecraft:pig", "minecraft:cow", "minecraft:mushroom_cow", "minecraft:ocelot", "minecraft:wolf",
