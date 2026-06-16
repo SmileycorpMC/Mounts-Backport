@@ -5,6 +5,7 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityZombieHorse;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -49,7 +50,11 @@ public abstract class MixinEntity {
     @Inject(at = @At("HEAD"), method = "getControllingPassenger", cancellable = true)
     public void mounts$getControllingPassenger(CallbackInfoReturnable<Entity> callback) {
         if (!(((Object)this) instanceof EntityAnimal)) return;
-        if (!getPassengers().isEmpty()) callback.setReturnValue(getPassengers().get(0));
+        if (!getPassengers().isEmpty()) {
+            Entity passenger = getPassengers().get(0);
+            if (passenger instanceof EntityPlayer) return;
+            callback.setReturnValue(passenger);
+        }
     }
 
     //makes zombie horses contribute to the spawn cap
