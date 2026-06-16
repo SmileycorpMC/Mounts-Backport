@@ -48,6 +48,8 @@ public class Jockeys {
         AbstractSkeleton skeleton = new EntitySkeleton(entity.world);
         Random rand = entity.world.rand;
         Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(entity.world.getBiome(entity.getPosition()));
+        if (types.contains(BiomeDictionary.Type.NETHER) && rand.nextFloat() <= MountsConfig.witherSkeletonChance)
+            skeleton = new EntityWitherSkeleton(world);
         if (types.contains(BiomeDictionary.Type.SNOWY) &! types.contains(BiomeDictionary.Type.FOREST)
                 && rand.nextFloat() <= MountsConfig.strayChance) skeleton = new EntityStray(world);
         if (types.contains(BiomeDictionary.Type.SANDY) &! (types.contains(BiomeDictionary.Type.FOREST) || types.contains(BiomeDictionary.Type.BEACH))

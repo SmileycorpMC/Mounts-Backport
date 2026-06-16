@@ -25,6 +25,7 @@ public class MountsConfig {
     //spiders
     public static float spiderJockeyChance;
     public static float caveSpiderJockeyChance;
+    public static float witherSkeletonChance;
     public static float strayChance;
     public static float parchedChance;
     public static float boggedChance;
@@ -51,6 +52,7 @@ public class MountsConfig {
                     "Which entities can baby zombies seek out and ride?");
             spiderJockeyChance = config.getFloat( "spiderJockeyChance", "spiders", 0.01f, 0, 1, "Chance for a spider to spawn as a skeleton jockey.");
             caveSpiderJockeyChance = config.getFloat( "caveSpiderJockeyChance", "spiders", 0.01f, 0, 1, "Chance for a cave spider to spawn as a skeleton jockey. (Bedrock feature)");
+            witherSkeletonChance = config.getFloat( "witherSkeletonChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a stray jockey in nether biomes. (Bedrock feature)");
             strayChance = config.getFloat( "strayChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a stray jockey in snowy biomes. (Bedrock feature)");
             parchedChance = config.getFloat( "parchedChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a parched jockey in deserts. (Bedrock feature)");
             boggedChance = config.getFloat( "boggedChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a bogged jockey in swamps. (Bedrock feature) (Only if Deeper Depths is installed)");
