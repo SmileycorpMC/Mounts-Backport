@@ -6,6 +6,7 @@ import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.oredict.OreDictionary;
 import net.smileycorp.mounts.api.VanillaSpears;
@@ -18,10 +19,11 @@ public class JEIIntegration implements IModPlugin {
 
     @Override
     public void register(@Nonnull IModRegistry registry) {
-        if (!GeneralConfig.anvilNetheriteSpearRecipe || Loader.isModLoaded("futuremc") |! OreDictionary.doesOreNameExist("ingotNetherite")
-                || VanillaSpears.DIAMOND_SPEAR.get() == null || VanillaSpears.NETHERITE_SPEAR.get() == null) return;
-       registry.addRecipes(Lists.newArrayList(registry.getJeiHelpers().getVanillaRecipeFactory().createAnvilRecipe(
-               new ItemStack(VanillaSpears.DIAMOND_SPEAR.get()), OreDictionary.getOres("ingotNetherite"),
+        if (!GeneralConfig.anvilNetheriteSpearRecipe || VanillaSpears.DIAMOND_SPEAR.get() == null || VanillaSpears.NETHERITE_SPEAR.get() == null) return;
+        NonNullList<ItemStack> ores = OreDictionary.getOres("ingotNetherite", false);
+        if (ores.isEmpty()) return;
+        registry.addRecipes(Lists.newArrayList(registry.getJeiHelpers().getVanillaRecipeFactory().createAnvilRecipe(
+               new ItemStack(VanillaSpears.DIAMOND_SPEAR.get()), ores,
                Lists.newArrayList(new ItemStack(VanillaSpears.NETHERITE_SPEAR.get())))), VanillaRecipeCategoryUid.ANVIL);
     }
 
