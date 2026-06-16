@@ -92,6 +92,7 @@ public class MountsClientEvents
         ItemStack stack = player.getHeldItemMainhand();
 
         if (!(stack.getItem() instanceof ItemSpear)) return;
+        if (player.getCooledAttackStrength(0.0F) < 1.0F) return;
 
         double attackSpeed = 4.0D;
         Multimap<String, AttributeModifier> modifiers = stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND);
