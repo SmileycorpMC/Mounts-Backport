@@ -9,7 +9,10 @@ import net.minecraft.inventory.ContainerHorseChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Loader;
+import net.smileycorp.mounts.common.entity.IWearsHorseArmor;
 import net.smileycorp.mounts.config.EntityConfig;
+import net.smileycorp.mounts.integration.WornHorseshoesIntegration;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractHorse.class)
-public abstract class MixinAbstractHorse extends EntityAnimal {
+public abstract class MixinAbstractHorse extends EntityAnimal implements IWearsHorseArmor {
 
 	@Shadow
 	protected ContainerHorseChest horseChest;
@@ -45,13 +48,16 @@ public abstract class MixinAbstractHorse extends EntityAnimal {
 		}
 	}
 
-	//makes zombie horses burn in sunlight
-	//decided to make a config option for skeleton horses too (as that was a feature in 25w41a and reverted in 25w42a)
+	//prevent zombie and skeleton horses spawning as babies
 	@Inject(at= @At(value = "INVOKE", target = "Ljava/util/Random;nextInt(I)I"), method = "onInitialSpawn", cancellable = true)
 	public void mounts$onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData livingdata, CallbackInfoReturnable<IEntityLivingData> callback) {
-		if (!((EntityAnimal)this instanceof EntityZombieHorse && EntityConfig.zombieHorsesBurnInSunlight) &!
-				((EntityAnimal)this instanceof EntitySkeletonHorse && EntityConfig.skeletonHorsesBurnInSunlight)) return;
+		if (!((EntityAnimal)this instanceof EntityZombieHorse) &!((EntityAnimal)this instanceof EntitySkeletonHorse)) return;
 		callback.setReturnValue(livingdata);
+	}
+
+	@Override
+	public ItemStack getHorseArmour() {
+		return Loader.isModLoaded("wornhorseshoes") ? WornHorseshoesIntegration.getHorseArmor((AbstractHorse)(EntityAnimal)this) : IWearsHorseArmor.super.getHorseArmour();
 	}
 
 }

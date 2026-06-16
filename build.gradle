@@ -91,6 +91,7 @@ dependencies {
     compileOnly "curse.maven:jei-238222:4393461"
     compileOnly "curse.maven:deeperdepths-1101129:7512773"
     compileOnly "curse.maven:futuremc-310059:6162819"
+    compileOnly "curse.maven:wornhorseshoes-1321600:8241151"
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
