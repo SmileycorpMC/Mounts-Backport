@@ -136,8 +136,10 @@ public class ItemSpear extends Item {
         user.swingArm(EnumHand.MAIN_HAND);
         SpearDefinition definition = ((ItemSpear) stack.getItem()).getDefinition();
         if (MinecraftForge.EVENT_BUS.post(new SpearJabEvent(user, stack, definition))) return false;
+        float max = definition.getMaxRange();
+        if (user instanceof EntityPlayer && ((EntityPlayer) user).isCreative()) max += definition.getCreativeRangeAddition();
         boolean hit = false;
-        for (Entity entity : getHitEntities(user, e -> true)) {
+        for (Entity entity : getHitEntities(user, definition.getMinRange(), max, e -> true)) {
             /* I'm pretty sure Vanilla rounds the Spear Damage up in my testing... */
             //vanilla actually rounds down here for some reason
             float damage = definition.getDamage() + (float) user.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
@@ -172,7 +174,7 @@ public class ItemSpear extends Item {
         Vec3d look = user.getLookVec();
         double speed = getSpeed(look, user);
         boolean hit = false;
-        for (Entity entity : getHitEntities(user, e -> piercing.canPierce(e))) {
+        for (Entity entity : getHitEntities(user, definition, e -> piercing.canPierce(e))) {
             if (MinecraftForge.EVENT_BUS.post(new SpearChargeHitEvent.Pre(user, entity, stack, definition))) continue;
             boolean pierced = false;
             //damage is based on relative speed between the user and the target
@@ -217,34 +219,43 @@ public class ItemSpear extends Item {
         return hit;
     }
 
-    public static List<Entity> getHitEntities(EntityLivingBase user, Predicate<Entity> predicate) {
+    public static List<Entity> getHitEntities(EntityLivingBase user, SpearDefinition definition, Predicate<Entity> predicate) {
+        float min = definition.getMinRange();
+        float max = definition.getMaxRange();
+        if (!(user instanceof EntityPlayer)) {
+            min *= definition.getMobChargeRangeMultiplier();
+            max *= definition.getMobChargeRangeMultiplier();
+        } else if (((EntityPlayer) user).isCreative()) max += definition.getCreativeRangeAddition();
+        return getHitEntities(user, min, max, predicate);
+    }
+
+    public static List<Entity> getHitEntities(EntityLivingBase user, float min, float max, Predicate<Entity> predicate) {
         Vec3d eyes = new Vec3d(user.posX, user.posY + user.getEyeHeight(), user.posZ);
         Vec3d look = user.getLookVec();
         /* Controls the distance the attack box is shifted away from the user. */
-        Vec3d min = eyes.add(look.scale(2));
-        Vec3d max = eyes.add(look.scale(4.5));
-        RayTraceResult result = user.world.rayTraceBlocks(min, max, false, true, false);
-        if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) max = result.hitVec;
-        Vec3d distance = min.subtract(max);
+        Vec3d minVec = eyes.add(look.scale(2));
+        Vec3d maxVec = eyes.add(look.scale(4.5));
+        RayTraceResult result = user.world.rayTraceBlocks(minVec, maxVec, false, true, false);
+        if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) maxVec = result.hitVec;
+        Vec3d distance = minVec.subtract(maxVec);
         //System.out.println(min + ", " + max + ", " + distance);
         if (distance.lengthVector() == 0) return Lists.newArrayList();
         double width = 0.25;
-        AxisAlignedBB box = new AxisAlignedBB(min.x - width, min.y - width, min.z - width,
-            min.x + width, min.y + width, min.z + width).contract(distance.x, distance.y, distance.z);
+        AxisAlignedBB box = new AxisAlignedBB(minVec.x - width, minVec.y - width, minVec.z - width,
+            minVec.x + width, minVec.y + width, minVec.z + width).contract(distance.x, distance.y, distance.z);
         renderHitboxParticles(user, box);
         List<Entity> entities = Lists.newArrayList();
         for (EntityLivingBase entity : user.world.getEntitiesWithinAABB(EntityLivingBase.class, box)) {
             Vec3d pos = new Vec3d(entity.posX, entity.posY + entity.height * 0.5, entity.posZ);
             if (entity == user |! entity.isEntityAlive()) continue;
             //find the closest point on the line to the entity and check if it's in the entities inflated hitbox
-            double magnitude = MathHelper.clamp(pos.subtract(max).dotProduct(distance) / distance.dotProduct(distance), 0, 1);
-            Vec3d point = max.add(distance.scale(magnitude));
+            double magnitude = MathHelper.clamp(pos.subtract(maxVec).dotProduct(distance) / distance.dotProduct(distance), 0, 1);
+            Vec3d point = maxVec.add(distance.scale(magnitude));
             AxisAlignedBB bb = entity.getEntityBoundingBox().grow(width);
             //System.out.println(bb + ", " + point);
             if (!bb.contains(point)) continue;
             if (!predicate.test(entity)) continue;
             if (user instanceof EntityPlayer && !ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity)) continue;
-
             entities.add(entity);
         }
         return entities;

@@ -18,6 +18,10 @@ public class SpearDefinition {
     private final float damage;
     private final int durability;
     private final int enchantability;
+    private final float minRange;
+    private final float maxRange;
+    private final float creativeRangeAddition;
+    private final float mobChargeRangeMultiplier;
     private final float attackSpeed;
     private final float chargeMultiplier;
     private final int chargeDelay;
@@ -37,6 +41,10 @@ public class SpearDefinition {
         damage = builder.damage;
         durability = builder.durability;
         enchantability = builder.enchantability;
+        minRange = builder.minRange;
+        maxRange = builder.maxRange;
+        creativeRangeAddition = builder.creativeRangeAddition;
+        mobChargeRangeMultiplier = builder.mobChargeRangeMultiplier;
         attackSpeed = builder.attackSpeed;
         chargeMultiplier = builder.chargeMultiplier;
         chargeDelay = builder.chargeDelay;
@@ -66,6 +74,22 @@ public class SpearDefinition {
 
     public int getEnchantability() {
         return enchantability;
+    }
+
+    public float getMinRange() {
+        return minRange;
+    }
+
+    public float getMaxRange() {
+        return maxRange;
+    }
+
+    public float getCreativeRangeAddition() {
+        return creativeRangeAddition;
+    }
+
+    public float getMobChargeRangeMultiplier() {
+        return mobChargeRangeMultiplier;
     }
 
     public float getAttackSpeed() {
@@ -126,6 +150,10 @@ public class SpearDefinition {
         if (json.has("damage")) builder.damage = json.get("damage").getAsFloat();
         if (json.has("durability")) builder.durability = json.get("durability").getAsInt();
         if (json.has("enchantability")) builder.enchantability = json.get("enchantability").getAsInt();
+        if (json.has("min_range")) builder.minRange = json.get("min_range").getAsFloat();
+        if (json.has("max_range")) builder.maxRange = json.get("max_range").getAsFloat();
+        if (json.has("creative_range_addition")) builder.creativeRangeAddition = json.get("creative_range_addition").getAsFloat();
+        if (json.has("mob_charge_range_multiplier")) builder.mobChargeRangeMultiplier = json.get("mob_charge_range_multiplier").getAsFloat();
         if (json.has("attack_speed")) builder.attackSpeed= json.get("attack_speed").getAsFloat();
         if (json.has("charge_multiplier")) builder.chargeMultiplier = json.get("charge_multiplier").getAsFloat();
         if (json.has("charge_delay")) builder.chargeDelay = json.get("charge_delay").getAsInt();
@@ -165,6 +193,10 @@ public class SpearDefinition {
         private float damage = 1;
         private int durability = 1;
         private int enchantability = 1;
+        private float minRange = 2;
+        private float maxRange = 4.5f;
+        private float creativeRangeAddition = 2;
+        private float mobChargeRangeMultiplier = 0.5f;
         private float attackSpeed = 1.54f;
         private float chargeMultiplier = 0.7f;
         private int chargeDelay = 15;
@@ -183,27 +215,47 @@ public class SpearDefinition {
             this.name = name;
         }
 
-        public Builder setDamage(float damage) {
+        public Builder damage(float damage) {
             this.damage = damage;
             return this;
         }
 
-        public Builder setDurability(int durability) {
+        public Builder durability(int durability) {
             this.durability = durability;
             return this;
         }
 
-        public Builder setEnchantability(int enchantability) {
+        public Builder enchantability(int enchantability) {
             this.enchantability = enchantability;
             return this;
         }
 
-        public Builder setAttackSpeed(float attackSpeed) {
+        public Builder minRange(int minRange) {
+            this.minRange = minRange;
+            return this;
+        }
+
+        public Builder maxRange(int maxRange) {
+            this.maxRange = maxRange;
+            return this;
+        }
+
+        public Builder creativeRangeAddition(int creativeRangeAddition) {
+            this.creativeRangeAddition = creativeRangeAddition;
+            return this;
+        }
+
+        public Builder mobChargeRangeMultiplier(int mobChargeRangeMultiplier) {
+            this.mobChargeRangeMultiplier = mobChargeRangeMultiplier;
+            return this;
+        }
+
+        public Builder attackSpeed(float attackSpeed) {
             this.attackSpeed = attackSpeed;
             return this;
         }
 
-        public Builder setChargeMultiplier(float chargeMultiplier) {
+        public Builder chargeMultiplier(float chargeMultiplier) {
             this.chargeMultiplier = chargeMultiplier;
             return this;
         }
