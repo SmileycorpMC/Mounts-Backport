@@ -127,6 +127,10 @@ public class ItemSpear extends Item {
         return EntityEquipmentSlot.MAINHAND;
     }
 
+    /** This prevents active durability updates from interrupting the playing. */
+    public boolean canContinueUsing(ItemStack oldStack, ItemStack newStack)
+    { return newStack.getItem() instanceof ItemSpear || super.canContinueUsing(oldStack, newStack); }
+
     public static boolean performJabAttack(EntityLivingBase user, ItemStack stack) {
         if (user.world.isRemote |! (stack.getItem() instanceof ItemSpear)) return false;
         user.swingArm(EnumHand.MAIN_HAND);
@@ -169,6 +173,7 @@ public class ItemSpear extends Item {
         double speed = getSpeed(look, user);
         boolean hit = false;
         for (Entity entity : getHitEntities(user, e -> piercing.canPierce(e))) {
+            if (MinecraftForge.EVENT_BUS.post(new SpearChargeHitEvent.Pre(user, entity, stack, definition))) continue;
             boolean pierced = false;
             //damage is based on relative speed between the user and the target
             double relativeSpeed = speed - getSpeed(look, entity);
@@ -195,9 +200,18 @@ public class ItemSpear extends Item {
             if (user instanceof EntityPlayer) ((EntityPlayer) user).addStat(StatList.getObjectUseStats(stack.getItem()));
             piercing.pierce(entity);
             hit = true;
+            MinecraftForge.EVENT_BUS.post(new SpearChargeHitEvent.Post(user, entity, stack, definition));
         }
-        if (hit) {
-            user.world.playSound(null, user.posX, user.posY, user.posZ, ((ItemSpear) stack.getItem()).getHitSound(), user.getSoundCategory(), 1, 1);
+        if (hit)
+        {
+            if (user.hasCapability(CapabilitySpearAnimation.MOUNTS_PLAYER_ANIM_CAP, null))
+            {
+                CapabilitySpearAnimation.ICapabilityAnimations cap = user.getCapability(CapabilitySpearAnimation.MOUNTS_PLAYER_ANIM_CAP, null);
+                cap.setSpearRecoilStartTime(user.ticksExisted);
+                PacketHandler.NETWORK_INSTANCE.sendToAllTracking(new SpearRecoilAnimMessage(user.getEntityId()), new NetworkRegistry.TargetPoint(user.world.provider.getDimension(), user.posX, user.posY, user.posZ, 0.0D));
+            }
+
+            if (stack.getItem() instanceof ItemSpear) user.world.playSound(null, user.posX, user.posY, user.posZ, ((ItemSpear) stack.getItem()).getHitSound(), user.getSoundCategory(), 1, 1);
             if (user instanceof EntityPlayerMP) MountsAdvancements.CHARGE_PIERCE_ENTITIES.trigger((EntityPlayerMP) user, piercing.getPiercedEntities().size());
         }
         return hit;
@@ -228,8 +242,9 @@ public class ItemSpear extends Item {
             AxisAlignedBB bb = entity.getEntityBoundingBox().grow(width);
             //System.out.println(bb + ", " + point);
             if (!bb.contains(point)) continue;
-            if (!predicate.test(entity) || (user instanceof EntityPlayer &!
-                    ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity))) continue;
+            if (!predicate.test(entity)) continue;
+            if (user instanceof EntityPlayer && !ForgeHooks.onPlayerAttackTarget((EntityPlayer) user, entity)) continue;
+
             entities.add(entity);
         }
         return entities;

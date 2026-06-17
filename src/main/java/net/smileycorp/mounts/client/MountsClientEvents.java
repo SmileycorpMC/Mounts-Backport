@@ -92,6 +92,7 @@ public class MountsClientEvents
         ItemStack stack = player.getHeldItemMainhand();
 
         if (!(stack.getItem() instanceof ItemSpear)) return;
+        if (player.getCooledAttackStrength(0.0F) < 1.0F) return;
 
         double attackSpeed = 4.0D;
         Multimap<String, AttributeModifier> modifiers = stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND);
@@ -244,7 +245,7 @@ public class MountsClientEvents
         {
             SpearDefinition spearDef = ((ItemSpear) stack.getItem()).getDefinition();
 
-            if (player.getActiveItemStack() == stack)
+            if (player.isHandActive() && player.getActiveHand() == event.getHand())
             {
                 GlStateManager.pushMatrix();
                 AnimationsSpear.preformSpearUseItemRotations1stPerson(player, cooldownStrength, partialTicks, arm, spearDef);;
