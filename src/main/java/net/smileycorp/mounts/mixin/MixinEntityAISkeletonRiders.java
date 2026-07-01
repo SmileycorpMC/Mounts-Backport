@@ -16,7 +16,7 @@ public class MixinEntityAISkeletonRiders {
     @Inject(at = @At(value = "HEAD"), method = "createSkeleton", cancellable = true)
     public void hordes$createSkeleton(DifficultyInstance difficulty, AbstractHorse horse, CallbackInfoReturnable<EntitySkeleton> callback) {
         EntitySkeletonHorseman entity = new EntitySkeletonHorseman(horse.world);
-        entity.onInitialSpawn(difficulty, null);
+        entity.onInitialSpawn(difficulty, new EntitySkeletonHorseman.HorseTrapSpawnData());
         entity.setPosition(horse.posX, horse.posY, horse.posZ);
         entity.hurtResistantTime = 60;
         entity.enablePersistence();

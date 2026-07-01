@@ -2,8 +2,10 @@ package net.smileycorp.mounts.common.entity;
 
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.passive.EntitySkeletonHorse;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -68,15 +70,25 @@ public class EntitySkeletonHorseman extends EntitySkeleton {
      * Horsemen ignore infighting
      */
     @Override
-    public void setAttackTarget(@Nullable EntityLivingBase attackTarget)
-    {
-        if (attackTarget == null || attackTarget.isDead)
-        {
+    public void setAttackTarget(@Nullable EntityLivingBase attackTarget) {
+        if (attackTarget == null || attackTarget.isDead) {
             super.setAttackTarget(attackTarget);
             return;
         }
         if (attackTarget.getClass() == this.getClass()) return;
         super.setAttackTarget(attackTarget);
+    }
+
+    @Nullable
+    @Override
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
+        if (!(livingdata instanceof HorseTrapSpawnData)) {
+            EntitySkeletonHorse horse = new EntitySkeletonHorse(world);
+            horse.setPosition(posX, posY, posZ);
+            world.spawnEntity(horse);
+            startRiding(horse);
+        }
+        return super.onInitialSpawn(difficulty, livingdata);
     }
 
     @Override
@@ -121,6 +133,8 @@ public class EntitySkeletonHorseman extends EntitySkeleton {
         if (nbt.hasKey("BackItem")) setBackItem(new ItemStack(nbt.getCompoundTag("BackItem")));
     }
 
+    public static class HorseTrapSpawnData implements IEntityLivingData {}
+
     /** An INCREDIBLY basic Ai Task for swapping held items using a randomized timer. */
     public class EntityAIWeaponSwapping extends EntityAIBase
     {
@@ -160,4 +174,5 @@ public class EntitySkeletonHorseman extends EntitySkeleton {
             swapCooldown = nextSwapTime;
         }
     }
+
 }
