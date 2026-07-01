@@ -8,21 +8,21 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.smileycorp.mounts.client.entity.render.RenderSkeletonHorseman;
+import net.smileycorp.mounts.client.entity.render.RenderSkeletonRider;
 import net.smileycorp.mounts.common.Constants;
-import net.smileycorp.mounts.common.entity.EntitySkeletonHorseman;
+import net.smileycorp.mounts.common.entity.EntitySkeletonRider;
 
 @SideOnly(Side.CLIENT)
-public class LayerSkeletonRiderEmissive implements LayerRenderer<EntitySkeletonHorseman>
+public class LayerSkeletonRiderEmissive implements LayerRenderer<EntitySkeletonRider>
 {
-    private final RenderSkeletonHorseman parchedRender;
+    private final RenderSkeletonRider parchedRender;
     private final ModelBiped emissiveModel = new ModelSkeleton(0.025F, false);
     private static final ResourceLocation OVERLAY_TEXTURE = new ResourceLocation(Constants.MODID, "textures/entities/rider/rider_e.png");
 
-    public LayerSkeletonRiderEmissive(RenderSkeletonHorseman rendererIn)
+    public LayerSkeletonRiderEmissive(RenderSkeletonRider rendererIn)
     { this.parchedRender = rendererIn; }
 
-    public void doRenderLayer(EntitySkeletonHorseman entityIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
+    public void doRenderLayer(EntitySkeletonRider entityIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
         if (!entityIn.isInvisible())
         {

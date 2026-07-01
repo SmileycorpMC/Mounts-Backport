@@ -12,11 +12,11 @@ import net.smileycorp.mounts.client.entity.layer.LayerSkeletonRiderOverlay;
 import net.smileycorp.mounts.common.Constants;
 
 @SideOnly(Side.CLIENT)
-public class RenderSkeletonHorseman extends RenderSkeleton
+public class RenderSkeletonRider extends RenderSkeleton
 {
     private static final ResourceLocation RIDER_TEXTURE = new ResourceLocation(Constants.MODID, "textures/entities/rider/rider.png");
 
-    public RenderSkeletonHorseman(RenderManager rm)
+    public RenderSkeletonRider(RenderManager rm)
     {
         super(rm);
         this.addLayer(new LayerSkeletonRiderOverlay(this));

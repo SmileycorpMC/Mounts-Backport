@@ -5,8 +5,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.init.Biomes;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
@@ -23,7 +21,7 @@ public class MountsEntities
         registerEntity("camel", EntityCamel.class, ++id, 80, 16565097, 13341495);
         registerEntity("camel_husk", EntityCamelHusk.class, ++id, 80, 16565097, 13341495);
         registerEntity("parched", EntityParched.class, ++id, 80, 11376223, 6249550);
-        registerEntity("skeleton_horseman", EntitySkeletonHorseman.class, ++id, 80, 0xC1C1C1, 0x13FFFF);
+        registerEntity("skeleton_rider", EntitySkeletonRider.class, ++id, 80, 0xA7A09A, 0x714A80);
     }
 
     public static void registerEntitySpawns()
@@ -41,7 +39,7 @@ public class MountsEntities
 
     private static void spawnRate(Class<? extends EntityLiving> entityClass, EnumCreatureType creatureType, int weight, int min, int max, BiomeDictionary.Type biomesAllowed)
     {
-        for(Biome biome: BiomeDictionary.getBiomes(biomesAllowed))
+        for(Biome biome : BiomeDictionary.getBiomes(biomesAllowed))
         {
             if(biome != null && weight > 0)
             { EntityRegistry.addSpawn(entityClass, weight, min, max, creatureType, biome); }

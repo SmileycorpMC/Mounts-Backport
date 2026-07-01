@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.math.MathHelper;
@@ -26,7 +25,7 @@ import net.smileycorp.mounts.client.entity.models.ModelScalableHorse;
 import net.smileycorp.mounts.client.entity.render.RenderCamel;
 import net.smileycorp.mounts.client.entity.render.RenderCamelHusk;
 import net.smileycorp.mounts.client.entity.render.RenderParched;
-import net.smileycorp.mounts.client.entity.render.RenderSkeletonHorseman;
+import net.smileycorp.mounts.client.entity.render.RenderSkeletonRider;
 import net.smileycorp.mounts.common.CommonProxy;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.entity.*;
@@ -74,7 +73,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityCamel.class, RenderCamel::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityCamelHusk.class, RenderCamelHusk::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityParched.class, RenderParched::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntitySkeletonHorseman.class, RenderSkeletonHorseman::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntitySkeletonRider.class, RenderSkeletonRider::new);
 	}
 
 	//colour our custom spawn egg

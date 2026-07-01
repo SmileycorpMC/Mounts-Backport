@@ -23,12 +23,12 @@ import net.smileycorp.mounts.config.SpearRegistry;
 
 import javax.annotation.Nullable;
 
-public class EntitySkeletonHorseman extends EntitySkeleton {
+public class EntitySkeletonRider extends EntitySkeleton {
 
-    public static final DataParameter<ItemStack> BACK_ITEM = EntityDataManager.createKey(EntitySkeletonHorseman.class, DataSerializers.ITEM_STACK);
+    public static final DataParameter<ItemStack> BACK_ITEM = EntityDataManager.createKey(EntitySkeletonRider.class, DataSerializers.ITEM_STACK);
     public boolean sheduledMainhandSwap = false;
 
-    public EntitySkeletonHorseman(World world) {
+    public EntitySkeletonRider(World world) {
         super(world);
     }
 
@@ -138,12 +138,12 @@ public class EntitySkeletonHorseman extends EntitySkeleton {
     /** An INCREDIBLY basic Ai Task for swapping held items using a randomized timer. */
     public class EntityAIWeaponSwapping extends EntityAIBase
     {
-        protected final EntitySkeletonHorseman rider;
+        protected final EntitySkeletonRider rider;
 
         protected int swapCooldown;
         protected int nextSwapTime;
 
-        public EntityAIWeaponSwapping(EntitySkeletonHorseman rider)
+        public EntityAIWeaponSwapping(EntitySkeletonRider rider)
         {
             this.rider = rider;
             this.setMutexBits(0);

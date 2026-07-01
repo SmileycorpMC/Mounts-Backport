@@ -10,9 +10,9 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.smileycorp.mounts.api.ItemSpear;
-import net.smileycorp.mounts.common.entity.EntitySkeletonHorseman;
+import net.smileycorp.mounts.common.entity.EntitySkeletonRider;
 
-public class LayerSkeletonRiderBackItem implements LayerRenderer<EntitySkeletonHorseman>
+public class LayerSkeletonRiderBackItem implements LayerRenderer<EntitySkeletonRider>
 {
     private final RenderLivingBase<?> skeletonRiderRenderer;
 
@@ -21,7 +21,7 @@ public class LayerSkeletonRiderBackItem implements LayerRenderer<EntitySkeletonH
         this.skeletonRiderRenderer = livingEntityRendererIn;
     }
 
-    public void doRenderLayer(EntitySkeletonHorseman entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
+    public void doRenderLayer(EntitySkeletonRider entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
         ItemStack itemstack = entitylivingbaseIn.getBackItem();
 
