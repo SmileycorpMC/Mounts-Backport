@@ -37,7 +37,7 @@ public abstract class MixinAbstractHorse extends EntityAnimal implements IWearsH
 		if (!((EntityAnimal)this instanceof EntityZombieHorse && EntityConfig.zombieHorsesBurnInSunlight) &!
 				((EntityAnimal)this instanceof EntitySkeletonHorse && EntityConfig.skeletonHorsesBurnInSunlight)) return;
 		if (world.isRemote || !world.isDaytime()) return;
-		ItemStack itemstack = horseChest.getStackInSlot(1);
+		ItemStack itemstack = getHorseArmour();
 		if (itemstack.isEmpty()) {
 			setFire(8);
 			return;
@@ -57,7 +57,7 @@ public abstract class MixinAbstractHorse extends EntityAnimal implements IWearsH
 
 	@Override
 	public ItemStack getHorseArmour() {
-		return Loader.isModLoaded("wornhorseshoes") ? WornHorseshoesIntegration.getHorseArmor((AbstractHorse)(EntityAnimal)this) : IWearsHorseArmor.super.getHorseArmour();
+		return Loader.isModLoaded("wornhorseshoes") ? WornHorseshoesIntegration.getHorseArmor((AbstractHorse)(EntityAnimal)this) : ItemStack.EMPTY;
 	}
 
 }
