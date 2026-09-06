@@ -87,7 +87,7 @@ dependencies {
     annotationProcessor "org.spongepowered:mixin:0.8:processor"
     implementation "io.github.llamalad7:mixinextras-common:0.4.1"
     annotationProcessor 'io.github.llamalad7:mixinextras-common:0.5.0'
-    implementation fg.deobf("curse.maven:atlas-463826:6981112")
+    implementation fg.deobf("curse.maven:atlas-463826:8206890")
     compileOnly "curse.maven:jei-238222:4393461"
     compileOnly "curse.maven:deeperdepths-1101129:7512773"
     compileOnly "curse.maven:futuremc-310059:6162819"
