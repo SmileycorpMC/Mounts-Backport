@@ -1,10 +1,8 @@
 package net.smileycorp.mounts.common;
 
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.monster.EntityCaveSpider;
 import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.entity.monster.EntityZombie;
@@ -17,6 +15,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -33,6 +32,8 @@ import net.smileycorp.mounts.common.enchantments.MountsEnchantments;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 import net.smileycorp.mounts.common.entity.EntitySkeletonRider;
 import net.smileycorp.mounts.common.entity.Jockeys;
+import net.smileycorp.mounts.common.entity.ai.EntityAIAttackSpear;
+import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.config.LootConfig;
 import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.MountsConfig;
@@ -106,6 +107,14 @@ public class MountsCommonEvents
             Jockeys.spawnZombieHorseman((EntityLiving) entity, false);
         else return;
         event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void entityAdded(EntityJoinWorldEvent event) {
+        if (!(event.getEntity() instanceof EntityCreature)) return;
+        EntityCreature entity = (EntityCreature) event.getEntity();
+        if (!EntityConfig.canCharge(entity)) return;
+        entity.tasks.addTask(1, new EntityAIAttackSpear(entity, 1, 1));
     }
 
     @SubscribeEvent
