@@ -2,7 +2,6 @@ package net.smileycorp.mounts.config;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.smileycorp.atlas.api.config.EntityAttributesEntry;
 
 import java.io.File;
 

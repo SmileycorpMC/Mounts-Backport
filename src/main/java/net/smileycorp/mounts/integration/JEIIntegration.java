@@ -7,7 +7,6 @@ import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.oredict.OreDictionary;
 import net.smileycorp.mounts.api.VanillaSpears;
 import net.smileycorp.mounts.config.GeneralConfig;

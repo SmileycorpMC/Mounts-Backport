@@ -3,7 +3,8 @@ package net.smileycorp.mounts.mixin;
 import net.minecraft.world.WorldServer;
 import net.smileycorp.mounts.config.MountsConfig;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(WorldServer.class)
 public class MixinWorldServer {

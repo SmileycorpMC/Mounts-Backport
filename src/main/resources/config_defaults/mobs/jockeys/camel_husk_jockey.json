@@ -1,0 +1,33 @@
+{
+	"entity_type": "minecraft:husk",
+	"spawn_chance": 0.1,
+	"spawn_egg": true,
+	"functions": [
+		{
+			"function": "add_mount",
+			"value": {
+				"type": "mounts:camel_husk",
+				"functions": [
+					{
+						"function": "add_passenger",
+						"value": {
+							"type": "mounts:parched",
+							"functions": []
+						},
+						"conditions": []
+					}
+				]
+			},
+			"conditions": []
+		},
+		{
+			"function": "set_equipment",
+			"value": {
+				"item": "mounts:iron_spear",
+				"slot": "mainhand"
+			},
+			"conditions": []
+		}
+	],
+	"conditions": []
+}

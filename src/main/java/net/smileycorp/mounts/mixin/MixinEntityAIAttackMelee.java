@@ -5,7 +5,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 import net.smileycorp.mounts.api.ItemSpear;
 import net.smileycorp.mounts.api.SpearDefinition;
 import org.spongepowered.asm.mixin.Mixin;

@@ -8,7 +8,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
-import net.smileycorp.mounts.api.ItemSpear;
 import net.smileycorp.mounts.api.SpearDefinition;
 import net.smileycorp.mounts.client.MountsClientEvents;
 import net.smileycorp.mounts.common.capabilities.CapabilityHelperUtil;
