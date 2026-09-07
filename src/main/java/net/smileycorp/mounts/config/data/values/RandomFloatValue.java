@@ -16,7 +16,7 @@ public class RandomFloatValue<T extends Number & Comparable<T>> implements Value
 
 	@Override
 	public T get(SpawnContext ctx) {
-		return type.cast(entity.getRandom().nextFloat());
+		return type.cast(ctx.getRandom().nextFloat());
 	}
 
 	public static <T extends Comparable<T>> Value<T> deserialize(JsonObject obj, DataType<T> type) {

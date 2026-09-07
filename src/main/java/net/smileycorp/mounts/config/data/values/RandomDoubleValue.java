@@ -10,7 +10,7 @@ public class RandomDoubleValue implements Value<Double> {
 
 	@Override
 	public Double get(SpawnContext ctx) {
-		return entity.getRandom().nextDouble();
+		return ctx.getRandom().nextDouble();
 	}
 
 	public static <T extends Comparable<T>> Value<T> deserialize(JsonObject obj, DataType<T> type) {

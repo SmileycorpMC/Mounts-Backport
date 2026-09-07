@@ -20,9 +20,9 @@ public class RandomRangeValue<T extends Number & Comparable<T>> implements Value
 
 	@Override
 	public T get(SpawnContext ctx) {
-		int min = this.min.get(entity);
-		int difference = this.max.get(entity) - min;
-		return type.cast(difference <= 0 ? min : min + entity.getRandom().nextInt(difference));
+		int min = this.min.get(ctx);
+		int difference = this.max.get(ctx) - min;
+		return type.cast(difference <= 0 ? min : min + ctx.getRandom().nextInt(difference));
 	}
 
 	public static <T extends Comparable<T>> Value<T> deserialize(JsonObject obj, DataType<T> type) {

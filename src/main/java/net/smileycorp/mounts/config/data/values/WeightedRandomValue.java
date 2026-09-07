@@ -21,7 +21,7 @@ public class WeightedRandomValue<T extends Comparable<T>> implements Value<T> {
 
     @Override
     public T get(SpawnContext ctx) {
-        return outputs.getResult(entity.getRandom()).get(entity);
+        return outputs.getResult(ctx.getRandom()).get(ctx);
     }
     
     public static <T extends Comparable<T>> WeightedRandomValue<T> deserialize(JsonObject json, DataType<T> type) {

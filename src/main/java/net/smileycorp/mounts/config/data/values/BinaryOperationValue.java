@@ -21,7 +21,7 @@ public class BinaryOperationValue<T extends Number & Comparable<T>> implements V
 
     @Override
     public T get(SpawnContext ctx) {
-        return (T) operation.apply(value1.get(entity), value2.get(entity));
+        return (T) operation.apply(value1.get(ctx), value2.get(ctx));
     }
 
     public static Deserializer of(BinaryOperation operation) {

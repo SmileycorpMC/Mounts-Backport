@@ -10,7 +10,7 @@ public class GaussianValue implements Value<Double> {
 
 	@Override
 	public Double get(SpawnContext ctx) {
-		return entity.getRandom().nextGaussian();
+		return ctx.getRandom().nextGaussian();
 	}
 
 	public static <T extends Comparable<T>> Value<T> deserialize(JsonObject obj, DataType<T> type) {

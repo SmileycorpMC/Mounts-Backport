@@ -25,8 +25,8 @@ public class CaseValue<T extends Comparable<T>> implements Value<T> {
 
     @Override
     public T get(SpawnContext ctx) {
-        for (Pair<Value<T>, List<Condition>> pair : values) if (DataRegistry.canApply(entity, pair.getSecond())) return pair.getFirst().get(entity);
-        return defaultValue.get(entity);
+        for (Pair<Value<T>, List<Condition>> pair : values) if (DataRegistry.canApply(ctx, pair.getSecond())) return pair.getFirst().get(ctx);
+        return defaultValue.get(ctx);
     }
     
     public static <T extends Comparable<T>> CaseValue<T> deserialize(JsonObject obj, DataType<T> type) {

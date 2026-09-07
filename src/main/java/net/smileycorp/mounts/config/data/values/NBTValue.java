@@ -21,7 +21,7 @@ public class NBTValue<T extends Comparable<T>> implements Value<T> {
 	@Override
 	public T get(SpawnContext ctx) {
 		try {
-			return new NBTExplorer<>(value.get(entity), type).findValue(entity.getEntity().writeToNBT(new NBTTagCompound()));
+			return new NBTExplorer<>(value.get(ctx), type).findValue(ctx.getEntity().writeToNBT(new NBTTagCompound()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

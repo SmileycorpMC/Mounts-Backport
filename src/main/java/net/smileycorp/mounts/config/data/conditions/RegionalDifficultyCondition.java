@@ -17,7 +17,7 @@ public class RegionalDifficultyCondition implements Condition {
 
 	@Override
 	public boolean ctx(SpawnContext ctx) {
-		return entity.getDifficulty().getClampedAdditionalDifficulty() > difficulty.get(entity);
+		return ctx.getDifficulty().getClampedAdditionalDifficulty() > difficulty.get(ctx);
 	}
 
 	public static RegionalDifficultyCondition deserialize(JsonElement json) {

@@ -23,7 +23,7 @@ public class RandomListValue<T extends Comparable<T>> implements Value<T> {
 
     @Override
     public T get(SpawnContext ctx) {
-        return values.get(entity.getRandom().nextInt(values.size())).get(entity);
+        return values.get(ctx.getRandom().nextInt(values.size())).get(ctx);
     }
 
 }

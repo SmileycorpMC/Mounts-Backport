@@ -23,7 +23,7 @@ public class ComparisonCondition<T extends Comparable<T>> implements Condition {
 
 	@Override
 	public boolean ctx(SpawnContext ctx) {
-		return operation.apply(value1.get(entity), value2.get(entity));
+		return operation.apply(value1.get(ctx), value2.get(ctx));
 	}
 
 	public static <T extends Comparable<T>> ComparisonCondition<T> deserialize(JsonElement json) {

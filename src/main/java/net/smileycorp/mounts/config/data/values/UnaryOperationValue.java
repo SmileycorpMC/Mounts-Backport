@@ -20,7 +20,7 @@ public class UnaryOperationValue<T extends Number & Comparable<T>> implements Va
 
     @Override
     public T get(SpawnContext ctx) {
-        return (T) operation.apply(value.get(entity));
+        return (T) operation.apply(value.get(ctx));
     }
 
     public static Deserializer of(UnaryOperation operation) {

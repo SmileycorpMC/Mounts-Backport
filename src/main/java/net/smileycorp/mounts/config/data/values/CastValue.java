@@ -18,7 +18,7 @@ public class CastValue<T extends Comparable<T>, V extends Comparable<V>> impleme
 
     @Override
     public T get(SpawnContext ctx) {
-        return type.cast(value.get(entity));
+        return type.cast(value.get(ctx));
     }
     
     public static <T extends Comparable<T>, V extends Comparable<V>> CastValue<T, V> deserialize(JsonObject obj, DataType<T> type) {

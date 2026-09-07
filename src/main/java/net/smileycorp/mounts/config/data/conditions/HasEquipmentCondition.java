@@ -15,7 +15,7 @@ public class HasEquipmentCondition implements Condition {
 
 	@Override
 	public boolean ctx(SpawnContext ctx) {
-		return item.matches(entity);
+		return item.matches(ctx);
 	}
 
 	public static HasEquipmentCondition deserialize(JsonElement json) {

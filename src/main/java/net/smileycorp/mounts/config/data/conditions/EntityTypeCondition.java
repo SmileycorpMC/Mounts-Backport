@@ -20,8 +20,8 @@ public class EntityTypeCondition implements Condition {
 
 	@Override
 	public boolean ctx(SpawnContext ctx) {
-		EntityEntry entry = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(getter.get(entity)));
-		return entry != null && entry.getEntityClass() == entity.getEntity().getClass();
+		EntityEntry entry = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(getter.get(ctx)));
+		return entry != null && entry.getEntityClass() == ctx.getEntity().getClass();
 	}
 
 	public static EntityTypeCondition deserialize(JsonElement json) {
