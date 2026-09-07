@@ -23,7 +23,11 @@ import net.smileycorp.mounts.common.entity.MountsEntities;
 import net.smileycorp.mounts.common.network.PacketHandler;
 import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.config.GeneralConfig;
+import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.MountsConfig;
+import net.smileycorp.mounts.config.data.ConfigDataManager;
+import net.smileycorp.mounts.config.data.LootRegistry;
+import net.smileycorp.mounts.config.data.SpearRegistry;
 
 import java.util.List;
 import java.util.Set;
@@ -39,6 +43,8 @@ public class CommonProxy
 		GeneralConfig.syncConfig(event);
 		EntityConfig.syncConfig(event);
 		MountsConfig.syncConfig(event);
+		SpearRegistry.init(event);
+		LootRegistry.init(event);
 		MountsEntities.registerEntities();
 		MountsEntities.registerEntitySpawns();
 		MountsLootTables.registerLootTables();
@@ -56,6 +62,8 @@ public class CommonProxy
 	public void postInit(FMLPostInitializationEvent event) {
 		//add parched spawns
 		//doing this in postInit, so we don't have to iterate through the list every time a mob spawns in a desert in using events
+		MountsLogger.blankLine();
+		MountsLogger.heading("ADDING PARCHED SPAWNS");
 		for (Biome biome : ForgeRegistries.BIOMES) {
 			Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(biome);
 			//mesas are also counted as sandy biomes so we check for them here

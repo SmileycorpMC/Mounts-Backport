@@ -31,7 +31,7 @@ public class MountsRecipes {
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
         IForgeRegistry<IRecipe> registry = event.getRegistry();
         //spear recipes
-        for (ItemSpear spear : SpearRegistry.getSpears()) {
+        for (ItemSpear spear : SpearRegistry.INSTANCE.getSpears()) {
             SpearDefinition def = spear.getDefinition();
             if (!def.isCraftable()) continue;
             ShapedOreRecipe recipe = new ShapedOreRecipe(Constants.loc("spear"), new ItemStack(spear),

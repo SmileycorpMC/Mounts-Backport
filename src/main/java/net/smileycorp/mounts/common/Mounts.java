@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.smileycorp.mounts.config.data.DataGenerator;
+import net.smileycorp.mounts.config.data.ConfigDataManager;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -24,8 +24,8 @@ public class Mounts
 	public static ScheduledExecutorService DELAYED_THREAD_EXECUTOR = Executors.newSingleThreadScheduledExecutor();
 	
 	public Mounts() {
-		MountsLogger.clearLog();
-		DataGenerator.generateData();
+		MountsLogger.clearLog(true);
+		ConfigDataManager.generateData();
 	}
 	
 	@EventHandler

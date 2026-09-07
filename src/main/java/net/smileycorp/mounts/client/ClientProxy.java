@@ -64,7 +64,7 @@ public class ClientProxy extends CommonProxy {
 
 	@SubscribeEvent
 	public static void registerModels(ModelRegistryEvent event) {
-		SpearRegistry.getSpears().forEach(spear -> ModelLoader.setCustomModelResourceLocation(spear, 0,
+		SpearRegistry.INSTANCE.getSpears().forEach(spear -> ModelLoader.setCustomModelResourceLocation(spear, 0,
 				new ModelResourceLocation(spear.getRegistryName(), "normal")));
 		for (int i = 0; i < Jockeys.Type.values().length; i++) ModelLoader.setCustomModelResourceLocation(MountsItems.JOCKEY_SPAWNER, i,
 				new ModelResourceLocation("spawn_egg"));

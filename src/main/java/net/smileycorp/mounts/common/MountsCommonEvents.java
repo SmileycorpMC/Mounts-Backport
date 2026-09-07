@@ -35,7 +35,7 @@ import net.smileycorp.mounts.common.entity.EntitySkeletonRider;
 import net.smileycorp.mounts.common.entity.Jockeys;
 import net.smileycorp.mounts.common.entity.ai.EntityAIAttackSpear;
 import net.smileycorp.mounts.config.EntityConfig;
-import net.smileycorp.mounts.config.LootConfig;
+import net.smileycorp.mounts.config.data.LootRegistry;
 import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.MountsConfig;
 
@@ -88,7 +88,7 @@ public class MountsCommonEvents
 
     @SubscribeEvent
     public static void addLoot(LootTableLoadEvent event) {
-        for (LootTableEntry entry : LootConfig.getLootTableEntries()) if (entry.canApply(event.getName())) {
+        for (LootTableEntry entry : LootRegistry.INSTANCE.getLootTableEntries()) if (entry.canApply(event.getName())) {
             entry.addEntry(event.getTable());
             MountsLogger.logInfo("Injected " + entry.getName() + " with weight " + entry.getWeight() + " to pool " + entry.getPool() + " in table " + entry.getLootTable());
         }

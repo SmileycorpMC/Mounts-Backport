@@ -11,7 +11,7 @@ import net.smileycorp.mounts.client.MountsClientEvents;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.common.network.PacketHandler;
 import net.smileycorp.mounts.common.network.SpearAttackMessage;
-import net.smileycorp.mounts.config.data.DataGenerator;
+import net.smileycorp.mounts.config.data.ConfigDataManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,8 +33,8 @@ public class MixinMinecraft {
     @Inject(at = @At("HEAD"), method = "init")
     public void mounts$init(CallbackInfo callback) {
         try {
-            DataGenerator.generateData();
-            defaultResourcePacks.add(new FolderResourcePack(DataGenerator.CONFIG_FOLDER));
+            ConfigDataManager.init();
+            defaultResourcePacks.add(new FolderResourcePack(ConfigDataManager.CONFIG_FOLDER.toFile()));
         } catch (Exception e) {
             MountsLogger.logError("Failed loading config resources", e);
         }
