@@ -25,9 +25,9 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.smileycorp.atlas.api.util.DirectionUtils;
 import net.smileycorp.mounts.api.ItemSpear;
+import net.smileycorp.mounts.api.VanillaSpears;
 import net.smileycorp.mounts.common.entity.ai.EntityAIAttackSpear;
 import net.smileycorp.mounts.config.EntityConfig;
-import net.smileycorp.mounts.config.data.SpearRegistry;
 
 import javax.annotation.Nullable;
 
@@ -119,7 +119,7 @@ public class EntitySkeletonRider extends EntitySkeleton {
     @Override
     protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty) {
         super.setEquipmentBasedOnDifficulty(difficulty);
-        ItemSpear spear = SpearRegistry.getSpear("iron");
+        ItemSpear spear = VanillaSpears.IRON_SPEAR.get();
         setBackItem(new ItemStack(spear == null ? Items.IRON_SWORD : spear));
         setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
     }
