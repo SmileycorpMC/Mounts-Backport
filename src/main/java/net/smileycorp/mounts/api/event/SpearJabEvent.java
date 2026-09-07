@@ -1,9 +1,10 @@
-package net.smileycorp.mounts.api;
+package net.smileycorp.mounts.api.event;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
+import net.smileycorp.mounts.api.SpearDefinition;
 
 @Cancelable
 public class SpearJabEvent extends LivingEvent {

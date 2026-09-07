@@ -1,6 +1,6 @@
 package net.smileycorp.mounts.api;
 
-import net.smileycorp.mounts.config.SpearRegistry;
+import net.smileycorp.mounts.config.data.SpearRegistry;
 
 import java.util.function.Supplier;
 

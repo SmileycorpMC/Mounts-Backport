@@ -1,4 +1,4 @@
-package net.smileycorp.mounts.config;
+package net.smileycorp.mounts.config.data;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonParser;

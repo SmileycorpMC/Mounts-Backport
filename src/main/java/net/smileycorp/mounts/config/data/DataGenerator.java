@@ -1,4 +1,4 @@
-package net.smileycorp.mounts.config;
+package net.smileycorp.mounts.config.data;
 
 import net.smileycorp.mounts.common.MountsLogger;
 import org.apache.commons.io.FileUtils;

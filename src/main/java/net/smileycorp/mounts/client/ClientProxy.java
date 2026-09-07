@@ -32,7 +32,7 @@ import net.smileycorp.mounts.common.entity.*;
 import net.smileycorp.mounts.common.items.ItemJockeySpawner;
 import net.smileycorp.mounts.common.items.ItemLeatherHorseArmour;
 import net.smileycorp.mounts.common.items.MountsItems;
-import net.smileycorp.mounts.config.SpearRegistry;
+import net.smileycorp.mounts.config.data.SpearRegistry;
 
 import java.util.Map;
 

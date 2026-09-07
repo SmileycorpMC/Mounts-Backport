@@ -11,7 +11,7 @@ import net.smileycorp.mounts.client.MountsClientEvents;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.common.network.PacketHandler;
 import net.smileycorp.mounts.common.network.SpearAttackMessage;
-import net.smileycorp.mounts.config.DataGenerator;
+import net.smileycorp.mounts.config.data.DataGenerator;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

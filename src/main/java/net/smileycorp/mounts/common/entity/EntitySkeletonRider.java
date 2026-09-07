@@ -27,7 +27,7 @@ import net.smileycorp.atlas.api.util.DirectionUtils;
 import net.smileycorp.mounts.api.ItemSpear;
 import net.smileycorp.mounts.common.entity.ai.EntityAIAttackSpear;
 import net.smileycorp.mounts.config.EntityConfig;
-import net.smileycorp.mounts.config.SpearRegistry;
+import net.smileycorp.mounts.config.data.SpearRegistry;
 
 import javax.annotation.Nullable;
 

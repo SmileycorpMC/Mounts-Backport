@@ -28,6 +28,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.smileycorp.mounts.api.event.SpearChargeHitEvent;
+import net.smileycorp.mounts.api.event.SpearJabEvent;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.MountsSoundEvents;
 import net.smileycorp.mounts.common.advancements.MountsAdvancements;

@@ -4,6 +4,7 @@ package net.smileycorp.mounts.config;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import net.smileycorp.mounts.config.data.DataGenerator;
 
 import java.io.File;
 import java.io.FileReader;

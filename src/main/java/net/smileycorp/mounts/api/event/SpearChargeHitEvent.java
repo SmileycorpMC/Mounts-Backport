@@ -1,10 +1,11 @@
-package net.smileycorp.mounts.api;
+package net.smileycorp.mounts.api.event;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
+import net.smileycorp.mounts.api.SpearDefinition;
 import net.smileycorp.mounts.common.capabilities.Piercing;
 
 public class SpearChargeHitEvent extends LivingEvent {

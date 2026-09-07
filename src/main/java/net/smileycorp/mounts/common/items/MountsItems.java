@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.smileycorp.mounts.common.Constants;
-import net.smileycorp.mounts.config.SpearRegistry;
+import net.smileycorp.mounts.config.data.SpearRegistry;
 
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public class MountsItems {

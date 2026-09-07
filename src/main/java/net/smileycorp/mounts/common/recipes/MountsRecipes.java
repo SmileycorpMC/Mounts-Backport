@@ -21,7 +21,7 @@ import net.smileycorp.mounts.api.SpearDefinition;
 import net.smileycorp.mounts.api.VanillaSpears;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.config.GeneralConfig;
-import net.smileycorp.mounts.config.SpearRegistry;
+import net.smileycorp.mounts.config.data.SpearRegistry;
 import net.smileycorp.mounts.integration.FutureMCIntegration;
 
 @Mod.EventBusSubscriber(modid = Constants.MODID)
