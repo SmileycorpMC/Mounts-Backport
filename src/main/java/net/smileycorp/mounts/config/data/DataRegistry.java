@@ -4,14 +4,13 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import net.smileycorp.atlas.api.data.BinaryOperation;
-import net.smileycorp.atlas.api.data.DataType;
-import net.smileycorp.atlas.api.data.LogicalOperation;
-import net.smileycorp.atlas.api.data.UnaryOperation;
+import net.smileycorp.atlas.api.data.*;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.conditions.*;
+import net.smileycorp.mounts.config.data.functions.SpawnFunction;
 import net.smileycorp.mounts.config.data.values.*;
 
+import java.util.List;
 import java.util.Map;
 
 //ah shit, here we go again
@@ -56,12 +55,12 @@ public class DataRegistry {
 		registerCondition("has_equipment", HasEquipmentCondition::deserialize);
 	}
 
-	public static void registerValue(String name, Value.Deserializer deserializer) {
-		VALUES.put(name, deserializer);
+	public static void registerValue(String name, Value.Deserializer value) {
+		VALUES.put(name, value);
 	}
 
-	public static void registerCondition(String name, Condition.Deserializer serializer) {
-		CONDITIONS.put(name, serializer);
+	public static void registerCondition(String name, Condition.Deserializer condition) {
+		CONDITIONS.put(name, condition);
 	}
 
 	public static <T extends Comparable<T>> Value<T> readValue(DataType<T> type, JsonElement json) throws Exception {
@@ -85,7 +84,7 @@ public class DataRegistry {
 	}
 
 	public static Condition readCondition(JsonObject json) {
-		if (json.has("name") && json.has("value")) {
+		if (json.has("name")) {
 			try {
 				String name = json.get("name").getAsString();
 				Condition.Deserializer deserializer = CONDITIONS.get(name);
@@ -96,6 +95,11 @@ public class DataRegistry {
 			}
 		}
 		return null;
+	}
+
+	public static boolean canApply(SpawnContext ctx, List<Condition> conditions) {
+		for (Condition condition : conditions) if (!condition.ctx(ctx)) return false;
+		return true;
 	}
 
 }

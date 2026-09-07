@@ -1,10 +1,10 @@
 package net.smileycorp.mounts.config.data.values;
 
 import com.google.gson.JsonObject;
-import net.minecraft.entity.EntityLiving;
 import net.smileycorp.atlas.api.data.DataType;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.DataRegistry;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 public class CastValue<T extends Comparable<T>, V extends Comparable<V>> implements Value<T> {
 
@@ -17,7 +17,7 @@ public class CastValue<T extends Comparable<T>, V extends Comparable<V>> impleme
     }
 
     @Override
-    public T get(EntityLiving entity) {
+    public T get(SpawnContext entity) {
         return type.cast(value.get(entity));
     }
     

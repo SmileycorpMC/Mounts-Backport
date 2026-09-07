@@ -1,10 +1,10 @@
 package net.smileycorp.mounts.config.data.values;
 
 import com.google.gson.JsonObject;
-import net.minecraft.entity.EntityLiving;
 import net.smileycorp.atlas.api.data.DataType;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.ParsingException;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 public class RegionalDifficultyValue <T extends Number & Comparable<T>> implements Value<T> {
 
@@ -15,8 +15,8 @@ public class RegionalDifficultyValue <T extends Number & Comparable<T>> implemen
 	}
 
 	@Override
-	public T get(EntityLiving entity) {
-		return type.cast(entity.world.getDifficultyForLocation(entity.getPosition()).getClampedAdditionalDifficulty());
+	public T get(SpawnContext entity) {
+		return type.cast(entity.getWorld().getDifficultyForLocation(entity.getPos()).getClampedAdditionalDifficulty());
 	}
 
 	public static <T extends Comparable<T>> Value<T> deserialize(JsonObject obj, DataType<T> type) {

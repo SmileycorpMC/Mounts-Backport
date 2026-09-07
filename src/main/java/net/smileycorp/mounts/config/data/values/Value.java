@@ -1,12 +1,12 @@
 package net.smileycorp.mounts.config.data.values;
 
 import com.google.gson.JsonObject;
-import net.minecraft.entity.EntityLiving;
 import net.smileycorp.atlas.api.data.DataType;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 public interface Value<T extends Comparable<T>> {
 
-    T get(EntityLiving entity);
+    T get(SpawnContext entity);
 
     interface Deserializer {
 

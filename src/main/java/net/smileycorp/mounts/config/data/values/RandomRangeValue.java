@@ -1,11 +1,11 @@
 package net.smileycorp.mounts.config.data.values;
 
 import com.google.gson.JsonObject;
-import net.minecraft.entity.EntityLiving;
 import net.smileycorp.atlas.api.data.DataType;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.DataRegistry;
 import net.smileycorp.mounts.config.data.ParsingException;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 public class RandomRangeValue<T extends Number & Comparable<T>> implements Value<T> {
 
@@ -19,10 +19,10 @@ public class RandomRangeValue<T extends Number & Comparable<T>> implements Value
 	}
 
 	@Override
-	public T get(EntityLiving entity) {
+	public T get(SpawnContext entity) {
 		int min = this.min.get(entity);
 		int difference = this.max.get(entity) - min;
-		return type.cast(difference <= 0 ? min : min + entity.getRNG().nextInt(difference));
+		return type.cast(difference <= 0 ? min : min + entity.getRandom().nextInt(difference));
 	}
 
 	public static <T extends Comparable<T>> Value<T> deserialize(JsonObject obj, DataType<T> type) {

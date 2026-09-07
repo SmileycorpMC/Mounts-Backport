@@ -3,12 +3,12 @@ package net.smileycorp.mounts.config.data.values;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.entity.EntityLiving;
 import net.smileycorp.atlas.api.data.DataType;
 import net.smileycorp.atlas.api.data.Pair;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.DataRegistry;
 import net.smileycorp.mounts.config.data.ParsingException;
+import net.smileycorp.mounts.config.data.SpawnContext;
 import net.smileycorp.mounts.config.data.conditions.Condition;
 
 import java.util.List;
@@ -24,14 +24,9 @@ public class CaseValue<T extends Comparable<T>> implements Value<T> {
     }
 
     @Override
-    public T get(EntityLiving entity) {
-        for (Pair<Value<T>, List<Condition>> pair : values) if (canApply(entity, pair.getSecond())) return pair.getFirst().get(entity);
+    public T get(SpawnContext entity) {
+        for (Pair<Value<T>, List<Condition>> pair : values) if (DataRegistry.canApply(entity, pair.getSecond())) return pair.getFirst().get(entity);
         return defaultValue.get(entity);
-    }
-
-    protected boolean canApply(EntityLiving entity, List<Condition> conditions) {
-        for (Condition condition : conditions) if (!condition.apply(entity)) return false;
-        return true;
     }
     
     public static <T extends Comparable<T>> CaseValue<T> deserialize(JsonObject obj, DataType<T> type) {

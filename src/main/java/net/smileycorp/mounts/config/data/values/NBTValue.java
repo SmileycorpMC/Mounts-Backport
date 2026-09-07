@@ -1,12 +1,12 @@
 package net.smileycorp.mounts.config.data.values;
 
 import com.google.gson.JsonObject;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.nbt.NBTTagCompound;
 import net.smileycorp.atlas.api.data.DataType;
 import net.smileycorp.atlas.api.data.NBTExplorer;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.DataRegistry;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 public class NBTValue<T extends Comparable<T>> implements Value<T> {
 
@@ -19,9 +19,9 @@ public class NBTValue<T extends Comparable<T>> implements Value<T> {
 	}
 
 	@Override
-	public T get(EntityLiving entity) {
+	public T get(SpawnContext entity) {
 		try {
-			return new NBTExplorer<>(value.get(entity), type).findValue(entity.writeToNBT(new NBTTagCompound()));
+			return new NBTExplorer<>(value.get(entity), type).findValue(entity.getEntity().writeToNBT(new NBTTagCompound()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

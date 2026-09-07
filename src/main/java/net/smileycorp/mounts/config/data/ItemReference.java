@@ -24,33 +24,33 @@ public class ItemReference {
         this.nbt = builder.nbt;
     }
 
-    public boolean matches(EntityLiving entity) {
+    public boolean matches(SpawnContext ctx) {
         try {
-            ItemStack stack = entity.getItemStackFromSlot(EntityEquipmentSlot.fromString(slot.get(entity)));
-            if (!stack.getItem().getRegistryName().toString().equals(item.get(entity))) return false;
-            if (count != null && stack.getCount() != count.get(entity)) return false;
+            ItemStack stack = ctx.getEntity().getItemStackFromSlot(EntityEquipmentSlot.fromString(slot.get(ctx)));
+            if (!stack.getItem().getRegistryName().toString().equals(item.get(ctx))) return false;
+            if (count != null && stack.getCount() != count.get(ctx)) return false;
             if (damage != null && stack.getItemDamage() != stack.getItemDamage()) return false;
-            if (nbt != null &! JsonToNBT.getTagFromJson(nbt.get(entity)).equals(stack.getTagCompound())) return false;
+            if (nbt != null &! JsonToNBT.getTagFromJson(nbt.get(ctx)).equals(stack.getTagCompound())) return false;
             return true;
         } catch (Exception e) {}
         return false;
     }
 
-    public ItemStack createStack(EntityLiving entity) {
+    public ItemStack createStack(SpawnContext ctx) {
         try {
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(this.item.get(entity)));
-            int count = this.count == null ? 1 : this.count.get(entity);
-            int damage = this.damage == null ? 0 : this.damage.get(entity);
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(this.item.get(ctx)));
+            int count = this.count == null ? 1 : this.count.get(ctx);
+            int damage = this.damage == null ? 0 : this.damage.get(ctx);
             ItemStack stack = new ItemStack(item, count, damage);
-            if (nbt != null) stack.setTagCompound(JsonToNBT.getTagFromJson(nbt.get(entity)));
+            if (nbt != null) stack.setTagCompound(JsonToNBT.getTagFromJson(nbt.get(ctx)));
             return stack;
         } catch (Exception e) {}
         return ItemStack.EMPTY;
     }
 
-    public void setItem(EntityLiving entity) {
+    public void setItem(SpawnContext ctx) {
         try {
-            entity.setItemStackToSlot(EntityEquipmentSlot.fromString(slot.get(entity)), createStack(entity));
+            ctx.getEntity().setItemStackToSlot(EntityEquipmentSlot.fromString(slot.get(ctx)), createStack(ctx));
         } catch (Exception e) {}
     }
 

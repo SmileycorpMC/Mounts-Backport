@@ -2,11 +2,13 @@ package net.smileycorp.mounts.config.data.values;
 
 import com.google.gson.JsonObject;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.smileycorp.atlas.api.data.DataType;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.DataRegistry;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 public class PosValue<T extends Number & Comparable<T>> implements Value<T> {
 
@@ -19,9 +21,10 @@ public class PosValue<T extends Number & Comparable<T>> implements Value<T> {
 	}
 
 	@Override
-	public T get(EntityLiving entity) {
+	public T get(SpawnContext ctx) {
 		if (!type.isNumber()) return null;
-		EnumFacing.Axis axis = EnumFacing.Axis.byName(value.get(entity));
+		EnumFacing.Axis axis = EnumFacing.Axis.byName(value.get(ctx));
+		EntityLiving entity = ctx.getEntity();
 		if (type == DataType.INT || type == DataType.LONG) {
 			BlockPos pos = entity.getPosition();
 			switch (axis) {

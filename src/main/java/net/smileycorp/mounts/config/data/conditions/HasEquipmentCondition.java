@@ -1,9 +1,9 @@
 package net.smileycorp.mounts.config.data.conditions;
 
 import com.google.gson.JsonElement;
-import net.minecraft.entity.EntityLiving;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.ItemReference;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 public class HasEquipmentCondition implements Condition {
 
@@ -14,7 +14,7 @@ public class HasEquipmentCondition implements Condition {
 	}
 
 	@Override
-	public boolean apply(EntityLiving entity) {
+	public boolean ctx(SpawnContext entity) {
 		return item.matches(entity);
 	}
 

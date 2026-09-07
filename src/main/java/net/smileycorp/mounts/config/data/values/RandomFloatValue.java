@@ -1,10 +1,10 @@
 package net.smileycorp.mounts.config.data.values;
 
 import com.google.gson.JsonObject;
-import net.minecraft.entity.EntityLiving;
 import net.smileycorp.atlas.api.data.DataType;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.ParsingException;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 public class RandomFloatValue<T extends Number & Comparable<T>> implements Value<T> {
 
@@ -15,8 +15,8 @@ public class RandomFloatValue<T extends Number & Comparable<T>> implements Value
 	}
 
 	@Override
-	public T get(EntityLiving entity) {
-		return type.cast(entity.getRNG().nextFloat());
+	public T get(SpawnContext entity) {
+		return type.cast(entity.getRandom().nextFloat());
 	}
 
 	public static <T extends Comparable<T>> Value<T> deserialize(JsonObject obj, DataType<T> type) {

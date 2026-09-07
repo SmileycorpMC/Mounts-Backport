@@ -2,10 +2,10 @@ package net.smileycorp.mounts.config.data.conditions;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
-import net.minecraft.entity.EntityLiving;
 import net.smileycorp.atlas.api.data.LogicalOperation;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.DataRegistry;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 import java.util.List;
 
@@ -20,9 +20,9 @@ public class LogicalCondition implements Condition {
 	}
 
 	@Override
-	public boolean apply(EntityLiving entity) {
+	public boolean ctx(SpawnContext entity) {
 		boolean result = false;
-		for (Condition condition : conditions) result = operation.apply(result, condition.apply(entity));
+		for (Condition condition : conditions) result = operation.apply(result, condition.ctx(entity));
 		return result;
 	}
 

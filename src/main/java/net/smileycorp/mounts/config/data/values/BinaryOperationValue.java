@@ -1,12 +1,12 @@
 package net.smileycorp.mounts.config.data.values;
 
 import com.google.gson.JsonObject;
-import net.minecraft.entity.EntityLiving;
 import net.smileycorp.atlas.api.data.BinaryOperation;
 import net.smileycorp.atlas.api.data.DataType;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.DataRegistry;
 import net.smileycorp.mounts.config.data.ParsingException;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 public class BinaryOperationValue<T extends Number & Comparable<T>> implements Value<T> {
     
@@ -20,7 +20,7 @@ public class BinaryOperationValue<T extends Number & Comparable<T>> implements V
     }
 
     @Override
-    public T get(EntityLiving entity) {
+    public T get(SpawnContext entity) {
         return (T) operation.apply(value1.get(entity), value2.get(entity));
     }
 

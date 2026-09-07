@@ -1,11 +1,11 @@
 package net.smileycorp.mounts.config.data.conditions;
 
 import com.google.gson.JsonElement;
-import net.minecraft.entity.EntityLiving;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 public interface Condition {
 	
-	boolean apply(EntityLiving entity);
+	boolean ctx(SpawnContext entity);
 
 	interface Deserializer {
 

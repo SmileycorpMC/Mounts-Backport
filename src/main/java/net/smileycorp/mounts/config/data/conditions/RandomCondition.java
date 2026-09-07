@@ -1,10 +1,10 @@
 package net.smileycorp.mounts.config.data.conditions;
 
 import com.google.gson.JsonElement;
-import net.minecraft.entity.EntityLiving;
 import net.smileycorp.atlas.api.data.DataType;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.DataRegistry;
+import net.smileycorp.mounts.config.data.SpawnContext;
 import net.smileycorp.mounts.config.data.values.Value;
 
 public class RandomCondition implements Condition {
@@ -16,8 +16,8 @@ public class RandomCondition implements Condition {
 	}
 
 	@Override
-	public boolean apply(EntityLiving entity) {
-		return entity.getRNG().nextFloat() <= chance.get(entity);
+	public boolean ctx(SpawnContext entity) {
+		return entity.getRandom().nextFloat() <= chance.get(entity);
 	}
 
 	public static RandomCondition deserialize(JsonElement json) {

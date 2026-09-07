@@ -2,10 +2,10 @@ package net.smileycorp.mounts.config.data.values;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
-import net.minecraft.entity.EntityLiving;
 import net.smileycorp.atlas.api.data.DataType;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.DataRegistry;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 import java.util.List;
 
@@ -22,8 +22,8 @@ public class RandomListValue<T extends Comparable<T>> implements Value<T> {
     }
 
     @Override
-    public T get(EntityLiving entity) {
-        return values.get(entity.getRNG().nextInt(values.size())).get(entity);
+    public T get(SpawnContext entity) {
+        return values.get(entity.getRandom().nextInt(values.size())).get(entity);
     }
 
 }

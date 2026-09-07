@@ -3,11 +3,11 @@ package net.smileycorp.mounts.config.data.values;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.entity.EntityLiving;
 import net.smileycorp.atlas.api.data.DataType;
 import net.smileycorp.atlas.api.recipe.WeightedOutputs;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.DataRegistry;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 import java.util.Map;
 
@@ -20,8 +20,8 @@ public class WeightedRandomValue<T extends Comparable<T>> implements Value<T> {
     }
 
     @Override
-    public T get(EntityLiving entity) {
-        return outputs.getResult(entity.getRNG()).get(entity);
+    public T get(SpawnContext entity) {
+        return outputs.getResult(entity.getRandom()).get(entity);
     }
     
     public static <T extends Comparable<T>> WeightedRandomValue<T> deserialize(JsonObject json, DataType<T> type) {

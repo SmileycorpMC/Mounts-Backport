@@ -2,12 +2,12 @@ package net.smileycorp.mounts.config.data.conditions;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.smileycorp.atlas.api.data.Either;
 import net.smileycorp.mounts.common.MountsLogger;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 import java.util.List;
 
@@ -20,8 +20,8 @@ public class BiomeCondition implements Condition {
 	}
 
 	@Override
-	public boolean apply(EntityLiving entity) {
-		Biome biome = entity.world.getBiome(entity.getPosition());
+	public boolean ctx(SpawnContext entity) {
+		Biome biome = entity.getWorld().getBiome(entity.getPos());
 		for (Either<BiomeDictionary.Type, ResourceLocation> either : biomes) if (either.map(t -> BiomeDictionary.hasType(biome, t),
 				biome.getRegistryName()::equals)) return true;
 		return false;

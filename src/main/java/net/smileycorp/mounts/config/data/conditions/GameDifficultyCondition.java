@@ -1,11 +1,11 @@
 package net.smileycorp.mounts.config.data.conditions;
 
 import com.google.gson.JsonElement;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.world.EnumDifficulty;
 import net.smileycorp.atlas.api.data.DataType;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.DataRegistry;
+import net.smileycorp.mounts.config.data.SpawnContext;
 import net.smileycorp.mounts.config.data.values.Value;
 
 import java.util.Locale;
@@ -19,9 +19,9 @@ public class GameDifficultyCondition implements Condition {
 	}
 
 	@Override
-	public boolean apply(EntityLiving entity) {
+	public boolean ctx(SpawnContext entity) {
 		Comparable<?> value = difficulty.get(entity);
-		return entity.world.getDifficulty() == (value instanceof String ? EnumDifficulty.valueOf(((String) value).toUpperCase(Locale.US))
+		return entity.getWorld().getDifficulty() == (value instanceof String ? EnumDifficulty.valueOf(((String) value).toUpperCase(Locale.US))
 				: EnumDifficulty.getDifficultyEnum((Integer) value));
 	}
 

@@ -1,9 +1,9 @@
 package net.smileycorp.mounts.config.data.conditions;
 
 import com.google.gson.JsonElement;
-import net.minecraft.entity.EntityLiving;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.DataRegistry;
+import net.smileycorp.mounts.config.data.SpawnContext;
 
 public class NotCondition implements Condition {
 
@@ -14,8 +14,8 @@ public class NotCondition implements Condition {
 	}
 
 	@Override
-	public boolean apply(EntityLiving entity) {
-		return !condition.apply(entity);
+	public boolean ctx(SpawnContext entity) {
+		return !condition.ctx(entity);
 	}
 
 	public static NotCondition deserialize(JsonElement json) {
