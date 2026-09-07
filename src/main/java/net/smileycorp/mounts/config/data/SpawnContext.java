@@ -2,6 +2,7 @@ package net.smileycorp.mounts.config.data;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -9,10 +10,12 @@ import java.util.Random;
 public class SpawnContext {
 
     private final EntityLiving entity;
+    private final DifficultyInstance difficulty;
     private State state = State.ACTIVE;
 
-    public SpawnContext(EntityLiving entity) {
+    public SpawnContext(EntityLiving entity, DifficultyInstance difficulty) {
         this.entity = entity;
+        this.difficulty = difficulty;
     }
 
     public EntityLiving getEntity() {
@@ -29,6 +32,10 @@ public class SpawnContext {
 
     public BlockPos getPos() {
         return entity.getPosition();
+    }
+
+    public DifficultyInstance getDifficulty() {
+        return difficulty;
     }
 
     public void resetState() {

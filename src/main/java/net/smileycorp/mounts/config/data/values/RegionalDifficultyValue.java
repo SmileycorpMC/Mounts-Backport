@@ -16,7 +16,7 @@ public class RegionalDifficultyValue <T extends Number & Comparable<T>> implemen
 
 	@Override
 	public T get(SpawnContext entity) {
-		return type.cast(entity.getWorld().getDifficultyForLocation(entity.getPos()).getClampedAdditionalDifficulty());
+		return type.cast(entity.getDifficulty().getClampedAdditionalDifficulty());
 	}
 
 	public static <T extends Comparable<T>> Value<T> deserialize(JsonObject obj, DataType<T> type) {
