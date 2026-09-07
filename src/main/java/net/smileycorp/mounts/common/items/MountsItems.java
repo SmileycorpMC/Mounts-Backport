@@ -18,10 +18,10 @@ public class MountsItems {
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         IForgeRegistry<Item> registry = event.getRegistry();
+        registry.register(JOCKEY_SPAWNER);
+        registry.register(LEATHER_HORSE_ARMOUR);
         SpearRegistry.INSTANCE.loadData();
         SpearRegistry.INSTANCE.getSpears().forEach(registry::register);
-        registry.register(LEATHER_HORSE_ARMOUR);
-        registry.register(JOCKEY_SPAWNER);
     }
 
 }
