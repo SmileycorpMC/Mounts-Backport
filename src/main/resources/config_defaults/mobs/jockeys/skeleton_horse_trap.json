@@ -1,0 +1,16 @@
+{
+	"_commment": [
+		"set not to spawn naturally, exists so that the mod generates a spawn egg for them"
+	]
+	"entity_type": "minecraft:skeleton_horse",
+	"spawn_chance": 0,
+	"spawn_egg": true,
+	"functions": [
+		{
+			"function": "set_nbt",
+			"value": "{SkeletonTrap:1}",
+			"conditions": []
+		}
+	],
+	"conditions": []
+}

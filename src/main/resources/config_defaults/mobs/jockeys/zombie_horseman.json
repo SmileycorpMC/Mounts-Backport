@@ -1,0 +1,35 @@
+{
+	"entity_type": "minecraft:zombie_horse",
+	"spawn_chance": 1,
+	"spawn_egg": true,
+	"functions": [
+		{
+			"function": "add_passenger",
+			"value": {
+				"type": "minecraft:zombie",
+				"functions": [
+					{
+						"function": "set_equipment",
+						"value": {
+							"item": "mounts:iron_spear",
+							"slot": "mainhand"
+						},
+						"conditions": []
+					}
+				]
+			},
+			"conditions": []
+		},
+		{
+			"function": "set_nbt",
+			"value": "{Age:-2147483648}",
+			"conditions": [
+				{
+					"condition": "nbt",
+					"value": "{Passengers:[{IsBaby:1}]}"
+				}
+			]
+		}
+	],
+	"conditions": []
+}

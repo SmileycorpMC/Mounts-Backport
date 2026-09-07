@@ -1,0 +1,72 @@
+{
+	"entity_type": [
+		"minecraft:zombie",
+		"minecraft:zombie_villager",
+		"minecraft:husk"
+	],
+	"spawn_chance": 1,
+	"spawn_egg": true,
+	"functions": [
+		{
+			"function": "set_equipment",
+			"value": {
+				"item": "mounts:iron_spear",
+				"slot": "mainhand"
+			},
+			"conditions": []
+		},
+		{
+			"function": "enchant_equipment",
+			"value": {
+				"slot": "mainhand",
+				"level": {
+					"name": "add",
+					"value1": 5,
+					"value2": {
+						"name": "cast",
+						"type": "float"
+ 						"value": {
+							"name": "multiply",
+							"value1": {
+								"name": "regional_difficulty"
+							},
+							"value2": {
+								"name": "random",
+								"value": 18
+							}
+						}
+				}
+			},
+			"conditions": [
+				{
+					"condition": "comparison",
+					"type": "float",
+					"operation": "<",
+					"value1": {
+						"name": "random_float"
+					},
+					"value2": {
+						"name": "multiply",
+						"value1": {
+							"name": "regional_difficulty"
+						},
+						"value2": 0.25
+					}
+				}
+			]
+		}
+	],
+	"conditions": [
+		{
+			"condition": "has_equipment",
+			"value": {
+				"item": "minecraft:iron_sword",
+				"slot": "mainhand"
+			}
+		},
+		{
+			"condition": "random",
+			"value": 0.5
+		}
+	]
+}

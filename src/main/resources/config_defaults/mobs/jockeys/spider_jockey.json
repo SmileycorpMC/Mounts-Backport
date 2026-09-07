@@ -1,0 +1,92 @@
+{
+	"_commment": [
+		"replaces and fixes the vanilla feature",
+		"bedrock feature: cave spider jockeys",
+		"removed 16w20a / current bedrock feature: spider jockeys have an 80% chance to be ridden by a biome specific skeleton variant"
+	]
+	"entity_type": [
+		"minecraft:spider",
+		"minecraft:cave_spider"
+	],
+	"spawn_chance": 0.01,
+	"spawn_egg": true,
+	"functions": [
+		{
+			"conditions": [],
+			"function": "add_passenger",
+			"value": {
+				"functions": [],
+				"type": {
+					"default": "minecraft:skeleton",
+					"name": "case",
+					"value": [
+						{
+							"conditions": [
+								{
+									"condition": "biome",
+									"value": "NETHER"
+								},
+								{
+									"condition": "random",
+									"value": 0.8
+								}
+							],
+							"value": "minecraft:wither_skeleton"
+						},
+						{
+							"conditions": [
+								{
+									"condition": "biome",
+									"value": "SNOWY"
+								},
+								{
+									"condition": "not",
+									"value": {
+										"condition": "biome",
+										"value": "FOREST"
+									}
+								},
+								{
+									"condition": "random",
+									"value": 0.8
+								}
+							],
+							"value": "minecraft:stray"
+						},
+						{
+							"conditions": [
+								{
+									"condition": "biome",
+									"value": "SANDY"
+								},
+								{
+									"condition": "random",
+									"value": 0.8
+								}
+							],
+							"value": "mounts:parched"
+						},
+						{
+							"conditions": [
+								{
+									"condition": "mod_installed",
+									"value": "deeperdepths"
+								},
+								{
+									"condition": "biome",
+									"value": "SWAMP"
+								},
+								{
+									"condition": "random",
+									"value": 0.8
+								}
+							],
+							"value": "deeperdepths:bogged"
+						}
+					]
+				}
+			}
+		}
+	],
+	"conditions": [],
+}
