@@ -3,7 +3,6 @@ package net.smileycorp.mounts.config;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -18,6 +17,7 @@ public class EntityConfig {
 
     public static EntityAttributesEntry camel;
     public static EntityAttributesEntry camelHusk;
+    public static float camelHuskCarpetChance;
     public static EntityAttributesEntry parched;
     public static EntityAttributesEntry skeletonHorseman;
     public static boolean zombieHorsesBurnInSunlight;
@@ -31,6 +31,7 @@ public class EntityConfig {
             config.load();
             camel = new EntityAttributesEntry(config, "camel", 0.20000000298023224D, 16, 0, 31, 0, 0, 0);
             camelHusk = new EntityAttributesEntry(config, "camel husk", 0.20000000298023224D, 16, 0, 31, 0, 0, 0);
+            camelHuskCarpetChance = config.getFloat("carpet chance", "camel husk", 0.005f, 0, 1, "Chance for a camel husk to spawn wearing a carpet.");
             parched = new EntityAttributesEntry(config, "parched", 0.25, 32, 2, 16, 0, 0, 0);
             skeletonHorseman = new EntityAttributesEntry(config, "skeleton horseman", 0.25, 32, 2, 20, 0, 0, 0);
             zombieHorsesBurnInSunlight = config.getBoolean("burnInSunlight", "zombie horse", true, "Do zombie horses burn in sunlight? (Vanilla 1.21.11 feature)");

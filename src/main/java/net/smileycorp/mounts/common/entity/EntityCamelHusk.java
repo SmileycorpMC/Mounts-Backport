@@ -4,8 +4,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockSand;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -13,6 +15,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.smileycorp.mounts.common.MountsLootTables;
 import net.smileycorp.mounts.common.MountsSoundEvents;
@@ -45,6 +48,12 @@ public class EntityCamelHusk extends EntityCamel
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         EntityConfig.camelHusk.applyAttributes(this);
+    }
+
+    @Nullable
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
+        if (rand.nextFloat() <= EntityConfig.camelHuskCarpetChance) setDecorItemStack(new ItemStack(Blocks.CARPET, 1, rand.nextInt(16)));
+        return super.onInitialSpawn(difficulty, livingdata);
     }
 
     //camel husks can despawn like hostile mobs if a player doesn't ride them
