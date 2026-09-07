@@ -16,7 +16,7 @@ public class RandomCondition implements Condition {
 	}
 
 	@Override
-	public boolean ctx(SpawnContext entity) {
+	public boolean ctx(SpawnContext ctx) {
 		return entity.getRandom().nextFloat() <= chance.get(entity);
 	}
 

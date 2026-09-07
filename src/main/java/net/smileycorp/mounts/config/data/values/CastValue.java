@@ -17,7 +17,7 @@ public class CastValue<T extends Comparable<T>, V extends Comparable<V>> impleme
     }
 
     @Override
-    public T get(SpawnContext entity) {
+    public T get(SpawnContext ctx) {
         return type.cast(value.get(entity));
     }
     

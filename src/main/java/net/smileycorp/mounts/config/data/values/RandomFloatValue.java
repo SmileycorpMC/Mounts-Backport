@@ -15,7 +15,7 @@ public class RandomFloatValue<T extends Number & Comparable<T>> implements Value
 	}
 
 	@Override
-	public T get(SpawnContext entity) {
+	public T get(SpawnContext ctx) {
 		return type.cast(entity.getRandom().nextFloat());
 	}
 

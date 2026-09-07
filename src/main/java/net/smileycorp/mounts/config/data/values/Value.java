@@ -6,7 +6,7 @@ import net.smileycorp.mounts.config.data.SpawnContext;
 
 public interface Value<T extends Comparable<T>> {
 
-    T get(SpawnContext entity);
+    T get(SpawnContext ctx);
 
     interface Deserializer {
 

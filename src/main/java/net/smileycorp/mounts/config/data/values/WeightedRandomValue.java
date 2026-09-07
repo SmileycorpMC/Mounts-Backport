@@ -20,7 +20,7 @@ public class WeightedRandomValue<T extends Comparable<T>> implements Value<T> {
     }
 
     @Override
-    public T get(SpawnContext entity) {
+    public T get(SpawnContext ctx) {
         return outputs.getResult(entity.getRandom()).get(entity);
     }
     

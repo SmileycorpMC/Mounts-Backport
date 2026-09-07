@@ -20,7 +20,7 @@ public class BinaryOperationValue<T extends Number & Comparable<T>> implements V
     }
 
     @Override
-    public T get(SpawnContext entity) {
+    public T get(SpawnContext ctx) {
         return (T) operation.apply(value1.get(entity), value2.get(entity));
     }
 

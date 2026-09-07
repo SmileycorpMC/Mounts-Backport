@@ -15,7 +15,7 @@ public class RegionalDifficultyValue <T extends Number & Comparable<T>> implemen
 	}
 
 	@Override
-	public T get(SpawnContext entity) {
+	public T get(SpawnContext ctx) {
 		return type.cast(entity.getDifficulty().getClampedAdditionalDifficulty());
 	}
 

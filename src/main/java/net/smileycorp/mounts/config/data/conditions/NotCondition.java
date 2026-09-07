@@ -14,7 +14,7 @@ public class NotCondition implements Condition {
 	}
 
 	@Override
-	public boolean ctx(SpawnContext entity) {
+	public boolean ctx(SpawnContext ctx) {
 		return !condition.ctx(entity);
 	}
 

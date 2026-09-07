@@ -20,7 +20,7 @@ public class LogicalCondition implements Condition {
 	}
 
 	@Override
-	public boolean ctx(SpawnContext entity) {
+	public boolean ctx(SpawnContext ctx) {
 		boolean result = false;
 		for (Condition condition : conditions) result = operation.apply(result, condition.ctx(entity));
 		return result;

@@ -9,7 +9,7 @@ import net.smileycorp.mounts.config.data.SpawnContext;
 public class GaussianValue implements Value<Double> {
 
 	@Override
-	public Double get(SpawnContext entity) {
+	public Double get(SpawnContext ctx) {
 		return entity.getRandom().nextGaussian();
 	}
 

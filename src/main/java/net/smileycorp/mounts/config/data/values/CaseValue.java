@@ -24,7 +24,7 @@ public class CaseValue<T extends Comparable<T>> implements Value<T> {
     }
 
     @Override
-    public T get(SpawnContext entity) {
+    public T get(SpawnContext ctx) {
         for (Pair<Value<T>, List<Condition>> pair : values) if (DataRegistry.canApply(entity, pair.getSecond())) return pair.getFirst().get(entity);
         return defaultValue.get(entity);
     }

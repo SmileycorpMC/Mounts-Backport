@@ -5,7 +5,7 @@ import net.smileycorp.mounts.config.data.SpawnContext;
 
 public interface Condition {
 	
-	boolean ctx(SpawnContext entity);
+	boolean ctx(SpawnContext ctx);
 
 	interface Deserializer {
 
