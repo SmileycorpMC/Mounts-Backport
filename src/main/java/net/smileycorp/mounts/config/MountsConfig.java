@@ -45,11 +45,11 @@ public class MountsConfig {
             jockeyMountableEntitiesStr = config.getStringList("mountableEntities", "jockeys",
                     new String[] {"minecraft:chicken", "minecraft:sheep", "minecraft:pig", "minecraft:cow", "minecraft:mushroom_cow", "minecraft:ocelot", "minecraft:wolf",
                             "minecraft:horse", "minecraft:donkey", "minecraft:mule", "minecraft:zombie_horse", "minecraft:skeleton_horse", "minecraft:spider", "minecraft:cave_spider",
-                            "minecraft:zombie", "minecraft:zombie_villager", "minecraft:husk", "minecraft:zombie_pigman", "oe:zombie_nautilius", "futuremc:panda", "nb:strider"},
-                    "Which entities can baby zombies seek out and ride?");
+                            "minecraft:zombie", "minecraft:zombie_villager", "minecraft:husk", "minecraft:zombie_pigman", "oe:zombie_nautilius", "futuremc:panda", "nb:strider", "nb:piglin_zombie"},
+                    "Which entities can jockeys seek out and ride?");
             jockeyRiderEntitiesStr = config.getStringList("riderEntities", "jockeys",
-                    new String[] {"minecraft:zombie", "minecraft:zombie_villager", "minecraft:husk", "minecraft:zombie_pigman", "oe:drowned", "oe:pickled"},
-                    "Which entities can baby zombies seek out and ride?");
+                    new String[] {"minecraft:zombie", "minecraft:zombie_villager", "minecraft:husk", "minecraft:zombie_pigman", "oe:drowned", "oe:pickled", "nb:piglin_zombie"},
+                    "Which entities can spawn with jockey ai?");
             spiderJockeyChance = config.getFloat( "spiderJockeyChance", "spiders", 0.01f, 0, 1, "Chance for a spider to spawn as a skeleton jockey.");
             caveSpiderJockeyChance = config.getFloat( "caveSpiderJockeyChance", "spiders", 0.01f, 0, 1, "Chance for a cave spider to spawn as a skeleton jockey. (Bedrock feature)");
             witherSkeletonChance = config.getFloat( "witherSkeletonChance", "spiders", 0.8f, 0, 1, "Chance for a skeleton jockey to be replaced with a stray jockey in nether biomes. (Bedrock feature)");
