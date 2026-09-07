@@ -2,7 +2,6 @@ package net.smileycorp.mounts.config.data.values;
 
 import com.google.gson.JsonObject;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.smileycorp.atlas.api.data.DataType;

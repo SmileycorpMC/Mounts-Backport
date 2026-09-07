@@ -1,7 +1,6 @@
 package net.smileycorp.mounts.config.data;
 
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 

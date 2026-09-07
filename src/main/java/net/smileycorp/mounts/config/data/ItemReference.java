@@ -1,7 +1,6 @@
 package net.smileycorp.mounts.config.data;
 
 import com.google.gson.JsonObject;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
