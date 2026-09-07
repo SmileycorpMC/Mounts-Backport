@@ -4,10 +4,15 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import net.smileycorp.atlas.api.data.*;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTTagCompound;
+import net.smileycorp.atlas.api.data.BinaryOperation;
+import net.smileycorp.atlas.api.data.DataType;
+import net.smileycorp.atlas.api.data.LogicalOperation;
+import net.smileycorp.atlas.api.data.UnaryOperation;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.conditions.*;
-import net.smileycorp.mounts.config.data.functions.SpawnFunction;
+import net.smileycorp.mounts.config.data.functions.*;
 import net.smileycorp.mounts.config.data.values.*;
 
 import java.util.List;
@@ -18,10 +23,12 @@ public class DataRegistry {
 
 	private static final Map<String, Value.Deserializer> VALUES = Maps.newHashMap();
 	private static final Map<String, Condition.Deserializer> CONDITIONS = Maps.newHashMap();
+	private static final Map<String, SpawnFunction.Deserializer> FUNCTIONS = Maps.newHashMap();
 
 	public static void init() {
 		registerValues();
 		registerConditions();
+		registerFunctions();
 	}
 
 	private static void registerValues() {
@@ -55,12 +62,33 @@ public class DataRegistry {
 		registerCondition("has_equipment", HasEquipmentCondition::deserialize);
 	}
 
+	public static void registerFunctions() {
+		registerFunction("multiple", MultipleFunction::deserialize);
+		registerFunction("random", RandomFunction::deserialize);
+		registerFunction("weighted_random", WeightedRandomFunction::deserialize);
+		registerFunction("break", json -> SpawnContext::breakScript);
+		registerFunction("return", json -> SpawnContext::returnScript);
+		registerFunction("spawn_entity", SpawnEntityFunction::deserialize);
+		registerFunction("add_mount", AddMountFunction::deserialize);
+		registerFunction("add_passenger", AddPassengerFunction::deserialize);
+		registerFunction("set_equipment", SetEquipmentFunction::deserialize);
+		registerFunction("enchant_equipment", EnchantEquipmentFunction::deserialize);
+		registerFunction("set_x", SetPosXFunction::deserialize);
+		registerFunction("set_y", SetPosYFunction::deserialize);
+		registerFunction("set_z", SetPosZFunction::deserialize);
+		registerFunction("set_nbt", SetNBTFunction::deserialize);
+	}
+
 	public static void registerValue(String name, Value.Deserializer value) {
 		VALUES.put(name, value);
 	}
 
 	public static void registerCondition(String name, Condition.Deserializer condition) {
 		CONDITIONS.put(name, condition);
+	}
+
+	public static void registerFunction(String name, SpawnFunction.Deserializer function) {
+		FUNCTIONS.put(name, function);
 	}
 
 	public static <T extends Comparable<T>> Value<T> readValue(DataType<T> type, JsonElement json) throws Exception {
@@ -97,9 +125,32 @@ public class DataRegistry {
 		return null;
 	}
 
+	public static SpawnFunction readFunction(JsonObject json) throws Exception {
+		if (json.has("function")) {
+			try {
+				String name = json.get("function").getAsString();
+				SpawnFunction.Deserializer deserializer = FUNCTIONS.get(name);
+				if (deserializer == null) throw new NullPointerException("condition " + name + " is not registered");
+				return deserializer.apply(json.get("value"));
+			} catch (Exception e) {
+				MountsLogger.logError("Failed to read function " + json, e);
+			}
+		}
+		return null;
+	}
+
 	public static boolean canApply(SpawnContext ctx, List<Condition> conditions) {
 		for (Condition condition : conditions) if (!condition.ctx(ctx)) return false;
 		return true;
+	}
+
+	public static NBTTagCompound parseNBT(String name, String nbtstring) {
+		try {
+			return JsonToNBT.getTagFromJson(nbtstring);
+		} catch (Exception e) {
+			MountsLogger.logError("Error parsing nbt for " + name + " " + e.getMessage(), e);
+		}
+		return null;
 	}
 
 }
