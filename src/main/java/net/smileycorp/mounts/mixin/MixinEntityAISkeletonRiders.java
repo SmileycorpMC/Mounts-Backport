@@ -19,7 +19,7 @@ public class MixinEntityAISkeletonRiders {
     private int count = 0;
 
     @Inject(at = @At(value = "HEAD"), method = "createSkeleton", cancellable = true)
-    public void hordes$createSkeleton(DifficultyInstance difficulty, AbstractHorse horse, CallbackInfoReturnable<EntitySkeleton> callback) {
+    public void mounts$createSkeleton(DifficultyInstance difficulty, AbstractHorse horse, CallbackInfoReturnable<EntitySkeleton> callback) {
         if (!MountsConfig.improvedHorseTraps) return;
         EntitySkeletonRider entity = new EntitySkeletonRider(horse.world);
         entity.onInitialSpawn(difficulty, new EntitySkeletonRider.HorseTrapSpawnData());

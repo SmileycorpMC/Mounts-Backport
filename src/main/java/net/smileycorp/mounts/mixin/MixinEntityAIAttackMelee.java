@@ -22,7 +22,7 @@ public class MixinEntityAIAttackMelee {
     @Shadow protected int attackTick;
 
     @Inject(at = @At("HEAD"), method = "getAttackReachSqr", cancellable = true)
-    public void hordes$getAttackReachSqr(EntityLivingBase attackTarget, CallbackInfoReturnable<Double> callback) {
+    public void mounts$getAttackReachSqr(EntityLivingBase attackTarget, CallbackInfoReturnable<Double> callback) {
         ItemStack stack = attacker.getHeldItemMainhand();
         Item item = stack.getItem();
         if (!(item instanceof ItemSpear)) return;
