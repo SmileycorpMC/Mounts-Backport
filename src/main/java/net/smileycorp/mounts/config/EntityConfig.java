@@ -46,9 +46,9 @@ public class EntityConfig {
     }
 
     public static boolean canCharge(EntityLivingBase entity) {
-        MountsLogger.blankLine();
-        MountsLogger.heading("LOADING CHARGING ENTITIES");
         if (chargingEntities == null) {
+            MountsLogger.blankLine();
+            MountsLogger.heading("LOADING CHARGING ENTITIES");
             chargingEntities = Lists.newArrayList();
             for (String str : chargingEntitiesStr) {
                 try {

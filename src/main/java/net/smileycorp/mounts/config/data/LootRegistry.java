@@ -1,6 +1,7 @@
 package net.smileycorp.mounts.config.data;
 
 
+import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.smileycorp.mounts.common.MountsLogger;
@@ -25,6 +26,7 @@ public class LootRegistry extends JsonLoader {
     protected void dataInit() {
         MountsLogger.blankLine();
         MountsLogger.heading("LOADING LOOT TABLE DATA");
+        lootTableEntries = Lists.newArrayList();
     }
 
     @Override
