@@ -3,8 +3,8 @@ package net.smileycorp.mounts.config.data.mobs.values;
 import com.google.gson.JsonObject;
 import net.smileycorp.atlas.api.data.DataType;
 import net.smileycorp.mounts.common.MountsLogger;
-import net.smileycorp.mounts.config.data.mobs.DataRegistry;
 import net.smileycorp.mounts.config.data.ParsingException;
+import net.smileycorp.mounts.config.data.mobs.DataRegistry;
 import net.smileycorp.mounts.config.data.mobs.SpawnContext;
 
 public class RandomRangeValue<T extends Number & Comparable<T>> implements Value<T> {

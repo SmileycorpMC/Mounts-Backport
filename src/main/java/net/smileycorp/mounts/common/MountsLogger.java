@@ -1,7 +1,6 @@
 package net.smileycorp.mounts.common;
 
 import com.google.common.collect.Lists;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;

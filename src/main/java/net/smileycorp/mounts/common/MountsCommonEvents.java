@@ -35,9 +35,9 @@ import net.smileycorp.mounts.common.entity.EntitySkeletonRider;
 import net.smileycorp.mounts.common.entity.Jockeys;
 import net.smileycorp.mounts.common.entity.ai.EntityAIAttackSpear;
 import net.smileycorp.mounts.config.EntityConfig;
-import net.smileycorp.mounts.config.data.LootRegistry;
 import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.MountsConfig;
+import net.smileycorp.mounts.config.data.LootRegistry;
 
 @Mod.EventBusSubscriber
 public class MountsCommonEvents
