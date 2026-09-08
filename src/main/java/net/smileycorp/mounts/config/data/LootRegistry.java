@@ -1,16 +1,13 @@
 package net.smileycorp.mounts.config.data;
 
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.LootTableEntry;
-import net.smileycorp.mounts.config.data.mounts.JsonLoader;
+import net.smileycorp.mounts.config.data.mobs.JsonLoader;
 
 import java.io.File;
-import java.io.FileReader;
 import java.util.List;
 import java.util.Map;
 

@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.smileycorp.mounts.api.ItemSpear;
 import net.smileycorp.mounts.api.SpearDefinition;
 import net.smileycorp.mounts.common.MountsLogger;
-import net.smileycorp.mounts.config.data.mounts.JsonLoader;
+import net.smileycorp.mounts.config.data.mobs.JsonLoader;
 
 import java.io.File;
 import java.util.Collection;

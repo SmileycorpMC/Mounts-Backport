@@ -1,0 +1,59 @@
+package net.smileycorp.mounts.config.data.mobs.functions;
+
+import com.google.common.collect.Lists;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import net.smileycorp.atlas.api.data.Pair;
+import net.smileycorp.mounts.common.MountsLogger;
+import net.smileycorp.mounts.config.data.mobs.DataRegistry;
+import net.smileycorp.mounts.config.data.mobs.SpawnContext;
+import net.smileycorp.mounts.config.data.mobs.conditions.Condition;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class RandomFunction implements SpawnFunction{
+
+    private final List<Pair<SpawnFunction, List<Condition>>> functions;
+
+    public RandomFunction(List<Pair<SpawnFunction, List<Condition>>> functions) {
+        this.functions = functions;
+    }
+    
+    @Override
+    public void apply(SpawnContext ctx) {
+        List<SpawnFunction> functions = this.functions.stream().filter(pair -> DataRegistry.canApply(ctx, pair.getSecond()))
+                .map(Pair::getFirst).collect(Collectors.toList());
+        if (functions.isEmpty()) return;
+        functions.get(ctx.getRandom().nextInt(functions.size())).apply(ctx);
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < functions.size(); i++) {
+            builder.append(functions.get(i).toString());
+            if (i < functions.size() - 1) builder.append(" && ");
+        }
+        return super.toString() + "[" + builder + "]";
+    }
+    
+    public static RandomFunction deserialize(JsonElement json) {
+        try {
+            List<Pair<SpawnFunction, List<Condition>>> functions = Lists.newArrayList();
+            for (JsonElement element : json.getAsJsonArray()) {
+                JsonObject obj = element.getAsJsonObject();
+                SpawnFunction function = DataRegistry.readFunction(obj);
+                List<Condition> conditions = Lists.newArrayList();
+                if (obj.has("conditions")) obj.get("conditions").getAsJsonArray().forEach(condition ->
+                        conditions.add(DataRegistry.readCondition(condition.getAsJsonObject())));
+                functions.add(Pair.of(function, conditions));
+            }
+            return new RandomFunction(functions);
+        } catch (Exception e) {
+            MountsLogger.logError("Error reading function random", e);
+            return null;
+        }
+    }
+
+}
