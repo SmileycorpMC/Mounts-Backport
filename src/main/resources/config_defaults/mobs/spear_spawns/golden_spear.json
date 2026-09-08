@@ -5,7 +5,7 @@
 		"nb:piglin_zombie"
 	],
 	"spawn_chance": 1,
-	"spawn_egg": true,
+	"spawn_egg": false,
 	"functions": [
 		{
 			"function": "set_equipment",
