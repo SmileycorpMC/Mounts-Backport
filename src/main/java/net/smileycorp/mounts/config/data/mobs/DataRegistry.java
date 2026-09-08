@@ -141,7 +141,7 @@ public class DataRegistry {
 	}
 
 	public static boolean canApply(SpawnContext ctx, List<Condition> conditions) {
-		for (Condition condition : conditions) if (!condition.ctx(ctx)) return false;
+		for (Condition condition : conditions) if (!condition.apply(ctx)) return false;
 		return true;
 	}
 

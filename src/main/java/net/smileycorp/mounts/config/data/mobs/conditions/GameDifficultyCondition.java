@@ -19,7 +19,7 @@ public class GameDifficultyCondition implements Condition {
 	}
 
 	@Override
-	public boolean ctx(SpawnContext ctx) {
+	public boolean apply(SpawnContext ctx) {
 		Comparable<?> value = difficulty.get(ctx);
 		return ctx.getWorld().getDifficulty() == (value instanceof String ? EnumDifficulty.valueOf(((String) value).toUpperCase(Locale.US))
 				: EnumDifficulty.getDifficultyEnum((Integer) value));

@@ -14,8 +14,8 @@ public class NotCondition implements Condition {
 	}
 
 	@Override
-	public boolean ctx(SpawnContext ctx) {
-		return !condition.ctx(ctx);
+	public boolean apply(SpawnContext ctx) {
+		return !condition.apply(ctx);
 	}
 
 	public static NotCondition deserialize(JsonElement json) {

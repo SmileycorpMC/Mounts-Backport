@@ -17,7 +17,7 @@ public class ModInstalledCondition implements Condition {
     }
     
     @Override
-    public boolean ctx(SpawnContext ctx) {
+    public boolean apply(SpawnContext ctx) {
         return Loader.isModLoaded(value.get(ctx));
     }
     

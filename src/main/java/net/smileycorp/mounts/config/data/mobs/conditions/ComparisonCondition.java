@@ -22,7 +22,7 @@ public class ComparisonCondition<T extends Comparable<T>> implements Condition {
 	}
 
 	@Override
-	public boolean ctx(SpawnContext ctx) {
+	public boolean apply(SpawnContext ctx) {
 		return operation.apply(value1.get(ctx), value2.get(ctx));
 	}
 

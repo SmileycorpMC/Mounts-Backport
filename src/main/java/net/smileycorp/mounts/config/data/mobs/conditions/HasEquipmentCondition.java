@@ -14,7 +14,7 @@ public class HasEquipmentCondition implements Condition {
 	}
 
 	@Override
-	public boolean ctx(SpawnContext ctx) {
+	public boolean apply(SpawnContext ctx) {
 		return item.matches(ctx);
 	}
 

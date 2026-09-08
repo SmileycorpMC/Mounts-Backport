@@ -16,7 +16,7 @@ public class RegionalDifficultyCondition implements Condition {
 	}
 
 	@Override
-	public boolean ctx(SpawnContext ctx) {
+	public boolean apply(SpawnContext ctx) {
 		return ctx.getDifficulty().getClampedAdditionalDifficulty() > difficulty.get(ctx);
 	}
 

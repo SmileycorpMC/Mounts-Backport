@@ -20,9 +20,9 @@ public class LogicalCondition implements Condition {
 	}
 
 	@Override
-	public boolean ctx(SpawnContext ctx) {
+	public boolean apply(SpawnContext ctx) {
 		boolean result = false;
-		for (Condition condition : conditions) result = operation.apply(result, condition.ctx(ctx));
+		for (Condition condition : conditions) result = operation.apply(result, condition.apply(ctx));
 		return result;
 	}
 

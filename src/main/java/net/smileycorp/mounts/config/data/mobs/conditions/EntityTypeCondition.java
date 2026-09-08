@@ -19,7 +19,7 @@ public class EntityTypeCondition implements Condition {
 	}
 
 	@Override
-	public boolean ctx(SpawnContext ctx) {
+	public boolean apply(SpawnContext ctx) {
 		EntityEntry entry = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(getter.get(ctx)));
 		return entry != null && entry.getEntityClass() == ctx.getEntity().getClass();
 	}
