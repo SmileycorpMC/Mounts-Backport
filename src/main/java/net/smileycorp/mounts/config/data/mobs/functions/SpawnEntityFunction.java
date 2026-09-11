@@ -36,10 +36,10 @@ public class SpawnEntityFunction implements SpawnFunction {
             World world = ctx.getWorld();
             EntityLiving entity = ctx.getEntity();
             EntityLiving newEntity = (EntityLiving) entry.newInstance(world);
-            entity.setPosition(entity.posX, entity.posY, entity.posZ);
+            newEntity.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, 0);
             newEntity.onInitialSpawn(ctx.getDifficulty(), null);
+            world.spawnEntity(newEntity);
             applyFunctions(ctx, newEntity);
-            newEntity.world.spawnEntity(newEntity);
         } catch (Exception e) {}
     }
 
@@ -53,16 +53,17 @@ public class SpawnEntityFunction implements SpawnFunction {
     
     public static SpawnEntityFunction deserialize(JsonElement json) {
         try {
+            JsonObject obj = json.getAsJsonObject();
             List<Pair<SpawnFunction, List<Condition>>> functions = Lists.newArrayList();
-            for (JsonElement element : json.getAsJsonArray()) {
-                JsonObject obj = element.getAsJsonObject();
-                SpawnFunction function =  DataRegistry.readFunction(obj);
+            for (JsonElement element : obj.get("functions").getAsJsonArray()) {
+                JsonObject obj1 = element.getAsJsonObject();
+                SpawnFunction function =  DataRegistry.readFunction(obj1);
                 List<Condition> conditions = Lists.newArrayList();
-                if (obj.has("conditions")) obj.get("conditions").getAsJsonArray().forEach(condition ->
+                if (obj1.has("conditions")) obj1.get("conditions").getAsJsonArray().forEach(condition ->
                         conditions.add(DataRegistry.readCondition(condition.getAsJsonObject())));
                 functions.add(Pair.of(function, conditions));
             }
-            return new SpawnEntityFunction(DataRegistry.readValue(DataType.STRING, json), functions);
+            return new SpawnEntityFunction(DataRegistry.readValue(DataType.STRING, obj.get("type")), functions);
         } catch(Exception e) {
             MountsLogger.logError("Incorrect parameters for function spawn_entity", e);
         }

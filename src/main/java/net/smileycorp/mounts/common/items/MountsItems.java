@@ -12,13 +12,13 @@ import net.smileycorp.mounts.config.data.SpearRegistry;
 public class MountsItems {
 
 
-    public static final ItemJockeySpawner JOCKEY_SPAWNER = new ItemJockeySpawner();
+    public static final ItemMountsSpawner SPAWNER = new ItemMountsSpawner();
     public static final ItemLeatherHorseArmour LEATHER_HORSE_ARMOUR = new ItemLeatherHorseArmour();
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         IForgeRegistry<Item> registry = event.getRegistry();
-        registry.register(JOCKEY_SPAWNER);
+        registry.register(SPAWNER);
         registry.register(LEATHER_HORSE_ARMOUR);
         SpearRegistry.INSTANCE.loadData();
         SpearRegistry.INSTANCE.getSpears().forEach(registry::register);

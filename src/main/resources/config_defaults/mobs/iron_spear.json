@@ -24,7 +24,7 @@
 					"value1": 5,
 					"value2": {
 						"name": "cast",
-						"type": "float"
+						"type": "float",
  						"value": {
 							"name": "multiply",
 							"value1": {
@@ -35,22 +35,26 @@
 								"value": 18
 							}
 						}
-				}
+					}
+				},
+				"allow_treasure": false
 			},
 			"conditions": [
 				{
 					"condition": "comparison",
-					"type": "float",
-					"operation": "<",
-					"value1": {
-						"name": "random_float"
-					},
-					"value2": {
-						"name": "multiply",
+					"value": {
+						"type": "float",
+						"operation": "<",
 						"value1": {
-							"name": "regional_difficulty"
+							"name": "random_float"
 						},
-						"value2": 0.25
+						"value2": {
+							"name": "multiply",
+							"value1": {
+								"name": "regional_difficulty"
+							},
+							"value2": 0.25
+						}
 					}
 				}
 			]

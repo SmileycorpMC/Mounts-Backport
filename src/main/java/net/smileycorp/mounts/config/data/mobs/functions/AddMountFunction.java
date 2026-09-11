@@ -27,16 +27,17 @@ public class AddMountFunction extends SpawnEntityFunction {
     
     public static AddMountFunction deserialize(JsonElement json) {
         try {
+            JsonObject obj = json.getAsJsonObject();
             List<Pair<SpawnFunction, List<Condition>>> functions = Lists.newArrayList();
-            for (JsonElement element : json.getAsJsonArray()) {
-                JsonObject obj = element.getAsJsonObject();
-                SpawnFunction function =  DataRegistry.readFunction(obj);
+            for (JsonElement element : obj.get("functions").getAsJsonArray()) {
+                JsonObject obj1 = element.getAsJsonObject();
+                SpawnFunction function =  DataRegistry.readFunction(obj1);
                 List<Condition> conditions = Lists.newArrayList();
-                if (obj.has("conditions")) obj.get("conditions").getAsJsonArray().forEach(condition ->
+                if (obj1.has("conditions")) obj1.get("conditions").getAsJsonArray().forEach(condition ->
                         conditions.add(DataRegistry.readCondition(condition.getAsJsonObject())));
                 functions.add(Pair.of(function, conditions));
             }
-            return new AddMountFunction(DataRegistry.readValue(DataType.STRING, json), functions);
+            return new AddMountFunction(DataRegistry.readValue(DataType.STRING, obj.get("type")), functions);
         } catch(Exception e) {
             MountsLogger.logError("Incorrect parameters for function add_mount", e);
         }

@@ -23,11 +23,11 @@ import net.smileycorp.mounts.common.entity.MountsEntities;
 import net.smileycorp.mounts.common.network.PacketHandler;
 import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.config.GeneralConfig;
-import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.MountsConfig;
-import net.smileycorp.mounts.config.data.ConfigDataManager;
 import net.smileycorp.mounts.config.data.LootRegistry;
 import net.smileycorp.mounts.config.data.SpearRegistry;
+import net.smileycorp.mounts.config.data.mobs.DataRegistry;
+import net.smileycorp.mounts.config.data.mobs.MobDataLoader;
 
 import java.util.List;
 import java.util.Set;
@@ -43,8 +43,10 @@ public class CommonProxy
 		GeneralConfig.syncConfig(event);
 		EntityConfig.syncConfig(event);
 		MountsConfig.syncConfig(event);
+		DataRegistry.init();
 		SpearRegistry.init(event);
 		LootRegistry.init(event);
+		MobDataLoader.init(event);
 		MountsEntities.registerEntities();
 		MountsEntities.registerEntitySpawns();
 		MountsLootTables.registerLootTables();
@@ -84,6 +86,7 @@ public class CommonProxy
 			entries.add(new Biome.SpawnListEntry(EntitySkeleton.class, weight, skeleton.minGroupCount, skeleton.maxGroupCount));
 			entries.add(new Biome.SpawnListEntry(EntityParched.class, weight, skeleton.minGroupCount, skeleton.maxGroupCount));
 		}
+		MobDataLoader.INSTANCE.loadData();
 	}
 	
 	public void serverStart(FMLServerStartingEvent event) {}

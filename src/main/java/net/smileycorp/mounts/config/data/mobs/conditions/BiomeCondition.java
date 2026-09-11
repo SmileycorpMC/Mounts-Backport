@@ -22,8 +22,11 @@ public class BiomeCondition implements Condition {
 	@Override
 	public boolean apply(SpawnContext ctx) {
 		Biome biome = ctx.getWorld().getBiome(ctx.getPos());
-		for (Either<BiomeDictionary.Type, ResourceLocation> either : biomes) if (either.map(t -> BiomeDictionary.hasType(biome, t),
-				biome.getRegistryName()::equals)) return true;
+		for (Either<BiomeDictionary.Type, ResourceLocation> either : biomes) {
+			either.accept(MountsLogger::logInfo, MountsLogger::logInfo);
+			if (either.map(t -> BiomeDictionary.hasType(biome, t),
+					biome.getRegistryName()::equals)) return true;
+		}
 		return false;
 	}
 

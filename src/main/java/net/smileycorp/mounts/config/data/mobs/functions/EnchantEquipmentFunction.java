@@ -6,6 +6,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.smileycorp.atlas.api.data.DataType;
+import net.smileycorp.atlas.api.util.Func;
 import net.smileycorp.mounts.common.MountsLogger;
 import net.smileycorp.mounts.config.data.mobs.DataRegistry;
 import net.smileycorp.mounts.config.data.mobs.SpawnContext;
@@ -34,8 +35,10 @@ public class EnchantEquipmentFunction implements SpawnFunction {
     public static EnchantEquipmentFunction deserialize(JsonElement json) {
         try {
             JsonObject obj = json.getAsJsonObject();
+            Value<Boolean> allowTreasure = obj.has("allow_treasure") ?
+                    DataRegistry.readValue(DataType.BOOLEAN, obj.get("allow_treasure")) : Func::False;
             return new EnchantEquipmentFunction(DataRegistry.readValue(DataType.STRING, obj.get("slot")),
-                    DataRegistry.readValue(DataType.INT, obj.get("level")), DataRegistry.readValue(DataType.BOOLEAN, obj.get("allow_treasure")));
+                    DataRegistry.readValue(DataType.INT, obj.get("level")), allowTreasure);
         } catch(Exception e) {
             MountsLogger.logError("Incorrect parameters for function set_equipment", e);
         }

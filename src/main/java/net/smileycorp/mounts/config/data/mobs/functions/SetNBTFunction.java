@@ -21,7 +21,7 @@ public class SetNBTFunction implements SpawnFunction {
         String str = value.get(ctx);
         try {
             NBTTagCompound nbt = DataRegistry.parseNBT(ctx.getEntity().toString(), str);
-            ctx.getEntity().readFromNBT(nbt);
+            ctx.getEntity().readEntityFromNBT(nbt);
         } catch (Exception e) {
             MountsLogger.logError("Failed loading nbt " + str + " for entity " + ctx.getEntity(), e);
         }

@@ -14,13 +14,13 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.smileycorp.mounts.common.Constants;
-import net.smileycorp.mounts.common.entity.Jockeys;
+import net.smileycorp.mounts.config.data.SpawnEggRegistry;
 
-public class ItemJockeySpawner extends Item {
+public class ItemMountsSpawner extends Item {
 
-    public ItemJockeySpawner() {
-        setRegistryName(Constants.loc("jockey_spawner"));
-        setUnlocalizedName("jockey_spawner");
+    public ItemMountsSpawner() {
+        setRegistryName(Constants.loc("spawner"));
+        setUnlocalizedName("spawner");
         setCreativeTab(CreativeTabs.MISC);
         setHasSubtypes(true);
         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, (source, stack) -> {
@@ -36,16 +36,16 @@ public class ItemJockeySpawner extends Item {
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        Jockeys.Type type = Jockeys.Type.get(stack.getMetadata());
+        SpawnEggRegistry.EggEntry entry = SpawnEggRegistry.getEntry(stack.getMetadata());
         StringBuilder builder = new StringBuilder(I18n.translateToLocal("item.monsterPlacer.name").trim());
-        if (type != null) builder.append(" " + I18n.translateToLocal(type.getUnlocalizedName()).trim());
+        if (entry != null) builder.append(" " + I18n.translateToLocal(entry.getName()).trim());
         return builder.toString();
     }
 
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
         if (!isInCreativeTab(tab)) return;
-        for (int i = 0; i < Jockeys.Type.values().length; i++) items.add(new ItemStack(this, 1, i));
+        for (int i = 0; i < SpawnEggRegistry.getCount(); i++) items.add(new ItemStack(this, 1, i));
     }
 
     @Override
@@ -66,14 +66,14 @@ public class ItemJockeySpawner extends Item {
     }
 
     public EntityLiving spawnEntity(World world, int metadata, double x, double y, double z) {
-        Jockeys.Type type = Jockeys.Type.get(metadata);
-        return type == null ? null : Jockeys.spawn(world, type, x, y, z);
+        SpawnEggRegistry.EggEntry entry = SpawnEggRegistry.getEntry(metadata);
+        return entry == null ? null : entry.spawn(world, x, y, z);
     }
 
     public static int getColours(ItemStack stack, int tintIndex) {
-        Jockeys.Type type = Jockeys.Type.get(stack.getMetadata());
+        SpawnEggRegistry.EggEntry type = SpawnEggRegistry.getEntry(stack.getMetadata());
         if (type == null) return -1;
-        EntityList.EntityEggInfo eggInfo = EntityList.ENTITY_EGGS.get(type.getEntity());
+        EntityList.EntityEggInfo eggInfo = type.getEggInfo();
         return eggInfo == null ? -1 : tintIndex == 0 ? eggInfo.primaryColor : eggInfo.secondaryColor;
     }
 

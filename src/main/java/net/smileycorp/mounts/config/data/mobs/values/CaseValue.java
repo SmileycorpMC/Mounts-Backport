@@ -25,20 +25,24 @@ public class CaseValue<T extends Comparable<T>> implements Value<T> {
 
     @Override
     public T get(SpawnContext ctx) {
-        for (Pair<Value<T>, List<Condition>> pair : values) if (DataRegistry.canApply(ctx, pair.getSecond())) return pair.getFirst().get(ctx);
+        for (Pair<Value<T>, List<Condition>> pair : values) {
+            MountsLogger.logInfo(pair.getSecond());
+            if (DataRegistry.canApply(ctx, pair.getSecond())) return pair.getFirst().get(ctx);
+        }
         return defaultValue.get(ctx);
     }
     
     public static <T extends Comparable<T>> CaseValue<T> deserialize(JsonObject obj, DataType<T> type) {
         try {
             Value<T> defaultValue = DataRegistry.readValue(type, obj.get("default"));
+            if (defaultValue == null) throw new NullPointerException("Must have a valid default value.");
             List<Pair<Value<T>, List<Condition>>> values = Lists.newArrayList();
-            for (JsonElement element : obj.get("values").getAsJsonArray()) {
+            for (JsonElement element : obj.get("value").getAsJsonArray()) {
                 if (!element.isJsonObject()) throw new ParsingException("Value " + element + " must be a json object");
                 JsonObject json = element.getAsJsonObject();
                 Value<T> value = DataRegistry.readValue(type, json.get("value"));
                 List<Condition> conditions = Lists.newArrayList();
-                if (obj.has("conditions")) obj.get("conditions").getAsJsonArray().forEach(condition ->
+                if (json.has("conditions")) json.get("conditions").getAsJsonArray().forEach(condition ->
                         conditions.add(DataRegistry.readCondition(condition.getAsJsonObject())));
                 values.add(Pair.of(value, conditions));
             }

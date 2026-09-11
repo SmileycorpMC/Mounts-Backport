@@ -33,7 +33,7 @@ public class DataRegistry {
 	}
 
 	private static void registerValues() {
-		registerValue("cast", CaseValue::deserialize);
+		registerValue("cast", CastValue::deserialize);
 		registerValue("case", CaseValue::deserialize);
 		registerValue("weighted_random", WeightedRandomValue::deserialize);
 		UnaryOperation.values().forEach(operation -> registerValue(operation.getName(),
@@ -61,6 +61,7 @@ public class DataRegistry {
 		registerCondition("game_difficulty", GameDifficultyCondition::deserialize);
 		registerCondition("random", RandomCondition::deserialize);
 		registerCondition("has_equipment", HasEquipmentCondition::deserialize);
+		registerCondition("nbt", NBTCondition::deserialize);
 	}
 
 	public static void registerFunctions() {
@@ -113,9 +114,9 @@ public class DataRegistry {
 	}
 
 	public static Condition readCondition(JsonObject json) {
-		if (json.has("name")) {
+		if (json.has("condition")) {
 			try {
-				String name = json.get("name").getAsString();
+				String name = json.get("condition").getAsString();
 				Condition.Deserializer deserializer = CONDITIONS.get(name);
 				if (deserializer == null) throw new NullPointerException("condition " + name + " is not registered");
 				return deserializer.apply(json.get("value"));
@@ -131,7 +132,7 @@ public class DataRegistry {
 			try {
 				String name = json.get("function").getAsString();
 				SpawnFunction.Deserializer deserializer = FUNCTIONS.get(name);
-				if (deserializer == null) throw new NullPointerException("condition " + name + " is not registered");
+				if (deserializer == null) throw new NullPointerException("function " + name + " is not registered");
 				return deserializer.apply(json.get("value"));
 			} catch (Exception e) {
 				MountsLogger.logError("Failed to read function " + json, e);
@@ -141,7 +142,10 @@ public class DataRegistry {
 	}
 
 	public static boolean canApply(SpawnContext ctx, List<Condition> conditions) {
-		for (Condition condition : conditions) if (!condition.apply(ctx)) return false;
+		for (Condition condition : conditions) if (!condition.apply(ctx)) {
+			MountsLogger.logInfo(condition);
+			return false;
+		}
 		return true;
 	}
 
