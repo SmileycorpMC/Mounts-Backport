@@ -10,8 +10,12 @@ import java.util.Random;
 public class SpawnContext {
 
     private final EntityLiving entity;
-    private final DifficultyInstance difficulty;
+    private DifficultyInstance difficulty;
     private State state = State.ACTIVE;
+
+    public SpawnContext(EntityLiving entity) {
+        this.entity = entity;
+    }
 
     public SpawnContext(EntityLiving entity, DifficultyInstance difficulty) {
         this.entity = entity;
@@ -35,6 +39,7 @@ public class SpawnContext {
     }
 
     public DifficultyInstance getDifficulty() {
+        if (difficulty == null) difficulty = entity.world.getDifficultyForLocation(entity.getPosition());
         return difficulty;
     }
 

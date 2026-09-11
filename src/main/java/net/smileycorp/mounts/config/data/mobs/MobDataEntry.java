@@ -1,6 +1,7 @@
 package net.smileycorp.mounts.config.data.mobs;
 
 import com.google.common.collect.Lists;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.smileycorp.atlas.api.data.Pair;
@@ -35,6 +36,11 @@ public class MobDataEntry {
 
     public boolean hasSpawnEgg() {
         return spawnEgg;
+    }
+
+    public boolean canApply(EntityLiving entity) {
+        for (EntityEntry entry : entities) if (entity.getClass() == entry.getEntityClass()) return true;
+        return false;
     }
 
     public boolean canSpawn(SpawnContext ctx) {

@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
@@ -84,6 +85,17 @@ public class MobDataLoader extends JsonLoader {
         }
         entities.add(entity);
         MountsLogger.logInfo("Added entity type " + loc + ".");
+    }
+
+    public void applyData(EntityLiving entity) {
+        SpawnContext ctx = new SpawnContext(entity);
+        for (MobDataEntry entry : mobEntries.values()) {
+            if (!entry.canApply(entity)) continue;
+            if (!entry.canSpawn(ctx)) continue;
+            entry.applyFunctions(ctx);
+            return;
+        }
+
     }
 
     public MobDataEntry get(String data) {

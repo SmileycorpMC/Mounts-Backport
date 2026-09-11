@@ -32,12 +32,12 @@ import net.smileycorp.mounts.common.capabilities.Piercing;
 import net.smileycorp.mounts.common.enchantments.MountsEnchantments;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 import net.smileycorp.mounts.common.entity.EntitySkeletonRider;
-import net.smileycorp.mounts.common.entity.Jockeys;
 import net.smileycorp.mounts.common.entity.ai.EntityAIAttackSpear;
 import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.MountsConfig;
 import net.smileycorp.mounts.config.data.LootRegistry;
+import net.smileycorp.mounts.config.data.mobs.MobDataLoader;
 
 @Mod.EventBusSubscriber
 public class MountsCommonEvents
@@ -96,18 +96,8 @@ public class MountsCommonEvents
 
     @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
     public static void spawnMob(LivingSpawnEvent.SpecialSpawn event) {
-        EntityLivingBase entity = event.getEntityLiving();
-        World world = entity.world;
-        if (MountsConfig.isJockeyRider(entity) && entity.getRNG().nextFloat() > MountsConfig.jockeyChance)
-            Jockeys.spawnBabyZombieJockey((EntityLiving) entity, false);
-        else if (entity.getClass() == EntityCaveSpider.class && world.rand.nextFloat() <= MountsConfig.caveSpiderJockeyChance)
-            Jockeys.spawnSpiderJockey((EntityLiving) entity, false);
-        else if (entity.getClass() == EntityHusk.class && world.rand.nextFloat() <= MountsConfig.huskJockeyChance)
-            Jockeys.spawnCamelHusk((EntityLiving) entity, false);
-        else if (entity.getClass() == EntityZombieHorse.class)
-            Jockeys.spawnZombieHorseman((EntityLiving) entity, false);
-        else return;
-        event.setCanceled(true);
+        if (!(event.getEntityLiving() instanceof EntityLiving)) return;
+        MobDataLoader.INSTANCE.applyData((EntityLiving) event.getEntityLiving());
     }
 
     @SubscribeEvent
