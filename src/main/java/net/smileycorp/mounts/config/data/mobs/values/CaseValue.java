@@ -25,10 +25,7 @@ public class CaseValue<T extends Comparable<T>> implements Value<T> {
 
     @Override
     public T get(SpawnContext ctx) {
-        for (Pair<Value<T>, List<Condition>> pair : values) {
-            MountsLogger.logInfo(pair.getSecond());
-            if (DataRegistry.canApply(ctx, pair.getSecond())) return pair.getFirst().get(ctx);
-        }
+        for (Pair<Value<T>, List<Condition>> pair : values) if (DataRegistry.canApply(ctx, pair.getSecond())) return pair.getFirst().get(ctx);
         return defaultValue.get(ctx);
     }
     
