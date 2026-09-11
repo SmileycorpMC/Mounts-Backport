@@ -235,8 +235,8 @@ public class ItemSpear extends Item {
         Vec3d eyes = new Vec3d(user.posX, user.posY + user.getEyeHeight(), user.posZ);
         Vec3d look = user.getLookVec();
         /* Controls the distance the attack box is shifted away from the user. */
-        Vec3d minVec = eyes.add(look.scale(2));
-        Vec3d maxVec = eyes.add(look.scale(4.5));
+        Vec3d minVec = eyes.add(look.scale(min));
+        Vec3d maxVec = eyes.add(look.scale(max));
         RayTraceResult result = user.world.rayTraceBlocks(minVec, maxVec, false, true, false);
         if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) maxVec = result.hitVec;
         Vec3d distance = minVec.subtract(maxVec);
