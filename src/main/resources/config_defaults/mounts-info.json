@@ -1,0 +1,12 @@
+{
+	"comments": [
+		"used for determining if the config folder is up to date",
+		"deleting this will regenerate your config folder",
+		"for modpack authors: setting the value to -1 will prevent the config folder regenerating when updating the mod",
+		"(keep an eye on base changes, in case they are needed for your pack when updating)"
+	],
+	"mod_version": "1.0.0-DEV",
+	"data_version": 0,
+	"dev_version": 1,
+	"changes": []
+}
