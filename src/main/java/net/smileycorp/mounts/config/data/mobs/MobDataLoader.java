@@ -69,6 +69,7 @@ public class MobDataLoader extends JsonLoader {
                 MountsLogger.logError("Failed loading mob data entry " + name, error(e, name));
                 MountsLogger.blankLine();
             }
+            MountsLogger.blankLine();
         }
     }
 
