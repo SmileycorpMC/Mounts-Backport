@@ -74,11 +74,11 @@ public class EntityAIAttackSpear extends EntityAIBase
 
             return;
         }
-        /* If too close to the Player, go into retreat. */
-        if (distSq <= 8)
+        /* If too close to the Player OR the spear went through the entire attack range, go into retreat. */
+        if (distSq <= 1 || attacker.getItemInUseCount() < attacker.getItemInUseMaxCount())
         {
-            retreatTimer = 25;
-            attacker.getNavigator().clearPath();
+            retreatTimer = 40;
+            /* No need to clear the path, as that just makes an unnatural break in movement. */
             return;
         }
 
