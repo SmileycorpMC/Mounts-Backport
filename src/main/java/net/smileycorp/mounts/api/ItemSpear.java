@@ -30,7 +30,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.smileycorp.mounts.api.event.SpearChargeHitEvent;
 import net.smileycorp.mounts.api.event.SpearJabEvent;
+import net.smileycorp.mounts.client.particle.MountsParticle;
 import net.smileycorp.mounts.common.Constants;
+import net.smileycorp.mounts.common.Mounts;
 import net.smileycorp.mounts.common.MountsSoundEvents;
 import net.smileycorp.mounts.common.advancements.MountsAdvancements;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearAnimation;
@@ -215,6 +217,14 @@ public class ItemSpear extends Item {
                 PacketHandler.NETWORK_INSTANCE.sendToAllTracking(new SpearRecoilAnimMessage(user.getEntityId()), new NetworkRegistry.TargetPoint(user.world.provider.getDimension(), user.posX, user.posY, user.posZ, 0.0D));
             }
 
+            if (!user.world.isRemote)
+            {
+                Vec3d lookVector = user.getLookVec().scale(definition.getMaxRange() - definition.getMinRange());
+                Mounts.proxy.spawnParticle( MountsParticle.SPEAR_PIERCE, user.world,
+                        user.posX + lookVector.x * 1.2D, user.posY + user.getEyeHeight() + lookVector.y * 1.2D, user.posZ + lookVector.z * 1.2D,
+                        lookVector.x * 0.2F, lookVector.y * 0.2F, lookVector.z * 0.2F );
+            }
+
             if (stack.getItem() instanceof ItemSpear) user.world.playSound(null, user.posX, user.posY, user.posZ, ((ItemSpear) stack.getItem()).getHitSound(), user.getSoundCategory(), 1, 1);
             if (user instanceof EntityPlayerMP) MountsAdvancements.CHARGE_PIERCE_ENTITIES.trigger((EntityPlayerMP) user, piercing.getPiercedEntities().size());
         }
@@ -245,7 +255,7 @@ public class ItemSpear extends Item {
         double width = 0.25;
         AxisAlignedBB box = new AxisAlignedBB(minVec.x - width, minVec.y - width, minVec.z - width,
             minVec.x + width, minVec.y + width, minVec.z + width).contract(distance.x, distance.y, distance.z);
-        renderHitboxParticles(user, box);
+        //renderHitboxParticles(user, box);
         List<Entity> entities = Lists.newArrayList();
         for (EntityLivingBase entity : user.world.getEntitiesWithinAABB(EntityLivingBase.class, box)) {
             Vec3d pos = new Vec3d(entity.posX, entity.posY + entity.height * 0.5, entity.posZ);
@@ -264,7 +274,7 @@ public class ItemSpear extends Item {
     }
 
     private static double getSpeed(Vec3d look, Entity entity) {
-        //if (entity.isRiding() & !(entity instanceof EntityPlayer)) entity = entity.getLowestRidingEntity();
+        if (entity.isRiding() & !(entity instanceof EntityPlayer)) entity = entity.getLowestRidingEntity();
         double motionX, motionY, motionZ;
         //use our capability for players because players don't actually move in 1.12
         // the server just teleports them to the correct position when it receives a movement packet
@@ -274,9 +284,9 @@ public class ItemSpear extends Item {
             motionY = entity.posY - capCharge.getPrevY();
             motionZ = entity.posZ - capCharge.getPrevZ();
         } else {
-            motionX = entity.posX - entity.lastTickPosX;
-            motionY = entity.posY - entity.lastTickPosY;
-            motionZ = entity.posZ - entity.lastTickPosZ;
+            motionX = entity.motionX;
+            motionY = entity.motionY;
+            motionZ = entity.motionZ;
         }
         //the look vec is used here to make sure that we're only using the entities speed in the exact direction they are facing
         return look.x * motionX * 20d + look.y * motionY * 20d + look.z * motionZ * 20d;

@@ -2,6 +2,7 @@ package net.smileycorp.mounts.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.entity.Render;
@@ -10,6 +11,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -20,12 +22,15 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.smileycorp.mounts.client.entity.layer.LayerLeatherHorseArmour;
 import net.smileycorp.mounts.client.entity.models.ModelScalableHorse;
 import net.smileycorp.mounts.client.entity.render.RenderCamel;
 import net.smileycorp.mounts.client.entity.render.RenderCamelHusk;
 import net.smileycorp.mounts.client.entity.render.RenderParched;
 import net.smileycorp.mounts.client.entity.render.RenderSkeletonRider;
+import net.smileycorp.mounts.client.particle.MountsParticle;
+import net.smileycorp.mounts.client.particle.ParticleSpearPierce;
 import net.smileycorp.mounts.common.CommonProxy;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.entity.*;
@@ -99,5 +104,26 @@ public class ClientProxy extends CommonProxy {
 		//if (swingProgress > 0) System.out.println(swingProgress + "," + arm.rotateAngleX);
 		//LayerHeldItem
 	}
-	
+
+	@Override
+	public void spawnParticle(MountsParticle particle, double posX, double posY, double posZ, double speedX, double speedY, double speedZ, int... parameters)
+	{
+		Minecraft minecraft = Minecraft.getMinecraft();
+		World world = minecraft.world;
+		minecraft.effectRenderer.addEffect(getFactory(particle.getId()).createParticle(0, world, posX, posY, posZ, speedX, speedY, speedZ, parameters));
+	}
+
+	/**
+	 * This is used by the Particle Spawning as an ID system for out Particles.
+	 * We do not require Ids for Particles, it's just more convenient for sending over packets!
+	 */
+	@SideOnly(Side.CLIENT)
+	public static IParticleFactory getFactory(int particleId)
+	{
+		switch (MountsParticle.fromId(particleId))
+		{
+			default:
+			case SPEAR_PIERCE: return new ParticleSpearPierce.Factory();
+		}
+	}
 }

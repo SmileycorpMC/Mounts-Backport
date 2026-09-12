@@ -5,6 +5,7 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -13,7 +14,9 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.smileycorp.mounts.client.particle.MountsParticle;
 import net.smileycorp.mounts.common.advancements.MountsAdvancements;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearAnimation;
 import net.smileycorp.mounts.common.capabilities.CapabilitySpearMovement;
@@ -21,6 +24,7 @@ import net.smileycorp.mounts.common.capabilities.Piercing;
 import net.smileycorp.mounts.common.entity.EntityParched;
 import net.smileycorp.mounts.common.entity.MountsEntities;
 import net.smileycorp.mounts.common.network.PacketHandler;
+import net.smileycorp.mounts.common.network.SpearSpawnParticleMessage;
 import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.config.GeneralConfig;
 import net.smileycorp.mounts.config.MountsConfig;
@@ -90,5 +94,17 @@ public class CommonProxy
 	}
 	
 	public void serverStart(FMLServerStartingEvent event) {}
-	
+
+	/**
+	 *  Specialized particle method that sends particles on servers
+	 * */
+	public void spawnParticle(MountsParticle particle, World world, double posX, double posY, double posZ, double speedX, double speedY, double speedZ, int... parameters)
+	{
+		if (world.isRemote)
+		{ spawnParticle(particle, posX, posY, posZ, speedX, speedY, speedZ, parameters); }
+		else
+		{ PacketHandler.NETWORK_INSTANCE.sendToAllTracking( new SpearSpawnParticleMessage(particle.getId(), posX, posY, posZ, speedX, speedY, speedZ, parameters), new NetworkRegistry.TargetPoint(world.provider.getDimension(), posX, posY, posZ, 0.0D)); }
+	}
+
+	public void spawnParticle(MountsParticle particle, double posX, double posY, double posZ, double speedX, double speedY, double speedZ, int... parameters) {}
 }

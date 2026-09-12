@@ -16,6 +16,7 @@ public class PacketHandler {
 		NETWORK_INSTANCE.registerMessage(SpearSwingAnimMessage.Handler.class, SpearSwingAnimMessage.class, id++, Side.CLIENT);
 		NETWORK_INSTANCE.registerMessage(SpearAnimSwingServerMessage.Handler.class, SpearAnimSwingServerMessage.class, id++, Side.SERVER);
 		NETWORK_INSTANCE.registerMessage(SpearRecoilAnimMessage.Handler.class, SpearRecoilAnimMessage.class, id++, Side.CLIENT);
+		NETWORK_INSTANCE.registerMessage(SpearSpawnParticleMessage.Handler.class, SpearSpawnParticleMessage.class, id++, Side.CLIENT);
 	}
 
 }
