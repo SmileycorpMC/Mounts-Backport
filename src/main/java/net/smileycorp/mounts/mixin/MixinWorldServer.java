@@ -1,7 +1,7 @@
 package net.smileycorp.mounts.mixin;
 
 import net.minecraft.world.WorldServer;
-import net.smileycorp.mounts.config.MountsConfig;
+import net.smileycorp.mounts.config.EntityConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
@@ -11,7 +11,7 @@ public class MixinWorldServer {
 
     @ModifyConstant(method = "updateBlocks", constant = @Constant(doubleValue = 0.01D))
     public double mounts$updateBlocks$double(double d) {
-        return MountsConfig.horseTrapSpawnChance;
+        return EntityConfig.horseTrapSpawnChance;
     }
 
 }

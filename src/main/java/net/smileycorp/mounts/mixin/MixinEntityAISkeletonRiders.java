@@ -5,7 +5,7 @@ import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.world.DifficultyInstance;
 import net.smileycorp.mounts.common.entity.EntitySkeletonRider;
-import net.smileycorp.mounts.config.MountsConfig;
+import net.smileycorp.mounts.config.EntityConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,7 +20,7 @@ public class MixinEntityAISkeletonRiders {
 
     @Inject(at = @At(value = "HEAD"), method = "createSkeleton", cancellable = true)
     public void mounts$createSkeleton(DifficultyInstance difficulty, AbstractHorse horse, CallbackInfoReturnable<EntitySkeleton> callback) {
-        if (!MountsConfig.improvedHorseTraps) return;
+        if (!EntityConfig.improvedHorseTraps) return;
         EntitySkeletonRider entity = new EntitySkeletonRider(horse.world);
         entity.onInitialSpawn(difficulty, new EntitySkeletonRider.HorseTrapSpawnData());
         entity.setCirclingAngle(count++ * 90);

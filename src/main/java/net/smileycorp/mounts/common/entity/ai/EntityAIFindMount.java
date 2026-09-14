@@ -4,7 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.smileycorp.mounts.config.MountsConfig;
+import net.smileycorp.mounts.config.EntityConfig;
 
 public class EntityAIFindMount extends EntityAIBase {
 
@@ -32,12 +32,12 @@ public class EntityAIFindMount extends EntityAIBase {
         }
         checks--;
         if (target != null) {
-            if (MountsConfig.isJockeyMount(target) && (entity.getDistanceSq(entity) <= 1024)) return true;
+            if (EntityConfig.isJockeyMount(target) && (entity.getDistanceSq(entity) <= 1024)) return true;
             target = null;
         }
         for (Entity e : entity.world.getEntitiesWithinAABBExcludingEntity(entity, entity.getEntityBoundingBox().grow(32, 4, 32))) {
             if (!(e instanceof EntityLiving)) continue;
-            if (!MountsConfig.isJockeyMount((EntityLivingBase) e)) continue;
+            if (!EntityConfig.isJockeyMount((EntityLivingBase) e)) continue;
             double dis = e.getDistanceSq(entity);
             if (dis > 1024) continue;
             if (target == null) target = (EntityLiving) e;

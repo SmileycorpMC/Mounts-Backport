@@ -50,7 +50,7 @@ public class EntitySkeletonRider extends EntitySkeleton {
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        EntityConfig.skeletonHorseman.applyAttributes(this);
+        EntityConfig.skeletonRider.applyAttributes(this);
     }
 
     protected void initEntityAI()
