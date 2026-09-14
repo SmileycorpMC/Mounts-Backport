@@ -205,13 +205,18 @@ public class EntitySkeletonRider extends EntitySkeleton {
 
         protected void resetSwapTimer()
         {
-            nextSwapTime = 100 + rider.getRNG().nextInt(80);
+            /* Riders spend FAR less time in melee than using their bow; So if trying to swap off bow, make next swap happen sooner */
+            if (rider.getHeldItemMainhand().getItem() == Items.BOW) nextSwapTime = 60 + rider.getRNG().nextInt(20);
+            else nextSwapTime = 200 + rider.getRNG().nextInt(50);
             swapCooldown = nextSwapTime;
         }
     }
 
     public static class EntityAIRiderBowCircling extends EntityAIBase
     {
+        /** Controls the distance the Rider will start orbiting their target and drawing their bow. */
+        private static final double orbitDistance = 75;
+
         protected final EntitySkeletonRider rider;
         /* The position the Rider will try moving to */
         private Vec3d targetMovePos;
@@ -252,14 +257,21 @@ public class EntitySkeletonRider extends EntitySkeleton {
         @Override
         public void updateTask()
         {
+            EntityLivingBase target = rider.getAttackTarget();
+            double distFromTarget = rider.getDistanceSq(target);
+
             /* Don't spam the nav every tick, it's wasteful and doesn't even look good!*/
             if(rider.ticksExisted % 10 == 0)
             {
-                findNext();
-                double distance = rider.getDistanceSq(targetMovePos.x, targetMovePos.y, targetMovePos.z);
-                rider.getNavigator().tryMoveToXYZ(targetMovePos.x, targetMovePos.y, targetMovePos.z, distance >= 49 ? 2.5 : 2);
+                if (distFromTarget > orbitDistance)
+                { rider.getNavigator().tryMoveToEntityLiving(rider.getAttackTarget(), 2); }
+                else
+                {
+                    findNext();
+                    rider.getNavigator().tryMoveToXYZ(targetMovePos.x, targetMovePos.y, targetMovePos.z, 2);
+                }
             }
-            EntityLivingBase target = rider.getAttackTarget();
+
             rider.getLookHelper().setLookPositionWithEntity(target, 30.0F, 30.0F);
             rider.setSwingingArms(rider.isHandActive());
 
@@ -273,8 +285,7 @@ public class EntitySkeletonRider extends EntitySkeleton {
 
             if (rider.isHandActive())
             {
-                /* TODO: REPLACE this with a better distance check, this current one does nothing but screw up the bow animations. */
-                if (seeTime < -60 || rider.getDistanceSq(target) >= 49) rider.resetActiveHand();
+                if (seeTime < -60 || distFromTarget >= orbitDistance) rider.resetActiveHand();
                 int useCount = rider.getItemInUseMaxCount();
                 if (canSee && useCount > 20)
                 {
@@ -284,15 +295,14 @@ public class EntitySkeletonRider extends EntitySkeleton {
 
                 }
             }
-            else if (attackTime-- <= 0 && seeTime >= -60) rider.setActiveHand(EnumHand.MAIN_HAND);
+            else if (attackTime-- <= 0 && seeTime >= -60 && distFromTarget < orbitDistance) rider.setActiveHand(EnumHand.MAIN_HAND);
         }
 
-        private void findNext() {
-            rider.setCirclingAngle(rider.getCirclingAngle() - 45);
+        private void findNext()
+        {
             EntityLivingBase target = rider.getAttackTarget();
-            targetMovePos = new Vec3d(target.posX, target.posY, target.posZ)
-                    .add(DirectionUtils.getDirectionVecXZDegrees(rider.circlingAngle).scale(6));
-            //System.out.println(nextPos + "");
+            double angle = rider.getCirclingAngle() - rider.world.getTotalWorldTime() * 3.5;
+            targetMovePos = new Vec3d(target.posX, rider.posY, target.posZ).add(DirectionUtils.getDirectionVecXZDegrees(angle).scale(6));
         }
     }
 }
