@@ -10,6 +10,7 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -29,6 +30,7 @@ import net.smileycorp.mounts.common.enchantments.MountsEnchantments;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 import net.smileycorp.mounts.common.entity.EntitySkeletonRider;
 import net.smileycorp.mounts.common.entity.ai.EntityAIAttackSpear;
+import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
 import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.data.LootRegistry;
@@ -89,10 +91,17 @@ public class MountsCommonEvents
         }
     }
 
-    @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void spawnMob(LivingSpawnEvent.SpecialSpawn event) {
         if (!(event.getEntityLiving() instanceof EntityLiving)) return;
-        MobDataLoader.INSTANCE.applyData((EntityLiving) event.getEntityLiving());
+        EntityLiving entity = (EntityLiving) event.getEntityLiving();
+        if (EntityConfig.isJockeyRider(entity) && entity.getRNG().nextFloat() > EntityConfig.jockeyChance) {
+            DifficultyInstance difficulty = entity.world.getDifficultyForLocation(entity.getPosition());
+            entity.onInitialSpawn(difficulty, null);
+            entity.tasks.addTask(1, new EntityAIFindMount(entity));
+            return;
+        }
+        MobDataLoader.INSTANCE.applyData(entity);
     }
 
     @SubscribeEvent
