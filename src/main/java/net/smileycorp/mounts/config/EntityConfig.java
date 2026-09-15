@@ -1,15 +1,22 @@
 package net.smileycorp.mounts.config;
 
 import com.google.common.collect.Lists;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.registries.GameData;
 import net.smileycorp.atlas.api.config.EntityAttributesEntry;
+import net.smileycorp.atlas.api.data.Pair;
 import net.smileycorp.mounts.common.MountsLogger;
+import net.smileycorp.mounts.config.data.SpawnEggRegistry;
 
 import java.io.File;
 import java.util.List;
@@ -33,7 +40,7 @@ public class EntityConfig {
     private static String[] jockeyMountableEntitiesStr;
     private static List<Class<? extends EntityLiving>> jockeyMountableEntities;
     private static String[] jockeyRiderEntitiesStr;
-    private static List<Class<? extends EntityLiving>> jockeyRiderEntities;
+    private static List<Pair<Class<? extends EntityLiving>, NBTTagCompound>> jockeyRiderEntities;
 
     //spear charging entities
     private static String[] chargingEntitiesStr;
@@ -59,7 +66,7 @@ public class EntityConfig {
                             "minecraft:zombie", "minecraft:zombie_villager", "minecraft:husk", "minecraft:zombie_pigman", "oe:zombie_nautilius", "futuremc:panda", "nb:strider", "nb:piglin_zombie"},
                     "Which entities can jockeys seek out and ride?");
             jockeyRiderEntitiesStr = config.getStringList("riderEntities", "jockeys",
-                    new String[] {"minecraft:zombie", "minecraft:zombie_villager", "minecraft:husk", "minecraft:zombie_pigman", "oe:drowned", "oe:pickled", "nb:piglin_zombie"},
+                    new String[] {"minecraft:zombie{IsBaby:1}", "minecraft:zombie_villager{IsBaby:1}", "minecraft:husk{IsBaby:1}", "minecraft:zombie_pigman{IsBaby:1}", "oe:drowned{IsBaby:1}", "oe:pickled{IsBaby:1}", "nb:piglin_zombie{IsBaby:1}"},
                     "Which entities can spawn with jockey ai?");
             chargingEntitiesStr = config.getStringList("chargingEntities", "general",
                     new String[] {"minecraft:zombie", "minecraft:husk", "minecraft:zombie_pigman", "nb:piglin"},
@@ -132,33 +139,45 @@ public class EntityConfig {
         return false;
     }
 
-    public static boolean isJockeyRider(EntityLivingBase entity) {
-        if (!entity.isChild() || entity.isRiding() || entity.isBeingRidden() |! entity.isEntityAlive()) return false;
-        if (jockeyRiderEntities == null) {
-            jockeyRiderEntities = Lists.newArrayList();
-            for (String str : jockeyRiderEntitiesStr) {
-                try {
-                    Class<?> clazz = null;
-                    //check if it matches the syntax for a registry name
-                    if (str.contains(":")) {
-                        ResourceLocation loc = new ResourceLocation(str);
-                        if (GameData.getEntityRegistry().containsKey(loc)) {
-                            clazz = GameData.getEntityRegistry().getValue(loc).getEntityClass();
-                        } else continue;
-                    }
-                    if (clazz == null) throw new Exception("Entry " + str + " is not in the correct format");
-                    if (EntityLiving.class.isAssignableFrom(clazz)) {
-                        jockeyRiderEntities.add((Class<? extends EntityLiving>) clazz);
-                        MountsLogger.logInfo("Loaded jockey rider entity" + clazz + " as " + clazz.getName());
-                    } else {
-                        throw new Exception("Entity " + str + " is not an instance of EntityLiving");
-                    }
-                } catch (Exception e) {
-                    MountsLogger.logError("Error adding jockey rider entity " + str, e);
+    public static void initJockeyRiders() {
+        jockeyRiderEntities = Lists.newArrayList();
+        for (String str : jockeyRiderEntitiesStr) {
+            try {
+                EntityEntry entry = null;
+                NBTTagCompound nbt = null;
+                int nbtStart = str.indexOf("{");
+                if (nbtStart > -1) {
+                    nbt = JsonToNBT.getTagFromJson(str.substring(nbtStart));
+                    str = str.substring(0, nbtStart);
                 }
+                //check if it matches the syntax for a registry name
+                if (str.contains(":")) {
+                    ResourceLocation loc = new ResourceLocation(str);
+                    if (GameData.getEntityRegistry().containsKey(loc)) {
+                        entry = GameData.getEntityRegistry().getValue(loc);
+                    } else continue;
+                }
+                if (entry == null) throw new Exception("Entry " + str + " is not in the correct format");
+                Class<? extends Entity> clazz = entry.getEntityClass();
+                if (EntityLiving.class.isAssignableFrom(clazz)) {
+                    jockeyRiderEntities.add(Pair.of((Class<? extends EntityLiving>) clazz, nbt));
+                    SpawnEggRegistry.register(new SpawnEggRegistry.JockeyEggEntry("jockey." + str.replace(":", "."), entry, nbt));
+                    MountsLogger.logInfo("Loaded jockey rider entity" + clazz + " as " + clazz.getName());
+                } else {
+                    throw new Exception("Entity " + str + " is not an instance of EntityLiving");
+                }
+            } catch (Exception e) {
+                MountsLogger.logError("Error adding jockey rider entity " + str, e);
             }
         }
-        for (Class<? extends EntityLiving> clazz : jockeyRiderEntities) if (clazz == entity.getClass()) return true;
+    }
+
+    public static boolean isJockeyRider(EntityLivingBase entity) {
+        if (!entity.isChild() || entity.isRiding() || entity.isBeingRidden() |! entity.isEntityAlive()) return false;
+        if (jockeyRiderEntities == null) initJockeyRiders();
+        for (Pair<Class<? extends EntityLiving>, NBTTagCompound> pair : jockeyRiderEntities) if (pair.getFirst() == entity.getClass() &&
+                (pair.getSecond() == null || NBTUtil.areNBTEquals(pair.getSecond(),
+                        entity.writeToNBT(new NBTTagCompound()), true))) return true;
         return false;
     }
 }

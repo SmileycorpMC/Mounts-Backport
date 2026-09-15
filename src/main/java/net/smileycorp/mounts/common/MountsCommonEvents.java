@@ -10,7 +10,6 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -96,8 +95,6 @@ public class MountsCommonEvents
         if (!(event.getEntityLiving() instanceof EntityLiving)) return;
         EntityLiving entity = (EntityLiving) event.getEntityLiving();
         if (EntityConfig.isJockeyRider(entity) && entity.getRNG().nextFloat() > EntityConfig.jockeyChance) {
-            DifficultyInstance difficulty = entity.world.getDifficultyForLocation(entity.getPosition());
-            entity.onInitialSpawn(difficulty, null);
             entity.tasks.addTask(1, new EntityAIFindMount(entity));
             return;
         }

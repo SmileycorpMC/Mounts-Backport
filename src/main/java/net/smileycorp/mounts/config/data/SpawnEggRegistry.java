@@ -4,14 +4,17 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
 import net.smileycorp.mounts.config.data.mobs.MobDataEntry;
 import net.smileycorp.mounts.config.data.mobs.MobDataLoader;
 import net.smileycorp.mounts.config.data.mobs.SpawnContext;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class SpawnEggRegistry {
@@ -45,7 +48,7 @@ public class SpawnEggRegistry {
         }
 
         public EntityList.EntityEggInfo getEggInfo() {
-            return EntityList.ENTITY_EGGS.get(entry);
+            return EntityList.ENTITY_EGGS.get(entry.getRegistryName());
         }
 
         public EntityLiving spawn(World world, double x, double y, double z) {
@@ -65,6 +68,23 @@ public class SpawnEggRegistry {
         }
 
         protected abstract void finalizeEntity(EntityLiving entity, DifficultyInstance difficulty);
+
+    }
+
+    public static class JockeyEggEntry extends EggEntry {
+
+        private final NBTTagCompound nbt;
+
+        public JockeyEggEntry(String name, EntityEntry entry, @Nullable NBTTagCompound nbt) {
+            super(name, entry);
+            this.nbt = nbt;
+        }
+
+        @Override
+        protected void finalizeEntity(EntityLiving entity, DifficultyInstance difficulty) {
+            if (nbt != null) entity.readEntityFromNBT(nbt);
+            entity.tasks.addTask(1, new EntityAIFindMount(entity));
+        }
 
     }
 

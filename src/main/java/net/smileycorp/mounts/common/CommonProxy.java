@@ -9,12 +9,16 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.smileycorp.mounts.client.particle.MountsParticle;
 import net.smileycorp.mounts.common.advancements.MountsAdvancements;
@@ -88,7 +92,6 @@ public class CommonProxy
 			entries.add(new Biome.SpawnListEntry(EntitySkeleton.class, weight, skeleton.minGroupCount, skeleton.maxGroupCount));
 			entries.add(new Biome.SpawnListEntry(EntityParched.class, weight, skeleton.minGroupCount, skeleton.maxGroupCount));
 		}
-		MobDataLoader.INSTANCE.loadData();
 	}
 	
 	public void serverStart(FMLServerStartingEvent event) {}
@@ -105,4 +108,13 @@ public class CommonProxy
 	}
 
 	public void spawnParticle(MountsParticle particle, double posX, double posY, double posZ, double speedX, double speedY, double speedZ, int... parameters) {}
+
+	//needs to run after entity registry but before model registry
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public static void entityRegister(RegistryEvent.Register<EntityEntry> event) {
+		MobDataLoader.INSTANCE.loadData();
+		EntityConfig.initJockeyRiders();
+	}
+
+
 }
