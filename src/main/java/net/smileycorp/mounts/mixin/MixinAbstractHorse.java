@@ -5,6 +5,7 @@ import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntitySkeletonHorse;
 import net.minecraft.entity.passive.EntityZombieHorse;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
@@ -14,6 +15,7 @@ import net.smileycorp.mounts.common.entity.IWearsHorseArmor;
 import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.integration.WornHorseshoesIntegration;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -21,6 +23,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractHorse.class)
 public abstract class MixinAbstractHorse extends EntityAnimal implements IWearsHorseArmor {
+
+	@Shadow protected abstract void eatingHorse();
+
+	@Shadow public abstract boolean isTame();
+
+	@Shadow public abstract int getTemper();
+
+	@Shadow public abstract int getMaxTemper();
+
+	@Shadow public abstract int increaseTemper(int p_110198_1_);
 
 	public MixinAbstractHorse(World worldIn) {
 		super(worldIn);
@@ -56,6 +68,29 @@ public abstract class MixinAbstractHorse extends EntityAnimal implements IWearsH
 	@Override
 	public ItemStack getHorseArmour() {
 		return Loader.isModLoaded("wornhorseshoes") ? WornHorseshoesIntegration.getHorseArmor((AbstractHorse)(EntityAnimal)this) : ItemStack.EMPTY;
+	}
+
+	//zombie horse feeding
+	@Inject(at= @At("HEAD"), method = "handleEating", cancellable = true)
+	public void mounts$handleEating(EntityPlayer player, ItemStack stack, CallbackInfoReturnable<Boolean> callback) {
+		if (!((EntityAnimal)this instanceof EntityZombieHorse)) return;
+		if (!EntityConfig.isZombieHorseFood(stack)) {
+			callback.setReturnValue(false);
+			return;
+		}
+		if (getHealth() < getMaxHealth()) heal(3);
+		else if (!isTame() && getTemper() < getMaxTemper()) {
+			if (!world.isRemote) increaseTemper(3);
+			System.out.println("weeweww");
+		}
+		else {
+			System.out.println("wawoo");
+			callback.setReturnValue(false);
+			return;
+		}
+		System.out.println("wazanga");
+		eatingHorse();
+		callback.setReturnValue(true);
 	}
 
 }
