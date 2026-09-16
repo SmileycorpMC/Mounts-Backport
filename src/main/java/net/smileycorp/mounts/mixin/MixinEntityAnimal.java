@@ -50,7 +50,6 @@ public abstract class MixinEntityAnimal extends EntityAgeable {
             world.setSkylightSubtracted(skylight);
         }
         callback.setReturnValue(blockLight <= rand.nextInt(8));
-
     }
 
 }
