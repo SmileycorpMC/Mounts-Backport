@@ -19,7 +19,7 @@ public class MountsEntities
     public static void registerEntities()
     {
         registerEntity("camel", EntityCamel.class, ++id, 80, 0xFCC369, 0xCB9337);
-        registerEntity("camel_husk", EntityCamelHusk.class, ++id, 80, 0xFCC369, 0xCB9337);
+        registerEntity("camel_husk", EntityCamelHusk.class, ++id, 80, 0x544B38, 0x332C1D);
         registerEntity("parched", EntityParched.class, ++id, 80, 0xAD965F, 0x5F5C4E);
         registerEntity("skeleton_rider", EntitySkeletonRider.class, ++id, 80, 0xA7A09A, 0x714A80);
     }
