@@ -275,7 +275,7 @@ public class EntityCamel extends EntityAnimal
     }
 
     /* Camels eat Cactus */
-    public boolean isBreedingItem(ItemStack stack) { return stack.getItem() == Item.getItemFromBlock(Blocks.CACTUS); }
+    public boolean isBreedingItem(ItemStack stack) { return EntityConfig.isCamelFood(stack); }
 
     public float getEyeHeight() { return this.height * 0.9F; }
 

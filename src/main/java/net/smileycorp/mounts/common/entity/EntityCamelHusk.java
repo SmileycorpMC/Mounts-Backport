@@ -74,9 +74,14 @@ public class EntityCamelHusk extends EntityCamel
     public EnumCreatureAttribute getCreatureAttribute() { return EnumCreatureAttribute.UNDEAD; }
 
     /* Camel Husks eat feet???? */
-    public boolean isBreedingItem(ItemStack stack) { return stack.getItem() == Items.RABBIT_FOOT; }
+    public boolean isBreedingItem(ItemStack stack) {
+        return EntityConfig.isCamelHuskFood(stack);
+    }
+
     /* Camel Husks are probably aroace, but also are freaks for eating feet. */
-    public boolean canMateWith(EntityAnimal otherAnimal) { return false; }
+    public boolean canMateWith(EntityAnimal otherAnimal) {
+        return false;
+    }
 
     @Override
     protected boolean canDespawn() {
