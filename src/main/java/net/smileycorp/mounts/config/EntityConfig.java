@@ -66,7 +66,7 @@ public class EntityConfig {
                             "minecraft:zombie", "minecraft:zombie_villager", "minecraft:husk", "minecraft:zombie_pigman", "oe:zombie_nautilius", "futuremc:panda", "nb:strider", "nb:piglin_zombie"},
                     "Which entities can jockeys seek out and ride?");
             jockeyRiderEntitiesStr = config.getStringList("riderEntities", "jockeys",
-                    new String[] {"minecraft:zombie{IsBaby:1}", "minecraft:zombie_villager{IsBaby:1}", "minecraft:husk{IsBaby:1}", "minecraft:zombie_pigman{IsBaby:1}", "oe:drowned{IsBaby:1}", "oe:pickled{IsBaby:1}", "nb:piglin_zombie{IsBaby:1}"},
+                    new String[] {"minecraft:zombie{IsBaby:1}", "minecraft:zombie_villager{IsBaby:1}", "minecraft:husk{IsBaby:1}", "minecraft:zombie_pigman{IsBaby:1}", "oe:drowned{IsBaby:1}", "oe:pickled{IsBaby:1}", "nb:piglin_zombie{IsBaby:1}", "mekanism:babyskeleton"},
                     "Which entities can spawn with jockey ai?");
             chargingEntitiesStr = config.getStringList("chargingEntities", "general",
                     new String[] {"minecraft:zombie", "minecraft:husk", "minecraft:zombie_pigman", "nb:piglin"},
@@ -172,8 +172,9 @@ public class EntityConfig {
         }
     }
 
-    public static boolean isJockeyRider(EntityLivingBase entity) {
-        if (!entity.isChild() || entity.isRiding() || entity.isBeingRidden() |! entity.isEntityAlive()) return false;
+    public static boolean isJockeyRider(Entity entity) {
+        if (!(entity instanceof EntityLiving)) return false;
+        if (entity.isRiding() || entity.isBeingRidden() |! entity.isEntityAlive()) return false;
         if (jockeyRiderEntities == null) initJockeyRiders();
         for (Pair<Class<? extends EntityLiving>, NBTTagCompound> pair : jockeyRiderEntities) if (pair.getFirst() == entity.getClass() &&
                 (pair.getSecond() == null || NBTUtil.areNBTEquals(pair.getSecond(),

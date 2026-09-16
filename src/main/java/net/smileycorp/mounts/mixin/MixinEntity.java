@@ -6,7 +6,10 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.math.Vec3d;
+import net.smileycorp.mounts.config.EntityConfig;
+import net.smileycorp.mounts.config.TweaksFixesConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
+import java.util.Random;
 
 @Mixin(Entity.class)
 public abstract class MixinEntity {
@@ -40,7 +44,8 @@ public abstract class MixinEntity {
     //bedrock feature, makes it so baby zombies piggyback adult zombies when riding them
     @Inject(at = @At("HEAD"), method = "updatePassenger", cancellable = true)
     public void mounts$updatePassenger(Entity passenger, CallbackInfo callback) {
-        if (!isPassenger(passenger) |! (((Object)this)instanceof EntityZombie) |! (passenger instanceof EntityZombie)) return;
+        if (!TweaksFixesConfig.babyZombieBackpacks) return;
+        if (!isPassenger(passenger) |! (((Object)this)instanceof EntityZombie) |! (EntityConfig.isJockeyRider(passenger))) return;
         Vec3d offset = new Vec3d(0, 0, -0.4f).rotateYaw(-rotationYaw * 0.017453292f);
         passenger.setPositionAndRotation(posX + offset.x, posY + getMountedYOffset() - 0.35, posZ + offset.z, rotationYaw, rotationPitch);
         callback.cancel();
@@ -49,6 +54,7 @@ public abstract class MixinEntity {
     //fix issue where ai is not disabled for mobs when ridden by baby zombie
     @Inject(at = @At("HEAD"), method = "getControllingPassenger", cancellable = true)
     public void mounts$getControllingPassenger(CallbackInfoReturnable<Entity> callback) {
+        if (!TweaksFixesConfig.ridersControlAnimals) return;
         if (!(((Object)this) instanceof EntityAnimal)) return;
         if (!getPassengers().isEmpty()) {
             Entity passenger = getPassengers().get(0);
@@ -68,6 +74,7 @@ public abstract class MixinEntity {
     //uhhhhhh like the other one but other projectiles than arrows use this, I think Idk, is this even needed?
     @Inject(at = @At("HEAD"), method = "isEntityEqual", cancellable = true)
     public void mounts$isEntityEqual(Entity entity, CallbackInfoReturnable<Boolean> callback) {
+        if (!TweaksFixesConfig.passengersCantHitEachother) return;
         if (entity != null && ridingEntity != null && ridingEntity == entity.getRidingEntity()) callback.setReturnValue(true);
     }
 

@@ -31,6 +31,7 @@ import net.smileycorp.mounts.common.network.PacketHandler;
 import net.smileycorp.mounts.common.network.SpearSpawnParticleMessage;
 import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.config.GeneralConfig;
+import net.smileycorp.mounts.config.TweaksFixesConfig;
 import net.smileycorp.mounts.config.data.LootRegistry;
 import net.smileycorp.mounts.config.data.SpearRegistry;
 import net.smileycorp.mounts.config.data.mobs.DataRegistry;
@@ -49,6 +50,7 @@ public class CommonProxy
 	{
 		GeneralConfig.syncConfig(event);
 		EntityConfig.syncConfig(event);
+		TweaksFixesConfig.syncConfig(event);
 		DataRegistry.init();
 		SpearRegistry.init(event);
 		LootRegistry.init(event);

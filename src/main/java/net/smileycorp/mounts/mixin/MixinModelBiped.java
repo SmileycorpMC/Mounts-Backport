@@ -22,19 +22,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ModelBiped.class)
 public abstract class MixinModelBiped extends ModelBase {
-    
-    @Shadow
-    public ModelRenderer bipedRightArm;
-    @Shadow
-    public ModelRenderer bipedLeftArm;
+
     @Shadow
     public ModelBiped.ArmPose leftArmPose;
     @Shadow
     public ModelBiped.ArmPose rightArmPose;
-    @Shadow
-    public ModelRenderer bipedHead;
-
-    @Shadow public ModelRenderer bipedBody;
 
     @Inject(method = "setRotationAngles", at = @At("HEAD"))
     public void deeperdepths$setRotationAngles$HEAD(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entity, CallbackInfo ci) {
