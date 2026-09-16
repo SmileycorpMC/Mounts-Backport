@@ -5,8 +5,8 @@ import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntitySkeletonHorse;
 import net.minecraft.entity.passive.EntityZombieHorse;
-import net.minecraft.inventory.ContainerHorseChest;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
@@ -14,7 +14,6 @@ import net.smileycorp.mounts.common.entity.IWearsHorseArmor;
 import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.integration.WornHorseshoesIntegration;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,9 +21,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractHorse.class)
 public abstract class MixinAbstractHorse extends EntityAnimal implements IWearsHorseArmor {
-
-	@Shadow
-	protected ContainerHorseChest horseChest;
 
 	public MixinAbstractHorse(World worldIn) {
 		super(worldIn);
@@ -36,15 +32,17 @@ public abstract class MixinAbstractHorse extends EntityAnimal implements IWearsH
 	public void mounts$onLivingUpdate(CallbackInfo callback) {
 		if (!((EntityAnimal)this instanceof EntityZombieHorse && EntityConfig.zombieHorsesBurnInSunlight) &!
 				((EntityAnimal)this instanceof EntitySkeletonHorse && EntityConfig.skeletonHorsesBurnInSunlight)) return;
-		if (world.isRemote || !world.isDaytime()) return;
-		ItemStack itemstack = getHorseArmour();
-		if (itemstack.isEmpty()) {
+		if (world.isRemote) return;
+		float f = getBrightness();
+		if (f <= 0.5f || rand.nextFloat() * 30f >= (f - 0.4f) * 2f |! world.canSeeSky(new BlockPos(posX, posY + getEyeHeight(), posZ))) return;
+		ItemStack stack = getHorseArmour();
+		if (stack.isEmpty()) {
 			setFire(8);
 			return;
 		}
-		if (itemstack.isItemStackDamageable()) {
-			itemstack.setItemDamage(itemstack.getItemDamage() + rand.nextInt(2));
-			if (itemstack.getItemDamage() >= itemstack.getMaxDamage()) horseChest.decrStackSize(1, 1);
+		if (stack.isItemStackDamageable()) {
+			stack.setItemDamage(stack.getItemDamage() + rand.nextInt(2));
+			if (stack.getItemDamage() >= stack.getMaxDamage()) stack.shrink(1);
 		}
 	}
 
