@@ -2,14 +2,13 @@ package net.smileycorp.mounts.config;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.smileycorp.atlas.api.config.EntityAttributesEntry;
 
 import java.io.File;
 
 public class TweaksFixesConfig {
 
     //tweaks
-    public static boolean babyZombieBackpacks;
+    public static boolean babyZombiePiggyback;
     public static boolean vanillaSpiderJockeysSpawn;
 
 
@@ -24,7 +23,7 @@ public class TweaksFixesConfig {
         try{
             config.load();
             //tweaks
-            babyZombieBackpacks = config.getBoolean("babyZombieBackpacks", "tweaks", true, "Do zombies carry baby mobs like a backpack? (used for the bedrock jockeys feature)");
+            babyZombiePiggyback = config.getBoolean("babyZombiePiggyback", "tweaks", true, "Do zombies carry baby mobs in a piggyback? (used for the bedrock jockeys feature)");
             vanillaSpiderJockeysSpawn = config.getBoolean("vanillaSpiderJockeysSpawn", "tweaks", false, "Do vanilla spider jockeys spawn? (not needed if the entry exists in the config)");
             //fixes
             ridersControlAnimals = config.getBoolean("ridersControlAnimals", "fixes", true, "Are animals movements controlled by their rider? (Used to make jockey mobs work)");

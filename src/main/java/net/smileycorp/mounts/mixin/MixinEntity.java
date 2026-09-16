@@ -6,7 +6,6 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.math.Vec3d;
 import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.config.TweaksFixesConfig;
@@ -18,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
-import java.util.Random;
 
 @Mixin(Entity.class)
 public abstract class MixinEntity {
@@ -44,7 +42,7 @@ public abstract class MixinEntity {
     //bedrock feature, makes it so baby zombies piggyback adult zombies when riding them
     @Inject(at = @At("HEAD"), method = "updatePassenger", cancellable = true)
     public void mounts$updatePassenger(Entity passenger, CallbackInfo callback) {
-        if (!TweaksFixesConfig.babyZombieBackpacks) return;
+        if (!TweaksFixesConfig.babyZombiePiggyback) return;
         if (!isPassenger(passenger) |! (((Object)this)instanceof EntityZombie) |! (EntityConfig.isJockeyRider(passenger))) return;
         Vec3d offset = new Vec3d(0, 0, -0.4f).rotateYaw(-rotationYaw * 0.017453292f);
         passenger.setPositionAndRotation(posX + offset.x, posY + getMountedYOffset() - 0.35, posZ + offset.z, rotationYaw, rotationPitch);

@@ -95,7 +95,7 @@ public class MountsCommonEvents
     public static void spawnMob(LivingSpawnEvent.SpecialSpawn event) {
         if (!(event.getEntityLiving() instanceof EntityLiving)) return;
         EntityLiving entity = (EntityLiving) event.getEntityLiving();
-        if (EntityConfig.isJockeyRider(entity) && entity.getRNG().nextFloat() > EntityConfig.jockeyChance) {
+        if (!entity.isRiding() &! entity.isBeingRidden() && EntityConfig.isJockeyRider(entity) && entity.getRNG().nextFloat() > EntityConfig.jockeyChance) {
             entity.tasks.addTask(1, new EntityAIFindMount(entity));
             return;
         }
