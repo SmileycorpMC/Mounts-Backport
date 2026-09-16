@@ -8,7 +8,7 @@
 	"functions": [
 		{
 			"function": "set_nbt",
-			"value": "{SkeletonTrap:1}",
+			"value": "{SkeletonTrap:1b}",
 			"conditions": []
 		}
 	],
