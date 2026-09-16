@@ -5,3 +5,18 @@ item.mounts.iron_spear.name=Iron Spear
 item.mounts.golden_spear.name=Golden Spear
 item.mounts.diamond_spear.name=Diamond Spear
 item.mounts.netherite_spear.name=Netherite Spear
+
+jockey.minecraft.zombie=Baby Zombie Jockey
+jockey.minecraft.zombie_villager=Baby Zombie Villager Jockey
+jockey.minecraft.husk=Baby Husk Jockey
+jockey.minecraft.zombie_pigman=Baby Zombie Pigman Jockey
+jockey.oe.drowned=Gurgle Jockey
+jockey.oe.pickled=Baby Pickled Jockey
+jockey.nb.piglin_zombie=Baby Zombie Pigman Jockey
+jockey.mekanism.babyskeleton=Baby Skeleton Jockey
+
+mount.spider_jockey.minecraft.spider=Spider Jockey
+mount.spider_jockey.minecraft.cave_spider=Cave Spider Jockey
+mount.zombie_horseman=Zombie Horseman
+mount.camel_husk_jockey=Camel Husk Jockey
+mount.skeleton_horse_trap=Skeleton Horse Trap
