@@ -15,6 +15,11 @@
 							"slot": "mainhand"
 						},
 						"conditions": []
+					},
+					{
+						"function": "set_loot_table",
+						"value": "mounts:entities/zombie_horseman",
+						"conditions": []
 					}
 				]
 			},

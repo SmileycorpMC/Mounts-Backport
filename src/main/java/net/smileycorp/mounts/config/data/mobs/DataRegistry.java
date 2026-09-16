@@ -75,6 +75,7 @@ public class DataRegistry {
 		registerFunction("add_passenger", AddPassengerFunction::deserialize);
 		registerFunction("set_equipment", SetEquipmentFunction::deserialize);
 		registerFunction("enchant_equipment", EnchantEquipmentFunction::deserialize);
+		registerFunction("set_loot_table", SetLootTableFunction::deserialize);
 		registerFunction("set_x", SetPosXFunction::deserialize);
 		registerFunction("set_y", SetPosYFunction::deserialize);
 		registerFunction("set_z", SetPosZFunction::deserialize);
