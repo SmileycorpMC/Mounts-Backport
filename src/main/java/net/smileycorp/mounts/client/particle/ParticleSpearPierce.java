@@ -45,7 +45,7 @@ public class ParticleSpearPierce extends ParticleBase
 
     /* StackOverflow has the WEIRDEST stuff like damn. */
     public Vec3d[] particleVertexRendering(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ, float particleSize)
-    { return quadRotateToFacing(generateBasicQuad(particleSize, (float)Math.toRadians(75),0,0), this.direction); }
+    { return quadRotateToFacing(generateBasicQuad(particleSize, (float)Math.toRadians(80),0,0), this.direction); }
 
     @SideOnly(Side.CLIENT)
     public static class Factory implements IParticleFactory

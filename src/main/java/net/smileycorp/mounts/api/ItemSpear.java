@@ -143,6 +143,7 @@ public class ItemSpear extends Item {
         float max = definition.getMaxRange();
         if (user instanceof EntityPlayer && ((EntityPlayer) user).isCreative()) max += definition.getCreativeRangeAddition();
         boolean hit = false;
+        spawnParticle(definition, user);
         for (Entity entity : getHitEntities(user, definition.getMinRange(), max, e -> true)) {
             /* I'm pretty sure Vanilla rounds the Spear Damage up in my testing... */
             //vanilla actually rounds down here for some reason
@@ -216,15 +217,7 @@ public class ItemSpear extends Item {
                 cap.setSpearRecoilStartTime(user.ticksExisted);
                 PacketHandler.NETWORK_INSTANCE.sendToAllTracking(new SpearRecoilAnimMessage(user.getEntityId()), new NetworkRegistry.TargetPoint(user.world.provider.getDimension(), user.posX, user.posY, user.posZ, 0.0D));
             }
-
-            if (!user.world.isRemote)
-            {
-                Vec3d lookVector = user.getLookVec().scale(definition.getMaxRange() - definition.getMinRange());
-                Mounts.proxy.spawnParticle( MountsParticle.SPEAR_PIERCE, user.world,
-                        user.posX + lookVector.x * 1.2D, user.posY + user.getEyeHeight() + lookVector.y * 1.2D, user.posZ + lookVector.z * 1.2D,
-                        lookVector.x * 0.2F, lookVector.y * 0.2F, lookVector.z * 0.2F );
-            }
-
+            spawnParticle(definition, user);
             if (stack.getItem() instanceof ItemSpear) user.world.playSound(null, user.posX, user.posY, user.posZ, ((ItemSpear) stack.getItem()).getHitSound(), user.getSoundCategory(), 1, 1);
             if (user instanceof EntityPlayerMP) MountsAdvancements.CHARGE_PIERCE_ENTITIES.trigger((EntityPlayerMP) user, piercing.getPiercedEntities().size());
         }
@@ -273,7 +266,7 @@ public class ItemSpear extends Item {
         return entities;
     }
 
-    private static double getSpeed(Vec3d look, Entity entity) {
+    private static Vec3d getVelocity(Entity entity) {
         if (entity.isRiding() & !(entity instanceof EntityPlayer)) entity = entity.getLowestRidingEntity();
         double motionX, motionY, motionZ;
         //use our capability for players because players don't actually move in 1.12
@@ -288,8 +281,22 @@ public class ItemSpear extends Item {
             motionY = entity.motionY;
             motionZ = entity.motionZ;
         }
+        return new Vec3d(motionX, motionY, motionZ);
+    }
+
+    private static double getSpeed(Vec3d look, Entity entity) {
+        Vec3d velocity = getVelocity(entity);
         //the look vec is used here to make sure that we're only using the entities speed in the exact direction they are facing
-        return look.x * motionX * 20d + look.y * motionY * 20d + look.z * motionZ * 20d;
+        return look.x * velocity.x * 20d + look.y * velocity.y * 20d + look.z * velocity.z * 20d;
+    }
+
+    public static void spawnParticle(SpearDefinition definition, EntityLivingBase user) {
+        Vec3d lookVector = user.getLookVec().scale(definition.getMaxRange() - definition.getMinRange());
+        Vec3d velocity = getVelocity(user).scale(0.5);
+        if (user instanceof EntityPlayer) velocity.addVector(user.motionX * 20, user.motionY * 20, user.motionZ * 20);
+        Mounts.proxy.spawnParticle(MountsParticle.SPEAR_PIERCE, user.world,
+                user.posX + lookVector.x * 1.2, user.posY + user.getEyeHeight() + 0.05 + lookVector.y * 1.2, user.posZ + lookVector.z * 1.2,
+                lookVector.x * 0.2F + velocity.x, lookVector.y * 0.2F + velocity.y, lookVector.z * 0.2F + velocity.z);
     }
 
     //### DEBUG
