@@ -46,7 +46,7 @@ public class MountsRecipes {
         //trades
         ForgeRegistries.VILLAGER_PROFESSIONS.getValue(new ResourceLocation("minecraft:butcher")).getCareer(1)
                 .addTrade(4, new TradeLeatherHorseArmour(new ItemStack(Items.EMERALD), new EntityVillager.PriceInfo(6, 6)));
-        //special handling for netherrite spear
+        //special handling for netherite spear
         if (OreDictionary.getOres("ingotNetherite", false).isEmpty() || VanillaSpears.DIAMOND_SPEAR.get() == null
                 || VanillaSpears.NETHERITE_SPEAR.get() == null) return;
             boolean futureMC = Loader.isModLoaded("futuremc");
