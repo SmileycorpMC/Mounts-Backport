@@ -3,6 +3,7 @@ package net.smileycorp.mounts.client;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -43,7 +44,7 @@ public class MountsClientEvents
 {
     private static float prevSpaceHeld = 0.0F;
     private static float currSpaceHeld = 0.0F;
-    private static final ResourceLocation TEXTURE_NAUTILUS_CHARGE_BAR = new ResourceLocation(Constants.MODID, "textures/gui/camel_charge_bar.png");
+    private static final ResourceLocation MOUNTS_HUD = new ResourceLocation(Constants.MODID, "textures/gui/hud.png");
     public static boolean swingSpear = false;
 
     @SubscribeEvent
@@ -116,9 +117,10 @@ public class MountsClientEvents
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRenderOverlay(RenderGameOverlayEvent.Pre event)
     {
+        Minecraft mc = Minecraft.getMinecraft();
         if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE)
         {
-            Minecraft mc = Minecraft.getMinecraft();
+
 
             if (mc.player != null && mc.player.isRiding())
             {
@@ -127,6 +129,21 @@ public class MountsClientEvents
                     event.setCanceled(true);
                 }
             }
+        }
+        if (event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS) {
+            if (mc.player == null) return;
+            if (!(mc.player.getHeldItemMainhand().getItem() instanceof ItemSpear)) return;
+            event.setCanceled(true);
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.enableAlpha();
+            GlStateManager.enableBlend();
+            mc.getTextureManager().bindTexture(MOUNTS_HUD);
+            ScaledResolution res = new ScaledResolution(mc);
+            int width = res.getScaledWidth();
+            int height = res.getScaledHeight();
+            mc.ingameGUI.drawTexturedModalRect(width / 2 - 7, height / 2 - 7, 182, 0, 16, 16);
+            GlStateManager.disableAlpha();
+            GlStateManager.disableBlend();
         }
     }
 
@@ -155,7 +172,7 @@ public class MountsClientEvents
 
         GlStateManager.enableTexture2D();
         GlStateManager.color(1F, 1F, 1F, 1F);
-        mc.getTextureManager().bindTexture(TEXTURE_NAUTILUS_CHARGE_BAR);
+        mc.getTextureManager().bindTexture(MOUNTS_HUD);
 
         mc.ingameGUI.drawTexturedModalRect(barX, barY, 0, 0, 182, 5);
 
