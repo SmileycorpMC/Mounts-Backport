@@ -48,6 +48,8 @@ public class EntityConfig {
     public static boolean skeletonHorsesBurnInSunlight;
     public static boolean skeletonHorsesPanicWhenDamaged;
     public static boolean skeletonHorsesHideFromSunlight;
+    private static String[] skeletonHorsesFoodStr;
+    private static List<ItemStack> skeletonHorsesFood;
 
     //horse traps
     public static float horseTrapSpawnChance;
@@ -93,6 +95,7 @@ public class EntityConfig {
             skeletonRider = new EntityAttributesEntry(config, "skeleton rider", 0.25, 32, 2, 20, 0, 0, 0);
             //skeleton horses
             skeletonHorsesBurnInSunlight = config.getBoolean("burnInSunlight", "skeleton horse", false, "Do Skeleton Horses burn in sunlight? (Added in 25w41a, removed in 25w42a)");
+            skeletonHorsesFoodStr = config.getStringList("food", "skeleton horse", new String[] {}, "Items that count as food for Skeleton Horses for the purposes of taming, luring and healing. (Empty by default)");
             skeletonHorsesPanicWhenDamaged = config.getBoolean("panicWhenDamaged", "skeleton horse", false, "Do Skeleton Horses panic when damaged? (Skeleton Horses no longer panic when taking damage as of 26.1-snapshot2)");
             skeletonHorsesHideFromSunlight = config.getBoolean("hideFromSunlight", "skeleton horse", false, "Do Skeleton Horses seek shelter from the sun?");
             //skeleton horse traps
@@ -252,6 +255,17 @@ public class EntityConfig {
             parseItems(camelHuskFood, camelHuskFoodStr);
         }
         for (ItemStack stack1 : camelHuskFood) if (RecipeUtils.compareItemStacks(stack, stack1, true)) return true;
+        return false;
+    }
+
+    public static boolean isSkeletonHorseFood(ItemStack stack) {
+        if (skeletonHorsesFood == null) {
+            MountsLogger.blankLine();
+            MountsLogger.heading("LOADING SKELETON HORSE FOOD");
+            skeletonHorsesFood = Lists.newArrayList();
+            parseItems(skeletonHorsesFood, skeletonHorsesFoodStr);
+        }
+        for (ItemStack stack1 : skeletonHorsesFood) if (RecipeUtils.compareItemStacks(stack, stack1, true)) return true;
         return false;
     }
 

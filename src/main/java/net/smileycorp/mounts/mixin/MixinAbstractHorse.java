@@ -73,22 +73,21 @@ public abstract class MixinAbstractHorse extends EntityAnimal implements IWearsH
 	//zombie horse feeding
 	@Inject(at= @At("HEAD"), method = "handleEating", cancellable = true)
 	public void mounts$handleEating(EntityPlayer player, ItemStack stack, CallbackInfoReturnable<Boolean> callback) {
-		if (!((EntityAnimal)this instanceof EntityZombieHorse)) return;
-		if (!EntityConfig.isZombieHorseFood(stack)) {
+		boolean zombieHorse = ((EntityAnimal)this instanceof EntityZombieHorse);
+		boolean skeletonHorse = ((EntityAnimal)this instanceof EntitySkeletonHorse);
+		if (!zombieHorse &! skeletonHorse) return;
+		if (!(zombieHorse ? EntityConfig.isZombieHorseFood(stack) : EntityConfig.isSkeletonHorseFood(stack) )) {
 			callback.setReturnValue(false);
 			return;
 		}
 		if (getHealth() < getMaxHealth()) heal(3);
 		else if (!isTame() && getTemper() < getMaxTemper()) {
 			if (!world.isRemote) increaseTemper(3);
-			System.out.println("weeweww");
 		}
 		else {
-			System.out.println("wawoo");
 			callback.setReturnValue(false);
 			return;
 		}
-		System.out.println("wazanga");
 		eatingHorse();
 		callback.setReturnValue(true);
 	}

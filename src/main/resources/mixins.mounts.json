@@ -13,6 +13,7 @@
     "MixinEntityHorse",
     "MixinEntityItem",
     "MixinEntityLiving",
+    "MixinEntitySkeletonHorse",
     "MixinEntitySpider",
     "MixinEntityZombieHorse",
     "MixinNetHandlerPlayServer",

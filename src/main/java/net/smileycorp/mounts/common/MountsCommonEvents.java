@@ -35,8 +35,8 @@ import net.smileycorp.mounts.common.entity.EntitySkeletonRider;
 import net.smileycorp.mounts.common.entity.ai.EntityAIAttackSpear;
 import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
 import net.smileycorp.mounts.config.EntityConfig;
-import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.FixesConfig;
+import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.data.LootRegistry;
 import net.smileycorp.mounts.config.data.mobs.MobDataLoader;
 
