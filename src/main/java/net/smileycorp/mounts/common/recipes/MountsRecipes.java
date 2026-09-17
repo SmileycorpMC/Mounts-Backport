@@ -22,7 +22,9 @@ import net.smileycorp.mounts.api.VanillaSpears;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.config.GeneralConfig;
 import net.smileycorp.mounts.config.data.SpearRegistry;
+import net.smileycorp.mounts.integration.Cherry112Integration;
 import net.smileycorp.mounts.integration.FutureMCIntegration;
+import net.smileycorp.mounts.integration.SmithingTableIntegration;
 
 @Mod.EventBusSubscriber(modid = Constants.MODID)
 public class MountsRecipes {
@@ -45,11 +47,15 @@ public class MountsRecipes {
         ForgeRegistries.VILLAGER_PROFESSIONS.getValue(new ResourceLocation("minecraft:butcher")).getCareer(1)
                 .addTrade(4, new TradeLeatherHorseArmour(new ItemStack(Items.EMERALD), new EntityVillager.PriceInfo(6, 6)));
         //special handling for netherrite spear
-        if (OreDictionary.doesOreNameExist("ingotNetherite") && VanillaSpears.DIAMOND_SPEAR.get() != null
-                && VanillaSpears.NETHERITE_SPEAR.get() != null) {
-            if (Loader.isModLoaded("futuremc")) FutureMCIntegration.registerNetheriteSpearRecipe();
-            else if (GeneralConfig.anvilNetheriteSpearRecipe) MinecraftForge.EVENT_BUS.register(new AnvilRecipeNetheriteSpear());
-        }
+        if (OreDictionary.getOres("ingotNetherite", false).isEmpty() || VanillaSpears.DIAMOND_SPEAR.get() == null
+                || VanillaSpears.NETHERITE_SPEAR.get() == null) return;
+            boolean futureMC = Loader.isModLoaded("futuremc");
+            boolean smithingTable = Loader.isModLoaded("smithing_table");
+            boolean cherry112 = Loader.isModLoaded("suikecherry");
+            if (futureMC) FutureMCIntegration.registerNetheriteSpearRecipe();
+            if (smithingTable) SmithingTableIntegration.registerNetheriteSpearRecipe();
+            if (cherry112) Cherry112Integration.registerNetheriteSpearRecipe();
+            if (!(smithingTable || futureMC || cherry112)) MinecraftForge.EVENT_BUS.register(new AnvilRecipeNetheriteSpear());
     }
 
 }
