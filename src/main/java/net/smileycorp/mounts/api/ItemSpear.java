@@ -292,8 +292,8 @@ public class ItemSpear extends Item {
 
     public static void spawnParticle(SpearDefinition definition, EntityLivingBase user) {
         Vec3d lookVector = user.getLookVec().scale(definition.getMaxRange() - definition.getMinRange());
-        Vec3d velocity = getVelocity(user).scale(0.5);
-        if (user instanceof EntityPlayer) velocity.addVector(user.motionX * 20, user.motionY * 20, user.motionZ * 20);
+        Vec3d velocity = getVelocity(user);
+        if (user instanceof EntityPlayer) velocity = velocity.addVector(user.motionX, 0, user.motionZ);
         Mounts.proxy.spawnParticle(MountsParticle.SPEAR_PIERCE, user.world,
                 user.posX + lookVector.x * 1.2, user.posY + user.getEyeHeight() + 0.05 + lookVector.y * 1.2, user.posZ + lookVector.z * 1.2,
                 lookVector.x * 0.2F + velocity.x, lookVector.y * 0.2F + velocity.y, lookVector.z * 0.2F + velocity.z);
