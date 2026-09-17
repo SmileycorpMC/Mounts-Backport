@@ -1,10 +1,15 @@
 package net.smileycorp.mounts.common;
 
+import com.google.common.collect.Sets;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.EntityAIPanic;
+import net.minecraft.entity.ai.EntityAITasks;
+import net.minecraft.entity.passive.EntitySkeletonHorse;
+import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
@@ -35,6 +40,8 @@ import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.TweaksFixesConfig;
 import net.smileycorp.mounts.config.data.LootRegistry;
 import net.smileycorp.mounts.config.data.mobs.MobDataLoader;
+
+import java.util.Set;
 
 @Mod.EventBusSubscriber
 public class MountsCommonEvents
@@ -106,6 +113,14 @@ public class MountsCommonEvents
     public static void entityAdded(EntityJoinWorldEvent event) {
         if (!(event.getEntity() instanceof EntityCreature)) return;
         EntityCreature entity = (EntityCreature) event.getEntity();
+        //remove panic ai from zombie and skeleton horses if the config allows for it
+        if ((entity instanceof EntitySkeletonHorse &! EntityConfig.skeletonHorsesPanicWhenDamaged) ||
+                (entity instanceof EntityZombieHorse &! EntityConfig.zombieHorsesPanicWhenDamaged)) {
+            Set<EntityAIPanic> tasks = Sets.newHashSet();
+            for (EntityAITasks.EntityAITaskEntry task : entity.tasks.taskEntries)
+                if (task.action instanceof EntityAIPanic) tasks.add((EntityAIPanic) task.action);
+            tasks.forEach(entity.tasks::removeTask);
+        }
         if (!EntityConfig.canCharge(entity)) return;
         entity.tasks.addTask(1, new EntityAIAttackSpear(entity, 1, 1));
     }
