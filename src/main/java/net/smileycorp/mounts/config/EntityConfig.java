@@ -47,6 +47,7 @@ public class EntityConfig {
     //skeleton horses
     public static boolean skeletonHorsesBurnInSunlight;
     public static boolean skeletonHorsesPanicWhenDamaged;
+    public static boolean skeletonHorsesHideFromSunlight;
 
     //horse traps
     public static float horseTrapSpawnChance;
@@ -57,6 +58,7 @@ public class EntityConfig {
     public static boolean zombieHorsesPanicWhenDamaged;
     private static String[] zombieHorsesFoodStr;
     private static List<ItemStack> zombieHorsesFood;
+    public static boolean zombieHorsesHideFromSunlight;
 
     //jockeys
     public static float jockeyChance;
@@ -92,6 +94,7 @@ public class EntityConfig {
             //skeleton horses
             skeletonHorsesBurnInSunlight = config.getBoolean("burnInSunlight", "skeleton horse", false, "Do Skeleton Horses burn in sunlight? (Added in 25w41a, removed in 25w42a)");
             skeletonHorsesPanicWhenDamaged = config.getBoolean("panicWhenDamaged", "skeleton horse", false, "Do Skeleton Horses panic when damaged? (Skeleton Horses no longer panic when taking damage as of 26.1-snapshot2)");
+            skeletonHorsesHideFromSunlight = config.getBoolean("hideFromSunlight", "skeleton horse", false, "Do Skeleton Horses seek shelter from the sun?");
             //skeleton horse traps
             horseTrapSpawnChance = config.getFloat("horseTrapSpawnChance", "skeleton horse traps", 0.01f, 0, 1, "How often do Skeleton Horse traps spawn at lightning strikes? (Multiplied by regional difficulty) (Vanilla default is 0.01)");
             improvedHorseTraps = config.getBoolean("improvedHorseTraps", "skeleton horse traps", true, "Whether to spawn Skeleton Riders from Skeleton Horse Traps instead of Vanilla Skeletons?");
@@ -99,6 +102,7 @@ public class EntityConfig {
             zombieHorsesBurnInSunlight = config.getBoolean("burnInSunlight", "zombie horse", true, "Do zombie horses burn in sunlight? (Vanilla 1.21.11 feature)");
             zombieHorsesFoodStr = config.getStringList("food", "zombie horse", new String[] {"minecraft:red_mushroom"}, "Items that count as food for Zombie Horses for the purposes of taming, luring and healing.");
             zombieHorsesPanicWhenDamaged = config.getBoolean("panicWhenDamaged", "zombie horse", false, "Do Zombie Horses panic when damaged? (Zombie Horses no longer panic when taking damage as of 26.1-snapshot2)");
+            zombieHorsesHideFromSunlight = config.getBoolean("hideFromSunlight", "zombie horse", true, "Do Zombie Horses seek shelter from the sun?");
             //jockeys
             jockeyChance = config.getFloat( "jockeyChance", "jockeys", 0.15f, 0, 1, "Chance for a baby mob to spawn as a jockey. (Bedrock feature)");
             jockeyMountableEntitiesStr = config.getStringList("mountableEntities", "jockeys",

@@ -6,8 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAIPanic;
-import net.minecraft.entity.ai.EntityAITasks;
+import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntitySkeletonHorse;
 import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.entity.player.EntityPlayer;
@@ -113,13 +112,20 @@ public class MountsCommonEvents
     public static void entityAdded(EntityJoinWorldEvent event) {
         if (!(event.getEntity() instanceof EntityCreature)) return;
         EntityCreature entity = (EntityCreature) event.getEntity();
+        boolean zombieHorse = entity instanceof EntityZombieHorse;
+        boolean skeletonHorse = entity instanceof EntitySkeletonHorse;
         //remove panic ai from zombie and skeleton horses if the config allows for it
-        if ((entity instanceof EntitySkeletonHorse &! EntityConfig.skeletonHorsesPanicWhenDamaged) ||
-                (entity instanceof EntityZombieHorse &! EntityConfig.zombieHorsesPanicWhenDamaged)) {
-            Set<EntityAIPanic> tasks = Sets.newHashSet();
+        if ((zombieHorse &! EntityConfig.zombieHorsesPanicWhenDamaged) ||
+                (skeletonHorse &! EntityConfig.skeletonHorsesPanicWhenDamaged)) {
+            Set<EntityAIBase> tasks = Sets.newHashSet();
             for (EntityAITasks.EntityAITaskEntry task : entity.tasks.taskEntries)
-                if (task.action instanceof EntityAIPanic) tasks.add((EntityAIPanic) task.action);
+                if (task.action instanceof EntityAIPanic) tasks.add(task.action);
             tasks.forEach(entity.tasks::removeTask);
+        }
+        //make zombie and skeleton horses hide from the sun
+        if ((zombieHorse && EntityConfig.zombieHorsesHideFromSunlight) || (skeletonHorse && EntityConfig.skeletonHorsesHideFromSunlight)) {
+            entity.tasks.addTask(2, new EntityAIRestrictSun(entity));
+            entity.tasks.addTask(3, new EntityAIFleeSun(entity, 1));
         }
         if (!EntityConfig.canCharge(entity)) return;
         entity.tasks.addTask(1, new EntityAIAttackSpear(entity, 1, 1));
