@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 import net.smileycorp.mounts.api.VanillaSpears;
-import net.smileycorp.mounts.config.GeneralConfig;
+import net.smileycorp.mounts.config.ItemsConfig;
 
 import javax.annotation.Nonnull;
 
@@ -18,7 +18,7 @@ public class JEIIntegration implements IModPlugin {
 
     @Override
     public void register(@Nonnull IModRegistry registry) {
-        if (!GeneralConfig.anvilNetheriteSpearRecipe || VanillaSpears.DIAMOND_SPEAR.get() == null || VanillaSpears.NETHERITE_SPEAR.get() == null) return;
+        if (!ItemsConfig.anvilNetheriteSpearRecipe || VanillaSpears.DIAMOND_SPEAR.get() == null || VanillaSpears.NETHERITE_SPEAR.get() == null) return;
         NonNullList<ItemStack> ores = OreDictionary.getOres("ingotNetherite", false);
         if (ores.isEmpty()) return;
         registry.addRecipes(Lists.newArrayList(registry.getJeiHelpers().getVanillaRecipeFactory().createAnvilRecipe(

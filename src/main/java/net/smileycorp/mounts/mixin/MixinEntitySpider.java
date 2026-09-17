@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.world.World;
-import net.smileycorp.mounts.config.TweaksFixesConfig;
+import net.smileycorp.mounts.config.EntityConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -21,7 +21,7 @@ public abstract class MixinEntitySpider extends EntityMob {
     //disable vanilla spider jockey spawning and replace them with our own
     @WrapOperation(at = @At(value = "INVOKE", target = "Ljava/util/Random;nextInt(I)I"), method = "onInitialSpawn")
     public int mounts$onInitialSpawn$nextInt(Random instance, int i, Operation<Integer> original) {
-        return TweaksFixesConfig.vanillaSpiderJockeysSpawn ? original.call(instance, i) : 1;
+        return EntityConfig.vanillaSpiderJockeysSpawn ? original.call(instance, i) : 1;
     }
 
 }

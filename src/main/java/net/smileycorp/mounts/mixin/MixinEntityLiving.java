@@ -11,7 +11,7 @@ import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
-import net.smileycorp.mounts.config.TweaksFixesConfig;
+import net.smileycorp.mounts.config.FixesConfig;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,7 +35,7 @@ public abstract class MixinEntityLiving extends EntityLivingBase {
     //let the ridden entity calculate it's pathing, should fix issues with large mob hitboxes getting stuck too
     @WrapOperation(at= @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityLiving;isRiding()Z"), method = "updateEntityActionState")
     public boolean mounts$updateEntityActionState$isRiding(EntityLiving instance, Operation<Boolean> original) {
-        if (!TweaksFixesConfig.controlledMountsOwnPathing) return original.call(instance);
+        if (!FixesConfig.controlledMountsOwnPathing) return original.call(instance);
         Entity entity = getRidingEntity();
         if (!(entity instanceof EntityLiving)) return false;
         if (this != entity.getControllingPassenger()) return false;

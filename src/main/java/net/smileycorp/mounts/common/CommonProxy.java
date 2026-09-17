@@ -30,8 +30,8 @@ import net.smileycorp.mounts.common.entity.MountsEntities;
 import net.smileycorp.mounts.common.network.PacketHandler;
 import net.smileycorp.mounts.common.network.SpearSpawnParticleMessage;
 import net.smileycorp.mounts.config.EntityConfig;
-import net.smileycorp.mounts.config.GeneralConfig;
-import net.smileycorp.mounts.config.TweaksFixesConfig;
+import net.smileycorp.mounts.config.ItemsConfig;
+import net.smileycorp.mounts.config.FixesConfig;
 import net.smileycorp.mounts.config.data.LootRegistry;
 import net.smileycorp.mounts.config.data.SpearRegistry;
 import net.smileycorp.mounts.config.data.mobs.DataRegistry;
@@ -48,9 +48,9 @@ public class CommonProxy
 
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		GeneralConfig.syncConfig(event);
+		ItemsConfig.syncConfig(event);
 		EntityConfig.syncConfig(event);
-		TweaksFixesConfig.syncConfig(event);
+		FixesConfig.syncConfig(event);
 		DataRegistry.init();
 		SpearRegistry.init(event);
 		LootRegistry.init(event);

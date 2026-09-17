@@ -37,7 +37,7 @@ import net.smileycorp.mounts.common.entity.ai.EntityAIAttackSpear;
 import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
 import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.config.LootTableEntry;
-import net.smileycorp.mounts.config.TweaksFixesConfig;
+import net.smileycorp.mounts.config.FixesConfig;
 import net.smileycorp.mounts.config.data.LootRegistry;
 import net.smileycorp.mounts.config.data.mobs.MobDataLoader;
 
@@ -160,7 +160,7 @@ public class MountsCommonEvents
         if (result.entityHit == null) return;
         EntityArrow arrow = event.getArrow();
         Entity owner = arrow.shootingEntity;
-        if (!TweaksFixesConfig.passengersCantHitEachother) return;
+        if (!FixesConfig.passengersCantHitEachother) return;
         if (owner == null) return;
         if (owner instanceof EntitySkeletonRider && (result.entityHit instanceof EntitySkeletonRider)
                 || result.entityHit.getRecursivePassengersByType(EntitySkeletonRider.class).isEmpty()) {

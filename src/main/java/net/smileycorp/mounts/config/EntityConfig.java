@@ -64,10 +64,15 @@ public class EntityConfig {
     private static List<Pair<Class<? extends EntityLiving>, NBTTagCompound>> jockeyRiderEntities;
     private static String[] jockeyMountableEntitiesStr;
     private static List<Class<? extends EntityLiving>> jockeyMountableEntities;
+    public static boolean babyZombiePiggyback;
 
     //spear charging entities
     private static String[] chargingEntitiesStr;
     private static List<Class<? extends EntityLiving>> chargingEntities;
+
+    //tweaks
+
+    public static boolean vanillaSpiderJockeysSpawn;
 
     public static void syncConfig(FMLPreInitializationEvent event) {
         Configuration config = new Configuration(new File(event.getModConfigurationDirectory().getPath() + "/mounts/entities.cfg"));
@@ -75,24 +80,24 @@ public class EntityConfig {
             config.load();
             //camels
             camel = new EntityAttributesEntry(config, "camel", 0.20000000298023224D, 16, 0, 31, 0, 0, 0);
-            camelFoodStr = config.getStringList("food", "camel", new String[] {"minecraft:cactus"}, "Items that count as food for camels for the purposes of taming, luring and healing.");
+            camelFoodStr = config.getStringList("food", "camel", new String[] {"minecraft:cactus"}, "Items that count as food for Camels for the purposes of taming, luring and healing.");
             //camel husks
             camelHusk = new EntityAttributesEntry(config, "camel husk", 0.20000000298023224D, 16, 0, 31, 0, 0, 0);
-            camelHuskCarpetChance = config.getFloat("carpet chance", "camel husk", 0.005f, 0, 1, "Chance for a camel husk to spawn wearing a carpet.");
-            camelHuskFoodStr = config.getStringList("food", "camel husk", new String[] {"minecraft:rabbit_foot"}, "Items that count as food for camel husks for the purposes of taming, luring and healing.");
+            camelHuskCarpetChance = config.getFloat("carpet chance", "camel husk", 0.005f, 0, 1, "Chance for a Camel Husk to spawn wearing a Carpet.");
+            camelHuskFoodStr = config.getStringList("food", "camel husk", new String[] {"minecraft:rabbit_foot"}, "Items that count as food for Camel Husks for the purposes of taming, luring and healing.");
             //parched
             parched = new EntityAttributesEntry(config, "parched", 0.25, 32, 2, 16, 0, 0, 0);
             //skeleton riders
             skeletonRider = new EntityAttributesEntry(config, "skeleton rider", 0.25, 32, 2, 20, 0, 0, 0);
             //skeleton horses
-            skeletonHorsesBurnInSunlight = config.getBoolean("burnInSunlight", "skeleton horse", false, "Do skeleton horses burn in sunlight? (Added in 25w41a, removed in 25w42a)");
+            skeletonHorsesBurnInSunlight = config.getBoolean("burnInSunlight", "skeleton horse", false, "Do Skeleton Horses burn in sunlight? (Added in 25w41a, removed in 25w42a)");
             skeletonHorsesPanicWhenDamaged = config.getBoolean("panicWhenDamaged", "skeleton horse", false, "Do Skeleton Horses panic when damaged? (Skeleton Horses no longer panic when taking damage as of 26.1-snapshot2)");
             //skeleton horse traps
             horseTrapSpawnChance = config.getFloat("horseTrapSpawnChance", "skeleton horse traps", 0.01f, 0, 1, "How often do Skeleton Horse traps spawn at lightning strikes? (Multiplied by regional difficulty) (Vanilla default is 0.01)");
-            improvedHorseTraps = config.getBoolean("improvedHorseTraps", "skeleton horse traps", true, "Whether to spawn Skeleton Horsemen from horse traps instead of vanilla skeletons?");
+            improvedHorseTraps = config.getBoolean("improvedHorseTraps", "skeleton horse traps", true, "Whether to spawn Skeleton Riders from Skeleton Horse Traps instead of Vanilla Skeletons?");
             //zombie horses
             zombieHorsesBurnInSunlight = config.getBoolean("burnInSunlight", "zombie horse", true, "Do zombie horses burn in sunlight? (Vanilla 1.21.11 feature)");
-            zombieHorsesFoodStr = config.getStringList("food", "zombie horse", new String[] {"minecraft:red_mushroom"}, "Items that count as food for zombie horses for the purposes of taming, luring and healing.");
+            zombieHorsesFoodStr = config.getStringList("food", "zombie horse", new String[] {"minecraft:red_mushroom"}, "Items that count as food for Zombie Horses for the purposes of taming, luring and healing.");
             zombieHorsesPanicWhenDamaged = config.getBoolean("panicWhenDamaged", "zombie horse", false, "Do Zombie Horses panic when damaged? (Zombie Horses no longer panic when taking damage as of 26.1-snapshot2)");
             //jockeys
             jockeyChance = config.getFloat( "jockeyChance", "jockeys", 0.15f, 0, 1, "Chance for a baby mob to spawn as a jockey. (Bedrock feature)");
@@ -100,14 +105,17 @@ public class EntityConfig {
                     new String[] {"minecraft:chicken", "minecraft:sheep", "minecraft:pig", "minecraft:cow", "minecraft:mushroom_cow", "minecraft:ocelot", "minecraft:wolf",
                             "minecraft:horse", "minecraft:donkey", "minecraft:mule", "minecraft:zombie_horse", "minecraft:skeleton_horse", "minecraft:spider", "minecraft:cave_spider",
                             "minecraft:zombie", "minecraft:zombie_villager", "minecraft:husk", "minecraft:zombie_pigman", "oe:zombie_nautilius", "futuremc:panda", "nb:strider", "nb:piglin_zombie"},
-                    "Which entities can jockeys seek out and ride?");
+                    "Which entities can Jockeys seek out and ride?");
             jockeyRiderEntitiesStr = config.getStringList("riderEntities", "jockeys",
                     new String[] {"minecraft:zombie{IsBaby:1b}", "minecraft:zombie_villager{IsBaby:1b}", "minecraft:husk{IsBaby:1b}", "minecraft:zombie_pigman{IsBaby:1b}", "oe:drowned{IsBaby:1b}", "oe:pickled{IsBaby:1b}", "nb:piglin_zombie{IsBaby:1b}", "mekanism:babyskeleton"},
-                    "Which entities can spawn with jockey ai?");
+                    "Which entities can spawn with Jockey AI, that causes the to attempt to find a mount to ride? (Accepts nbt)");
+            babyZombiePiggyback = config.getBoolean("jockeyPiggyback", "jockeys", true, "Do Zombies carry Jockey Riders in a piggyback? (Bedrock feature)");
+            //spider jockeys
+            vanillaSpiderJockeysSpawn = config.getBoolean("vanillaSpiderJockeysSpawn", "spider jockey", false, "Do Vanilla Spider Jockeys spawn? (disabled by default not to overlap with the variant added in the config data)");
             //charging entities
             chargingEntitiesStr = config.getStringList("chargingEntities", "general",
                     new String[] {"minecraft:zombie", "minecraft:husk", "minecraft:zombie_pigman", "nb:piglin"},
-                    "Entities that charge with spears when held.");
+                    "Entities that charge with Spears when held.");
         } catch(Exception e) {
         } finally {
             if (config.hasChanged()) config.save();

@@ -4,7 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIRunAroundLikeCrazy;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
-import net.smileycorp.mounts.config.TweaksFixesConfig;
+import net.smileycorp.mounts.config.FixesConfig;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,7 +20,7 @@ public class MixinEntityAIRunAroundLikeCrazy {
     //stops horses ejecting non player mobs when ridden
     @Inject(at = @At("RETURN"), method = "shouldExecute", cancellable = true)
     public void mounts$shouldExecute(CallbackInfoReturnable<Boolean> callback) {
-        if (!callback.getReturnValue() |! TweaksFixesConfig.horsesDontDismountMobs) return;
+        if (!callback.getReturnValue() |! FixesConfig.horsesDontDismountMobs) return;
         for (Entity entity : horseHost.getPassengers()) if (entity instanceof EntityPlayer) return;
         callback.setReturnValue(false);
     }
