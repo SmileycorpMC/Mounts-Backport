@@ -17,6 +17,7 @@
     "MixinEntitySpider",
     "MixinEntityZombieHorse",
     "MixinNetHandlerPlayServer",
+    "MixinWorldEntitySpawner",
     "MixinWorldServer"
   ],
   "client": [

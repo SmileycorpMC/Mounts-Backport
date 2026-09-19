@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntitySkeletonHorse;
@@ -21,7 +20,6 @@ import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.smileycorp.mounts.api.event.SpearChargeHitEvent;
@@ -33,12 +31,10 @@ import net.smileycorp.mounts.common.enchantments.MountsEnchantments;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 import net.smileycorp.mounts.common.entity.EntitySkeletonRider;
 import net.smileycorp.mounts.common.entity.ai.EntityAIAttackSpear;
-import net.smileycorp.mounts.common.entity.ai.EntityAIFindMount;
 import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.config.FixesConfig;
 import net.smileycorp.mounts.config.LootTableEntry;
 import net.smileycorp.mounts.config.data.LootRegistry;
-import net.smileycorp.mounts.config.data.mobs.MobDataLoader;
 
 import java.util.Set;
 
@@ -95,17 +91,6 @@ public class MountsCommonEvents
             entry.addEntry(event.getTable());
             MountsLogger.logInfo("Injected " + entry.getName() + " with weight " + entry.getWeight() + " to pool " + entry.getPool() + " in table " + entry.getLootTable());
         }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void spawnMob(LivingSpawnEvent.SpecialSpawn event) {
-        if (!(event.getEntityLiving() instanceof EntityLiving)) return;
-        EntityLiving entity = (EntityLiving) event.getEntityLiving();
-        if (!entity.isRiding() &! entity.isBeingRidden() && EntityConfig.isJockeyRider(entity) && entity.getRNG().nextFloat() > EntityConfig.jockeyChance) {
-            entity.tasks.addTask(1, new EntityAIFindMount(entity));
-            return;
-        }
-        MobDataLoader.INSTANCE.applyData(entity);
     }
 
     @SubscribeEvent
