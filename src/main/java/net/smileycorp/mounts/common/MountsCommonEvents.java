@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.*;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntitySkeletonHorse;
 import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,6 +32,7 @@ import net.smileycorp.mounts.common.enchantments.MountsEnchantments;
 import net.smileycorp.mounts.common.entity.EntityCamel;
 import net.smileycorp.mounts.common.entity.EntitySkeletonRider;
 import net.smileycorp.mounts.common.entity.ai.EntityAIAttackSpear;
+import net.smileycorp.mounts.common.entity.ai.EntityAIJockeyTowerCollapse;
 import net.smileycorp.mounts.config.EntityConfig;
 import net.smileycorp.mounts.config.FixesConfig;
 import net.smileycorp.mounts.config.LootTableEntry;
@@ -97,6 +99,8 @@ public class MountsCommonEvents
     public static void entityAdded(EntityJoinWorldEvent event) {
         if (!(event.getEntity() instanceof EntityCreature)) return;
         EntityCreature entity = (EntityCreature) event.getEntity();
+        if (entity instanceof EntityZombie && entity.isChild() && entity.isRiding() &! entity.getPassengers().isEmpty())
+                entity.tasks.addTask(1, new EntityAIJockeyTowerCollapse(entity));
         boolean zombieHorse = entity instanceof EntityZombieHorse;
         boolean skeletonHorse = entity instanceof EntitySkeletonHorse;
         //remove panic ai from zombie and skeleton horses if the config allows for it

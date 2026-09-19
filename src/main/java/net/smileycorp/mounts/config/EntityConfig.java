@@ -70,6 +70,11 @@ public class EntityConfig {
     private static List<Class<? extends EntityLiving>> jockeyMountableEntities;
     public static boolean babyZombiePiggyback;
 
+    //chicken jockeys
+    public static int towerMinSize;
+    public static float towerChance;
+    public static float towerZombieChance;
+
     //spear charging entities
     private static String[] chargingEntitiesStr;
     private static List<Class<? extends EntityLiving>> chargingEntities;
@@ -119,6 +124,10 @@ public class EntityConfig {
             babyZombiePiggyback = config.getBoolean("jockeyPiggyback", "jockeys", true, "Do Zombies carry Jockey Riders in a piggyback? (Bedrock feature)");
             //spider jockeys
             vanillaSpiderJockeysSpawn = config.getBoolean("vanillaSpiderJockeysSpawn", "spider jockey", false, "Do Vanilla Spider Jockeys spawn? (disabled by default not to overlap with the variant added in the config data)");
+            //chicken jockeys
+            towerMinSize = config.getInt("towerMinSize", "chicken jockey", 3, 1, Integer.MAX_VALUE, "Minimum size of a Jockey Tower.");
+            towerChance = config.getFloat("towerChance", "chicken jockey", 0.1f, 0, 1, "Chance for a Chicken Jockey to spawn as a tower.");
+            towerZombieChance = config.getFloat("towerZombieChance", "chicken jockey", 0.75f, 0, 1, "Chance for an extra Baby Zombie to spawn in a tower.");
             //charging entities
             chargingEntitiesStr = config.getStringList("chargingEntities", "general",
                     new String[] {"minecraft:zombie", "minecraft:husk", "minecraft:zombie_pigman", "nb:piglin"},

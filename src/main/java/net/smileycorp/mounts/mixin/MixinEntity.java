@@ -43,7 +43,8 @@ public abstract class MixinEntity {
     @Inject(at = @At("HEAD"), method = "updatePassenger", cancellable = true)
     public void mounts$updatePassenger(Entity passenger, CallbackInfo callback) {
         if (!EntityConfig.babyZombiePiggyback) return;
-        if (!isPassenger(passenger) |! (((Object)this)instanceof EntityZombie) |! (EntityConfig.isJockeyRider(passenger))) return;
+        if (!((((Object)this)instanceof EntityZombie))) return;
+        if (((EntityZombie)(Object)this).isChild() |! isPassenger(passenger) |! (EntityConfig.isJockeyRider(passenger))) return;
         Vec3d offset = new Vec3d(0, 0, -0.4f).rotateYaw(-rotationYaw * 0.017453292f);
         passenger.setPositionAndRotation(posX + offset.x, posY + getMountedYOffset() - 0.35, posZ + offset.z, rotationYaw, rotationPitch);
         callback.cancel();
