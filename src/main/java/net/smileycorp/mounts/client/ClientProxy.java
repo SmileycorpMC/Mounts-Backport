@@ -31,6 +31,7 @@ import net.smileycorp.mounts.client.entity.render.RenderParched;
 import net.smileycorp.mounts.client.entity.render.RenderSkeletonRider;
 import net.smileycorp.mounts.client.particle.MountsParticle;
 import net.smileycorp.mounts.client.particle.ParticleSpearPierce;
+import net.smileycorp.mounts.client.particle.ParticleZap;
 import net.smileycorp.mounts.common.CommonProxy;
 import net.smileycorp.mounts.common.Constants;
 import net.smileycorp.mounts.common.entity.*;
@@ -122,6 +123,7 @@ public class ClientProxy extends CommonProxy {
 	{
 		switch (MountsParticle.fromId(particleId))
 		{
+			case ZAP: return new ParticleZap.Factory();
 			default:
 			case SPEAR_PIERCE: return new ParticleSpearPierce.Factory();
 		}

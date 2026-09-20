@@ -19,6 +19,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
@@ -26,6 +27,8 @@ import net.minecraft.world.World;
 import net.smileycorp.atlas.api.util.DirectionUtils;
 import net.smileycorp.mounts.api.ItemSpear;
 import net.smileycorp.mounts.api.VanillaSpears;
+import net.smileycorp.mounts.client.particle.MountsParticle;
+import net.smileycorp.mounts.common.Mounts;
 import net.smileycorp.mounts.common.entity.ai.EntityAIAttackSpear;
 import net.smileycorp.mounts.config.EntityConfig;
 
@@ -76,6 +79,16 @@ public class EntitySkeletonRider extends EntitySkeleton {
             this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_IRON, 1, 1);
             this.getNavigator().clearPath();
             this.swapWeapon();
+        }
+
+        if (this.world.isRemote)
+        {
+            for(int i = 0; i < 1; ++i)
+            {
+                Mounts.proxy.spawnParticle(MountsParticle.ZAP, this.world,
+                        this.posX + ((this.rand.nextDouble() - 0.5) * 2) * (double)this.width, this.posY + this.rand.nextDouble() * (double)this.height, this.posZ + ((this.rand.nextDouble() - 0.5) * 2) * (double)this.width,
+                        0, 0, 0);
+            }
         }
     }
 

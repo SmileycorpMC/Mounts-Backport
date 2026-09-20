@@ -5,7 +5,8 @@ package net.smileycorp.mounts.client.particle;
 * */
 public enum MountsParticle
 {
-    SPEAR_PIERCE;
+    SPEAR_PIERCE,
+    ZAP;
 
     public int getId() { return this.ordinal(); }
 
