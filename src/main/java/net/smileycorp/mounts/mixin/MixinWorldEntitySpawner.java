@@ -2,8 +2,6 @@ package net.smileycorp.mounts.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.world.World;
