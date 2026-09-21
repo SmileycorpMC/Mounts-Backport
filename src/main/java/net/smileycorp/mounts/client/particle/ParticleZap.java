@@ -50,7 +50,6 @@ public class ParticleZap extends ParticleBase
     }
 
     /* StackOverflow has the WEIRDEST stuff like damn. */
-    /* StackOverflow has the WEIRDEST stuff like damn. */
     public Vec3d[] particleVertexRendering(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ, float particleSize)
     {
         Vec3d[] wow = new Vec3d[]{
@@ -69,11 +68,15 @@ public class ParticleZap extends ParticleBase
 
         for (int l = 0; l < 4; ++l)
         {
-            wow[l] = vec3d.scale(2.0D * wow[l].dotProduct(vec3d)).add(wow[l].scale((double)(f9 * f9) - vec3d.dotProduct(vec3d))).add(vec3d.crossProduct(wow[l]).scale((double)(2.0F * f9)));
+            wow[l] = vec3d.scale(2.0D * wow[l].dotProduct(vec3d)).add(wow[l].scale((double)(f9 * f9) - vec3d.dotProduct(vec3d))).add(vec3d.crossProduct(wow[l]).scale(2.0F * f9));
         }
 
         return wow;
     }
+
+    @Override
+    public int getBrightnessForRender(float partialTicks)
+    { return 15728880; }
 
     @SideOnly(Side.CLIENT)
     public static class Factory implements IParticleFactory
