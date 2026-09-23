@@ -157,8 +157,8 @@ public class MountsCommonEvents
         Entity owner = arrow.shootingEntity;
         if (!FixesConfig.passengersCantHitEachother) return;
         if (owner == null) return;
-        if (owner instanceof EntitySkeletonRider && (result.entityHit instanceof EntitySkeletonRider)
-                || result.entityHit.getRecursivePassengersByType(EntitySkeletonRider.class).isEmpty()) {
+        if (owner instanceof EntitySkeletonRider && (result.entityHit instanceof EntitySkeletonRider
+                |! result.entityHit.getRecursivePassengersByType(EntitySkeletonRider.class).isEmpty())) {
             event.setCanceled(true);
             return;
         }
