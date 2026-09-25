@@ -35,7 +35,7 @@ public abstract class MixinEntityLiving extends EntityLivingBase {
     //let the ridden entity calculate it's pathing, should fix issues with large mob hitboxes getting stuck too
     @WrapOperation(at= @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityLiving;isRiding()Z"), method = "updateEntityActionState")
     public boolean mounts$updateEntityActionState$isRiding(EntityLiving instance, Operation<Boolean> original) {
-        if (!FixesConfig.controlledMountsOwnPathing) return original.call(instance);
+        if (!FixesConfig.mountsControlOwnPathing) return original.call(instance);
         Entity entity = getRidingEntity();
         if (!(entity instanceof EntityLiving)) return false;
         if (this != entity.getControllingPassenger()) return false;
