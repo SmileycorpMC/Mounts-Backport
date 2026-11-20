@@ -21,8 +21,8 @@ public class AddMountFunction extends SpawnEntityFunction {
     }
 
     protected void applyFunctions(SpawnContext ctx, EntityLiving entity) {
-       super.applyFunctions(ctx, entity);
-       ctx.getEntity().startRiding(entity);
+        ctx.getEntity().startRiding(entity);
+        super.applyFunctions(ctx, entity);
     }
     
     public static AddMountFunction deserialize(JsonElement json) {
