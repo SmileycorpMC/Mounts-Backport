@@ -7,6 +7,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import scala.Int;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,16 +29,16 @@ public interface Piercing {
 
     class Impl implements Piercing, ICapabilityProvider {
 
-        private final Map<Entity, Long> piercedEntities = Maps.newHashMap();
+        private final Map<Entity, Integer> piercedEntities = Maps.newHashMap();
 
         @Override
         public boolean canPierce(Entity entity) {
-            return !piercedEntities.containsKey(entity) || entity.world.getWorldTime() - piercedEntities.get(entity) > 10;
+            return !piercedEntities.containsKey(entity) || entity.ticksExisted - piercedEntities.get(entity) > 10;
         }
 
         @Override
         public void pierce(Entity entity) {
-            piercedEntities.put(entity, entity.world.getWorldTime());
+            piercedEntities.put(entity, entity.ticksExisted);
         }
 
         @Override
