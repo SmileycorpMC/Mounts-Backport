@@ -179,7 +179,7 @@ public class ItemSpear extends Item {
         Vec3d look = user.getLookVec();
         double speed = getSpeed(look, user);
         boolean hit = false;
-        for (Entity entity : getHitEntities(user, definition, e -> piercing.canPierce(e))) {
+        for (Entity entity : getHitEntities(user, definition, piercing::canPierce)) {
             if (MinecraftForge.EVENT_BUS.post(new SpearChargeHitEvent.Pre(user, entity, stack, definition))) continue;
             boolean pierced = false;
             //damage is based on relative speed between the user and the target
@@ -251,6 +251,7 @@ public class ItemSpear extends Item {
         //renderHitboxParticles(user, box);
         List<Entity> entities = Lists.newArrayList();
         for (EntityLivingBase entity : user.world.getEntitiesWithinAABB(EntityLivingBase.class, box)) {
+            if (entity == user.getRidingEntity() || entity.getRidingEntity() == user.getRidingEntity()) continue;
             Vec3d pos = new Vec3d(entity.posX, entity.posY + entity.height * 0.5, entity.posZ);
             if (entity == user |! entity.isEntityAlive()) continue;
             //find the closest point on the line to the entity and check if it's in the entities inflated hitbox
